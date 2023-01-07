@@ -54,5 +54,5 @@ Development will have to cope with differences between Unix variants, particular
 
 ## References
 
-https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions
-https://www.lasssim.com/architecture-decision-records-example/
+- https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions
+- https://www.lasssim.com/architecture-decision-records-example/
