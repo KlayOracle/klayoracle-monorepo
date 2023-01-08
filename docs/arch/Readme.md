@@ -49,6 +49,9 @@ The tool won't support Windows. Being plain text files, ADRs can be created by h
 
 Development will have to cope with differences between Unix variants, particularly Linux and MacOS X.
 
+## Caution
+Not everything needs ADR's. Only decision that could be costly if done wrongly, or decisions that are hard to implements deserves an ADR. Small changes do not deserve an ADR
+
 ## Other Thoughts
 - Use https://app.diagrams.net/ to create diagrams to add to ADR's
 
