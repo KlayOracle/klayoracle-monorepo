@@ -6,9 +6,9 @@ All core packages that makes of the KlayOracle protocol.
 
 Docs: TBD
 
-Website: klayoracle.com
+Website: [klayoracle.com](klayoracle.com)
 
-Blog: klayoracle.medium.com
+Blog: [klayoracle.medium.com](klayoracle.medium.com)
 
 ### 📦 Packages
 
