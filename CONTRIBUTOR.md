@@ -11,3 +11,12 @@
 - Bug Branches: bug-<ISSUE_NUMBER>-node-networking-failing-on-amd64
 - WIP Branches: wip-<ISSUE_NUMBER>-protocol-scaffold-setup
 - Hot Fix Branches: hot-fix-<ISSUE_NUMBER>-race-condition-on-node
+
+### Commits Message
+
+- Must start with either:
+  - wip: 
+  - feature:
+  - bug:
+  - hot-fix:
+- Changes of more than one file must include a commit description
