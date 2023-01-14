@@ -148,7 +148,7 @@ The following section highlights how the main components of KlayOracle’s new a
     }
     
     function _beforeFufill() returns(bool) {
-    	require(IERC20(klayOracleTokenAddress).transferFrom(msg.sender, address(this), oracleFee),"Do not honer!")
+    	require(IERC20(klayOracleTokenAddress).transferFrom(msg.sender, address(this), oracleFee),"Do not honor!")
     }
     ```
     
