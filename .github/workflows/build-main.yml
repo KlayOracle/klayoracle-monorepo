@@ -1,0 +1,7 @@
+name: 'Build Node & Data Provider'
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main

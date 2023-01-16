@@ -1,0 +1,10 @@
+name: solidity-unit-test
+on:
+  push:
+    tags:
+    branches:
+      - development
+      - wip-*
+      - feature-*
+      - hot-fix-*
+  pull_request:

@@ -1,0 +1,7 @@
+name: 'Build Node & Data Provider for Staging'
+
+on:
+  pull_request:
+  push:
+    branches:
+      - staging

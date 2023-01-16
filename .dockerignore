@@ -1,0 +1,8 @@
+.git-together
+.DS_Store
+.envrc
+*.log
+node_modules/
+**/node_modules/
+vendor/
+tmp/
