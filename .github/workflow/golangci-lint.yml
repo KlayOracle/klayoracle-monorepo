@@ -1,0 +1,43 @@
+name: golangci-lint
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - main
+      - staging
+      - development
+      - wip-*
+      - feature-*
+      - hot-fix-*
+  pull_request:
+permissions:
+  contents: read
+  # Optional: allow read access to pull request. Use with `only-new-issues` option.
+  # pull-requests: read
+jobs:
+  golangci:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-go@v3
+        with:
+          stable: 'false'
+          go-version: 1.18
+      - uses: actions/checkout@v3
+      - name: golangci-lint-node
+        uses: golangci/golangci-lint-action@v3
+        working-directory: ./node
+        with:
+          version: v1.29
+      - run: |
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.50.1
+          
+          $(go env GOPATH)/bin/golangci-lint run
+      - name: golangci-lint-data-provider
+        uses: golangci/golangci-lint-action@v3
+        working-directory: ./data-provider
+        with:
+          version: v1.29
+      - run: |
+              $(go env GOPATH)/bin/golangci-lint run

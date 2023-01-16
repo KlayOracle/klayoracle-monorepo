@@ -1,6 +1,7 @@
 ## Branch Naming Convention
 
 ### Regular Branches
+
 - main: Release branch
 - staging: smoke and soak test before merging to main
 - development: All feature branch merges in here, then to staging
@@ -12,9 +13,9 @@
 - WIP Branches: wip-<ISSUE_NUMBER>-protocol-scaffold-setup
 - Hot Fix Branches: hot-fix-<ISSUE_NUMBER>-race-condition-on-node
 
-### Commits Message
+## Commits Message
 
-- Must start with either:
+- Must start with any of the follow:
   - wip: 
   - feature:
   - bug:
