@@ -1,0 +1,28 @@
+name: solidity-unit-test
+on:
+  push:
+    branches:
+      - wip-*
+      - feature-*
+      - hot-fix-*
+  pull_request:
+    - development
+
+jobs:
+  data-provider-unit-test:
+    strategy:
+      matrix:
+        go-version: [1.12.x, 1.13.x, 1.14.x]
+        platform: [ubuntu-latest]
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+    - name: Install go
+      uses: actions/setup-go@v3
+      with:
+        go-version: ${{ matrix.go.version }}
+
+    - uses: actions/checkout@v3
+
+    - name: Data Provider Tests
+      run: go test data-provider/...
