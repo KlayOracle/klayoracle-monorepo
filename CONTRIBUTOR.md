@@ -21,3 +21,14 @@
   - bug:
   - hot-fix:
 - Changes of more than one file must include a commit description
+
+
+### Pre Commit Hook
+
+NB: Make sure to run `snyk auth` to authenticate CLI
+```shell
+#!/bin/sh
+
+yarn --cwd oracle-contract prettier:write
+snyk test --severity-threshold=high --all-projects --detection-depth=4
+```
