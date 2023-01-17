@@ -18,4 +18,4 @@ jobs:
           cd ${{ matrix.directory }}
           snyk test --severity-threshold=high
         env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SNYK_TOKEN: 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
