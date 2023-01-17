@@ -14,6 +14,7 @@ npx hardhat run scripts/deploy.js
 ```shell
 yarn build
 yarn coverage
-yarn deploy
 yarn test
+yarn deploy
+
 ```

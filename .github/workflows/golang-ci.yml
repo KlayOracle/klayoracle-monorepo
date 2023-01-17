@@ -1,0 +1,28 @@
+name: Go Lint Provider & Node
+on:
+  push:
+    branches: ["wip-*", "feature-*", "hot-fix-*"]
+  pull_request:
+    branches: ["main", "stage", "development"]
+
+jobs:
+  golang-ci:
+    strategy:
+      matrix:
+        go: [1.18, 1.19]
+        directory: ["node", "data-provider"]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup branch
+      uses: actions/checkout@v3
+
+    - name: Setup go environment
+      uses: actions/setup-go@v3.5.0
+      with:
+        go-version: ${{ matrix.go }}
+    - name: cd Directory, copy .golangci.yml, run linter
+      run: |
+        cd ${{ matrix.directory }}
+        curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.50.1
+        wget  https://raw.githubusercontent.com/${{ github.repository  }}/${{ github.ref_name }}/.golangci.yml
+        $(go env GOPATH)/bin/golangci-lint run

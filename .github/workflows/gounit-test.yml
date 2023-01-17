@@ -1,0 +1,25 @@
+name: Go Unit Test Provider & Node
+on:
+  push:
+    branches: ["wip-*", "feature-*", "hot-fix-*"]
+  pull_request:
+    branches: ["main", "stage", "development"]
+
+jobs:
+  test-go:
+    strategy:
+      matrix:
+        go: [1.18, 1.19]
+        directory: ["node", "data-provider"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup branch
+        uses: actions/checkout@v3
+
+      - name: Setup go environment
+        uses: actions/setup-go@v3.5.0
+        with:
+          go-version: ${{ matrix.go }}
+      - name: Running Test For ${{ matrix.directory }}
+        run: go test ./test
+        working-directory: ${{ matrix.directory }}
