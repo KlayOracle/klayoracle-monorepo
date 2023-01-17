@@ -7,7 +7,7 @@ name: Mark stale issues and pull requests
 
 on:
   schedule:
-  - cron: '22 22 * * *'
+    - cron: '22 22 * * *'
 
 jobs:
   stale:
@@ -18,10 +18,10 @@ jobs:
       pull-requests: write
 
     steps:
-    - uses: actions/stale@v7
-      with:
-        repo-token: ${{ secrets.github_token }}
-        stale-issue-message: 'Stale issue closing. You can re-open this issue again if this was a mistake'
-        stale-pr-message: 'Stale pull request closing. You can re-open this PR again if this was a mistake'
-        stale-issue-label: 'no-issue-activity'
-        stale-pr-label: 'no-pr-activity'
+      - uses: actions/stale@v5
+        with:
+          repo-token: ${{ github.token }}
+          stale-issue-message: 'Stale issue closing. You can re-open this issue again if this was a mistake'
+          stale-pr-message: 'Stale pull request closing. You can re-open this PR again if this was a mistake'
+          stale-issue-label: 'no-issue-activity'
+          stale-pr-label: 'no-pr-activity'
