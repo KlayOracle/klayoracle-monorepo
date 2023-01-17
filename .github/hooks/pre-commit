@@ -1,0 +1,4 @@
+#!/bin/sh
+
+#Comment
+yarn --cwd ../../oracle-contract prettier:write
