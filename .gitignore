@@ -15,4 +15,3 @@ oracle-contract/typechain-types
 
 # Hardhat files
 oracle-contract/cache
-oracle-contract/artifacts
