@@ -1,4 +1,4 @@
-name: Go Unit Test Provider & Node
+name: Go unit test provider & node
 on:
   push:
     branches: ["wip-*", "feature-*", "hot-fix-*"]

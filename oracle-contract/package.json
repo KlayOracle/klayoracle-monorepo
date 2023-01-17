@@ -31,12 +31,11 @@
         "ethers": "^5.4.7",
         "hardhat": "^2.12.6",
         "hardhat-gas-reporter": "^1.0.8",
-        "solidity-coverage": "^0.8.0",
-        "typechain": "^8.1.0"
-    },
-    "dependencies": {
         "prettier": "^2.8.3",
         "prettier-plugin-solidity": "^1.1.1",
-        "solhint-plugin-prettier": "^0.0.5"
+        "solhint": "^3.3.7",
+        "solhint-plugin-prettier": "^0.0.5",
+        "solidity-coverage": "^0.8.0",
+        "typechain": "^8.1.0"
     }
 }
