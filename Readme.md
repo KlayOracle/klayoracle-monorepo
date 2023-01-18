@@ -1,6 +1,6 @@
 ## Official KlayOracle monorepo
 
-All core packages that makes of the KlayOracle protocol.
+All core packages that make up the KlayOracle protocol. KlayOracle is a decentralized oracle for the Klaytn blockchain.
 
 ## 📚 Learn More
 
