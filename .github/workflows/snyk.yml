@@ -15,8 +15,6 @@ jobs:
           go-version: ${{ matrix.go }}
       - name: Snyk monitor
         run: |
-          echo ${{ secrets.SNKY_TOKEN }}
-          echo "from env: ${SNYK_TOKEN}"
           cd ${{ matrix.directory }}
           snyk test --severity-threshold=high
         env:

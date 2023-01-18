@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/stale@v5
         with:
-          repo-token: ${{ github.token }}
+          repo-token: ${{ secrets.REPO_TOKEN }}
           stale-issue-message: 'Stale issue closing. You can re-open this issue again if this was a mistake'
           stale-pr-message: 'Stale pull request closing. You can re-open this PR again if this was a mistake'
           stale-issue-label: 'no-issue-activity'
