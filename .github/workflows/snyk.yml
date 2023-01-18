@@ -17,6 +17,6 @@ jobs:
         run: |
           echo ${{ secrets.SNYK_TOKEN }}
           cd ${{ matrix.directory }}
-#          snyk test --severity-threshold=high
-#        env:
-#          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          snyk test --severity-threshold=high
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}

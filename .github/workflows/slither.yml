@@ -9,5 +9,5 @@ jobs:
       - run: ls -la oracle-contract/artifacts
       - uses: crytic/slither-action@v0.2.0
         with:
-          node-version: 16
+          node-version: 18
           target: 'oracle-contract/'
