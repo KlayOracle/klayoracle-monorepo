@@ -6,8 +6,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         name: View directory
-      - run: ls -la oracle-contract
-#      - uses: crytic/slither-action@v0.2.0
-#        with:
-#          node-version: 18
-#          target: 'oracle-contract/'
+      - run: ls -la oracle-contract/artifacts
+      - uses: crytic/slither-action@v0.2.0
+        with:
+          node-version: 16
+          target: 'oracle-contract/'
