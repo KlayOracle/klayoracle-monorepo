@@ -15,6 +15,7 @@ jobs:
           go-version: ${{ matrix.go }}
       - name: Snyk monitor
         run: |
+          echo "from secrets"
           echo ${{secrets.SNYK_TOKEN }}
           echo "from env: ${SNYK_TOKEN}"
           cd ${{ matrix.directory }}
