@@ -1,0 +1,22 @@
+name: Snyk vunulrability check
+on: push
+jobs:
+  security:
+    strategy:
+      matrix:
+        go: [1.18, 1.19]
+        directory: [ "node", "data-provider", "oracle-contract"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: snyk/actions/setup@master
+      - uses: actions/setup-go@v3.5.0
+        with:
+          go-version: ${{ matrix.go }}
+      - name: Snyk monitor
+        run: |
+          echo ${{ secrets.SNYK_TOKEN }}
+          cd ${{ matrix.directory }}
+          snyk test --severity-threshold=high
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
