@@ -23,6 +23,6 @@ jobs:
     - name: cd Directory, copy .golangci.yml, run linter
       run: |
         cd ${{ matrix.directory }}
+        copy ../.golangci.yml .
         curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.50.1
-        wget  https://raw.githubusercontent.com/${{ github.repository  }}/${{ github.ref_name }}/.golangci.yml
         $(go env GOPATH)/bin/golangci-lint run
