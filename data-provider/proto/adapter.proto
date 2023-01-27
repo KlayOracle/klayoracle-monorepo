@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+option go_package = "github.com/klayoracle/klayoracle-monorepo/proto";
+
+package proto;
+
+service DataProvider {
+  // Server streaming RPC
+  // Node as client sends request using Stub to Data Provider as Server
+  // Gets a continuous unending stream to notify Node of connection
+  rpc Ping(Node) returns(stream ServerStatus);
+
+  // Unary RPC
+  // Node as client sends request to retrieve details of an Adapter
+  // Waits and gets a one time response and connection is closed
+  rpc GetAdapter(AdapterHead) returns(Adapter);
+
+  // Server streaming RPC
+  // Node as client requests for Adapter lists from Data Providers as Server
+  // Data Providers sends a stream of all available adapter and closes connection after sending the last one
+  rpc ListAdapters(Node) returns (stream Adapter);
+}
+
+// Node sends its IP details, sign an arbitrary message
+// and provides hash of message and signature to proof
+// that it can request information from a Data Provider
+message Node {
+  string IP = 1;
+  bytes signature = 2;
+  bytes msg_hash = 3;
+}
+
+message ServerStatus {
+    bool alive = 1;
+    string message = 2;
+}
+
+message Null{}
+
+enum JobTypes {
+  DATA_FEED = 0;
+  RANDOM_NUMBER = 1;
+}
+
+enum RequestType {
+  GET = 0;
+  POST = 1;
+}
+
+// Contains field that doesn't change throughout
+// the lifetime of an adapter.
+message AdapterHead {
+  string adapter_id = 4;
+  optional string oracle_address = 5;
+}
+
+message Adapter {
+  bool active = 1;
+  string name = 2;
+  JobTypes job_type = 3;
+  string adapter_id = 4;
+  string oracle_address = 5;
+  repeated Feed feeds = 6;
+}
+
+message Adapters {
+  repeated Adapter adapters = 1;
+}
+
+message Reducer {
+  string function = 1;
+  repeated string args = 2;
+}
+
+message Feed {
+  string url = 1;
+  message Header {
+    map<string, string> field = 1;
+  }
+  Header headers = 2;
+  RequestType request_type = 3;
+  repeated Reducer reducers = 4;
+}

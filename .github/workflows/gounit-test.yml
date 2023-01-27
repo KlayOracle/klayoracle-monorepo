@@ -21,5 +21,5 @@ jobs:
         with:
           go-version: ${{ matrix.go }}
       - name: Running Test For ${{ matrix.directory }}
-        run: go test ./test
+        run: go test -v ./...
         working-directory: ${{ matrix.directory }}

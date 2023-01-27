@@ -1,0 +1,2 @@
+- Generate adapter id
+- Validate Adapater files
