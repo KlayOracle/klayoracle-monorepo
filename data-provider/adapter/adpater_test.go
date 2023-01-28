@@ -17,6 +17,7 @@ func TestAdapterMarshalOk(t *testing.T) {
 				"job_type": "DATA_FEED",
 				"adapter_id":"efbdab54419511edb8780242ac120002",
 				"oracle_address": "0xCC4377b912c4517Fe895817c6a7c6937D92A70B3",
+				"category": 2,
 				"feeds": [
 						{
 						"url": "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=KLAY&tsyms=USD",
@@ -39,6 +40,7 @@ func TestAdapterMarshalOk(t *testing.T) {
 	}
 
 	assert.True(t, newAdapter.Active)
+	assert.Equal(t, newAdapter.Category, protoadapter.FeedCategory_PRICE_FEED)
 	assert.Equal(t, newAdapter.Name, "KLAY_USD")
 	assert.Equal(t, newAdapter.JobType, protoadapter.JobTypes_DATA_FEED)
 	assert.Equal(t, newAdapter.AdapterId, "efbdab54419511edb8780242ac120002")

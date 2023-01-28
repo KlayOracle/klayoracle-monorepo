@@ -52,6 +52,16 @@ enum RequestType {
   POST = 1;
 }
 
+enum FeedCategory {
+  RNG = 0;          // random number generator
+  SPORT = 1;        // live scores, past data e.t.c
+  PRICE_FEED = 2;   // data such as spot prices
+  WEATHER = 3;      // transactions or balances happening on other blockchains
+  FLIGHT  = 4;      // departure and arrival statuses on-chain
+  BLOCKCHAIN = 5;   // transactions or balances happening on other blockchains
+  NFT_DATA = 6;     // floor Prices, Asset Listings, Collection Details
+}
+
 // Contains field that doesn't change throughout
 // the lifetime of an adapter.
 message AdapterHead {
@@ -66,6 +76,7 @@ message Adapter {
   string adapter_id = 4;
   string oracle_address = 5;
   repeated Feed feeds = 6;
+  FeedCategory category = 7;
 }
 
 message Adapters {
