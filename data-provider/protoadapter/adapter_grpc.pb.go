@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.12
-// source: data-provider/proto/adapter.proto
+// source: data-provider/protoadapter/adapter.proto
 
-package proto
+package protoadapter
 
 import (
 	context "context"
@@ -45,7 +45,7 @@ func NewDataProviderClient(cc grpc.ClientConnInterface) DataProviderClient {
 }
 
 func (c *dataProviderClient) Ping(ctx context.Context, in *Node, opts ...grpc.CallOption) (DataProvider_PingClient, error) {
-	stream, err := c.cc.NewStream(ctx, &DataProvider_ServiceDesc.Streams[0], "/proto.DataProvider/Ping", opts...)
+	stream, err := c.cc.NewStream(ctx, &DataProvider_ServiceDesc.Streams[0], "/protoadapter.DataProvider/Ping", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func (x *dataProviderPingClient) Recv() (*ServerStatus, error) {
 
 func (c *dataProviderClient) GetAdapter(ctx context.Context, in *AdapterHead, opts ...grpc.CallOption) (*Adapter, error) {
 	out := new(Adapter)
-	err := c.cc.Invoke(ctx, "/proto.DataProvider/GetAdapter", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/protoadapter.DataProvider/GetAdapter", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +86,7 @@ func (c *dataProviderClient) GetAdapter(ctx context.Context, in *AdapterHead, op
 }
 
 func (c *dataProviderClient) ListAdapters(ctx context.Context, in *Node, opts ...grpc.CallOption) (DataProvider_ListAdaptersClient, error) {
-	stream, err := c.cc.NewStream(ctx, &DataProvider_ServiceDesc.Streams[1], "/proto.DataProvider/ListAdapters", opts...)
+	stream, err := c.cc.NewStream(ctx, &DataProvider_ServiceDesc.Streams[1], "/protoadapter.DataProvider/ListAdapters", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -193,7 +193,7 @@ func _DataProvider_GetAdapter_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.DataProvider/GetAdapter",
+		FullMethod: "/protoadapter.DataProvider/GetAdapter",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DataProviderServer).GetAdapter(ctx, req.(*AdapterHead))
@@ -226,7 +226,7 @@ func (x *dataProviderListAdaptersServer) Send(m *Adapter) error {
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var DataProvider_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.DataProvider",
+	ServiceName: "protoadapter.DataProvider",
 	HandlerType: (*DataProviderServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -246,5 +246,5 @@ var DataProvider_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "data-provider/proto/adapter.proto",
+	Metadata: "data-provider/protoadapter/adapter.proto",
 }

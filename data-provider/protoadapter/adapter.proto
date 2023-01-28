@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-option go_package = "github.com/klayoracle/klayoracle-monorepo/proto";
+option go_package = "github.com/klayoracle/klayoracle-monorepo/protoadapter";
 
-package proto;
+package protoadapter;
 
 service DataProvider {
   // Server streaming RPC
@@ -21,7 +21,12 @@ service DataProvider {
   rpc ListAdapters(Node) returns (stream Adapter);
 }
 
-// Node sends its IP details, sign an arbitrary message
+message Message {
+  string text = 1;
+  bool is_valid = 2;
+}
+
+// Node sends its IP details, sign `an arbitrary message
 // and provides hash of message and signature to proof
 // that it can request information from a Data Provider
 message Node {
@@ -50,8 +55,8 @@ enum RequestType {
 // Contains field that doesn't change throughout
 // the lifetime of an adapter.
 message AdapterHead {
-  string adapter_id = 4;
-  optional string oracle_address = 5;
+  string adapter_id = 1;
+  string oracle_address = 2;
 }
 
 message Adapter {
@@ -77,7 +82,7 @@ message Feed {
   message Header {
     map<string, string> field = 1;
   }
-  Header headers = 2;
+  repeated Header headers = 2;
   RequestType request_type = 3;
   repeated Reducer reducers = 4;
 }

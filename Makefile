@@ -10,7 +10,7 @@ proto-installed:
 proto-dp: proto-installed
 	@protoc --go_out=. --go_opt=paths=source_relative \
         --go-grpc_out=. --go-grpc_opt=paths=source_relative \
-        data-provider/proto/*.proto
+        data-provider/protoadapter/*.proto
 
 .PHONY: gomodtidy-dp
 gomodtidy-dp: ## Run go mod tidy on all modules.
