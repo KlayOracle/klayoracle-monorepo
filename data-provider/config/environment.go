@@ -32,10 +32,12 @@ type Config struct {
 
 func Load(configFilePath string) {
 	configFile, err := os.ReadFile(configFilePath)
-
-	err = yaml.Unmarshal(configFile, &Loaded)
 	if err != nil {
-		log.Fatal("Invalid config.yaml file", "reason", err)
+		log.Fatal("Cannot open: ", configFile, "reason: ", err)
+	}
+
+	if err = yaml.Unmarshal(configFile, &Loaded); err != nil {
+		log.Fatal("Invalid config.yaml file", "reason: ", err)
 	}
 
 }
