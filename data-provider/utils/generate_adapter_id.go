@@ -50,11 +50,16 @@ func main() {
 
 		updatedStream, err := protojson.Marshal(feed)
 		if err != nil {
-			logger.Errorw("Error updating adapter id", "adapter", adapterPath, "error", err)
+			logger.Errorw("Error marshaling", "adapter", adapterPath, "error", err)
 		}
 
 		logger.Infow("Updated adapter", "file", s, "adapter_id", feed.AdapterId)
-		os.WriteFile(adapterPath, updatedStream, 0644)
+		
+		err = os.WriteFile(adapterPath, updatedStream, 0644)
+		if err != nil {
+			logger.Errorw("Error updating adapter id", "adapter", adapterPath, "error", err)
+		}
+
 		file.Close()
 	}
 }
