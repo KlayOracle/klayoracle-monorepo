@@ -1,4 +1,4 @@
-env: dev                  #options: dev, stage, production
+env: dev #options: dev, stage, production
 service_node: 127.0.0.1
 feed:
   path: ""
