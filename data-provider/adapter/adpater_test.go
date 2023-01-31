@@ -23,13 +23,13 @@ func TestAdapterMarshalOk(t *testing.T) {
 						{
 						"url": "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=KLAY&tsyms=USD",
 						"request_type": 0,
-						"headers": [{"field": {"Content-Type" : "application/json"}},{"field": {"Authorization" : "Bearer eyJraWQiOiJoeDhjMU5tRHJmV0U5dzFCRjNr..."}}],
+						"headers": [{"field": {"Content-Type" : "application/json"}},{"field": {"Authorization" : "process.env.BEARER_TOKEN"}}],
 						"reducers": [{"function": "PARSE","args": ["RAW","KLAY","USD","PRICE"]},{"function": "MUL","args": ["1000000000"]}]
 						},
 						{
 						"url": "https://rest.coinapi.io/v1/exchangerate/KLAY/USD",
 						"request_type": 1,
-						"headers": [{"field": {"X-CoinAPI-Key": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXX"}}],
+						"headers": [{"field": {"X-CoinAPI-Key": "process.env.X_COIN_API_KEY"}}],
 						"reducers": [{"function": "PARSE","args": ["rate"]},{"function": "MUL","args": ["1000000000"]}]
 						}
 					]
@@ -59,7 +59,7 @@ func TestAdapterMarshalOk(t *testing.T) {
 				},
 				{
 					Field: map[string]string{
-						"Authorization": "Bearer eyJraWQiOiJoeDhjMU5tRHJmV0U5dzFCRjNr...",
+						"Authorization": "process.env.BEARER_TOKEN",
 					},
 				},
 			},
@@ -80,7 +80,7 @@ func TestAdapterMarshalOk(t *testing.T) {
 			Headers: []*protoadapter.Feed_Header{
 				{
 					Field: map[string]string{
-						"X-CoinAPI-Key": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXX",
+						"X-CoinAPI-Key": "process.env.X_COIN_API_KEY",
 					},
 				},
 			},
