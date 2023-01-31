@@ -6,7 +6,7 @@ feed:
     - KLAY_USD.json
     - RANDOM.json
 organization:
-  k_org_id: "PO-DMX-804-23"
+  k_org_id: "XX-XXX-804-23"
   name: "KlayOracle Inc."
   website: "https://klayoracle.com"
 ssl:
