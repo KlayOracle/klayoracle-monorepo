@@ -32,11 +32,10 @@ NB: Make sure to run `snyk auth` to authenticate CLI
 yarn --cwd oracle-contract prettier:write
 snyk test --severity-threshold=high --all-projects --detection-depth=4
 cd data-provider && go fmt .
-golangci-lint run . -v --no-config --disable-all -E goimports --fix
+golangci-lint run . -v -E goimports --fix
 cd ../node && go fmt .
-golangci-lint run . -v --no-config --disable-all -E goimports --fix
+golangci-lint run . -v -E goimports --fix
 cd ..
 $HOME/go/bin/goimports -w data-provider/*
 $HOME/go/bin/goimports -w node/*
-golangci-lint run -v --no-config --disable-all -E goimports --fix
 ```
