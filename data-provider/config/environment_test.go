@@ -88,15 +88,6 @@ func TestEnvironmentSetup(t *testing.T) {
 }
 
 func (s *EnvironmentTestSuite) AfterTest(suiteName, testName string) {
-	//fmt.Println(path.Join(s.wd, "..", "config_test.yaml"))
-	_ = os.Remove(path.Join(s.wd, "..", "config_test.yaml"))
-	//if err != nil {
-	//	fmt.Println(err)
-	//	s.Fail("Could not remove config_test.yaml")
-	//}
-	_ = os.Remove(path.Join(s.wd, "..", "test.log"))
-	//if err != nil {
-	//	fmt.Println(err)
-	//	s.Fail("Could not remove test.log")
-	//}
+	os.Remove(path.Join(s.wd, "..", "config_test.yaml"))
+	os.Remove(path.Join(s.wd, "..", "test.log"))
 }
