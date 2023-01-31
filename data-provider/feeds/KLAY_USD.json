@@ -1,0 +1,22 @@
+{
+  "active": true,
+  "name": "KLAY_USD",
+  "job_type": "DATA_FEED",
+  "adapter_id":"efbdab54419511edb8780242ac120002",
+  "oracle_address": "0xCC4377b912c4517Fe895817c6a7c6937D92A70B3",
+  "category": 2,
+  "feeds": [
+    {
+      "url": "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=KLAY&tsyms=USD",
+      "request_type": 0,
+      "headers": [{"field": {"Content-Type" : "application/json"}},{"field": {"Authorization" : "Bearer eyJraWQiOiJoeDhjMU5tRHJmV0U5dzFCRjNr..."}}],
+      "reducers": [{"function": "PARSE","args": ["RAW","KLAY","USD","PRICE"]},{"function": "MUL","args": ["1000000000"]}]
+    },
+    {
+      "url": "https://rest.coinapi.io/v1/exchangerate/KLAY/USD",
+      "request_type": 1,
+      "headers": [{"field": {"X-CoinAPI-Key": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXX"}}],
+      "reducers": [{"function": "PARSE","args": ["rate"]},{"function": "MUL","args": ["1000000000"]}]
+    }
+  ]
+}
