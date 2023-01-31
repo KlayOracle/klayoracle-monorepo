@@ -54,7 +54,7 @@ func main() {
 		}
 
 		logger.Infow("Updated adapter", "file", s, "adapter_id", feed.AdapterId)
-		
+
 		err = os.WriteFile(adapterPath, updatedStream, 0644)
 		if err != nil {
 			logger.Errorw("Error updating adapter id", "adapter", adapterPath, "error", err)
