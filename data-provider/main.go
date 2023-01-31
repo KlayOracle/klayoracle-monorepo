@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/klayoracle/klayoracle-monorepo/data-provider/config"
 	"log"
 	"os"
 	"path"
+
+	"github.com/klayoracle/klayoracle-monorepo/data-provider/config"
 )
 
 func main() {

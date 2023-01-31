@@ -1,10 +1,11 @@
 package config
 
 import (
-	"github.com/stretchr/testify/suite"
 	"os"
 	"path"
 	"testing"
+
+	"github.com/stretchr/testify/suite"
 )
 
 type EnvironmentTestSuite struct {

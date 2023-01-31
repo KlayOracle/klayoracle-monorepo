@@ -1,10 +1,11 @@
 package config
 
 import (
-	"go.uber.org/zap"
-	"gopkg.in/yaml.v3"
 	"log"
 	"os"
+
+	"go.uber.org/zap"
+	"gopkg.in/yaml.v3"
 )
 
 var Loaded Config
