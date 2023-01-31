@@ -1,10 +1,11 @@
 package adapter
 
 import (
+	"testing"
+
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/protoadapter"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/protobuf/encoding/protojson"
-	"testing"
 )
 
 func TestAdapterMarshalOk(t *testing.T) {
@@ -47,7 +48,7 @@ func TestAdapterMarshalOk(t *testing.T) {
 	assert.Equal(t, newAdapter.OracleAddress, "0xCC4377b912c4517Fe895817c6a7c6937D92A70B3")
 
 	importedAdapter := []*protoadapter.Feed{
-		&protoadapter.Feed{
+		{
 			Url:         "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=KLAY&tsyms=USD",
 			RequestType: protoadapter.RequestType_GET,
 			Headers: []*protoadapter.Feed_Header{
@@ -73,7 +74,7 @@ func TestAdapterMarshalOk(t *testing.T) {
 				},
 			},
 		},
-		&protoadapter.Feed{
+		{
 			Url:         "https://rest.coinapi.io/v1/exchangerate/KLAY/USD",
 			RequestType: protoadapter.RequestType_POST,
 			Headers: []*protoadapter.Feed_Header{

@@ -1,5 +1,8 @@
 # In General
 .idea
+.env
+data-provider/.env
+data-provider/.log
 
 # Node
 

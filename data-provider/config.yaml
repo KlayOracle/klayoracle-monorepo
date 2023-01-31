@@ -1,0 +1,14 @@
+env: dev #options: dev, stage, production
+service_node: 127.0.0.1
+feed:
+  path: ""
+  adapters:
+    - KLAY_USD.json
+    - RANDOM.json
+organization:
+  k_org_id: "XX-XXX-804-23"
+  name: "KlayOracle Inc."
+  website: "https://klayoracle.com"
+ssl:
+  key: "mono-provider.key"
+  certificate: "mono-provider.crt"
