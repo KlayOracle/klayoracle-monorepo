@@ -1,11 +1,12 @@
 package adapter
 
 import (
-	"github.com/klayoracle/klayoracle-monorepo/data-provider/boot"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"path"
 	"testing"
+
+	"github.com/klayoracle/klayoracle-monorepo/data-provider/boot"
+	"github.com/stretchr/testify/assert"
 
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/protoadapter"
 )

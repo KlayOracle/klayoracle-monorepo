@@ -1,8 +1,9 @@
 package boot
 
 import (
-	"github.com/joho/godotenv"
 	"path"
+
+	"github.com/joho/godotenv"
 
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/config"
 )

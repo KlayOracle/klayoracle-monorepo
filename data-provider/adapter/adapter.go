@@ -1,10 +1,11 @@
 package adapter
 
 import (
+	"os"
+
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/config"
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/protoadapter"
 	"google.golang.org/protobuf/encoding/protojson"
-	"os"
 )
 
 func NewAdapter() *protoadapter.Adapter {
