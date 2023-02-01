@@ -40,3 +40,4 @@ ADAPTERS="KLAY_USD.json WEMIX_USD.json" make adapter-id-gen
 ```
 
 Replace `KLAY_USD.json WEMIX_USD.json` with you list of Adapters to generate a new `adapter_id` for, seperated by single space.
+

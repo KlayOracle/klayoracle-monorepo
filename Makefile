@@ -22,7 +22,7 @@ test-dp:
 
 .PHONY: build-adapter-id-gen
 build-adapter-id-gen:
-	@cd ./data-provider/utils && go build -o ../bin/generate_adapter_id generate_adapter_id.go
+	@cd ./data-provider/utils/generateadptid && go build -o ../bin/generate_adapter_id generate_adapter_id.go
 
 .PHONY: adapter-id-gen
 adapter-id-gen: build-adapter-id-gen
