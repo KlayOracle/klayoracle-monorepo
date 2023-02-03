@@ -12,12 +12,12 @@ KlayOracle is a decentralized oracle for the Klaytn blockchain. This monorepo co
 ## 📚 Learn More
 
 Docs
-- [Developer documentation](/docs/usage)
+- [Developer documentation](https://klayoracle.gitbook.io/v1.0.0/)
 - [Architecture Decision Records](/docs/arch)
 
-Website: [klayoracle.com](klayoracle.com)
+Website: [klayoracle.com](https://klayoracle.com)
 
-Blog: [klayoracle.medium.com](klayoracle.medium.com)
+Blog: [klayoracle.medium.com](https://klayoracle.medium.com)
 
 ### 📦 Packages
 
