@@ -15,6 +15,7 @@ oracle-contract/coverage
 oracle-contract/coverage.json
 oracle-contract/typechain
 oracle-contract/typechain-types
+oracle-contract/artifacts
 
 # Hardhat files
 oracle-contract/cache

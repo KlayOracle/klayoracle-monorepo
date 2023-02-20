@@ -2,27 +2,26 @@
 
 pragma solidity ^0.8.16;
 
-interface OracleInterface {
+interface KlayOracleInterface {
     struct Request {
         bytes32 requestId;
         address nodeAddress;
-        string adapterId;
+        bytes32 adapterId;
         bytes4 callbackFunctionId;
         address callBackContract;
         bytes32 data;
+        uint256 timestamp; 
     }
 
     /**
      * @dev This function is called by the node to fulfill a request
      * @param requestId The request id
      * @param data The data to be returned
-     * @param dataHash The hash of the signed data
      * @param signature The signature of the signed data
      */
     function fulfillOracleRequest(
         bytes32 requestId,
         bytes32 data,
-        bytes32 dataHash,
         bytes memory signature
     ) external returns (bool);
 
@@ -34,7 +33,7 @@ interface OracleInterface {
      */
     function newOracleRequest(
         bytes4 callbackFunctionId,
-        string memory adapterID,
+        bytes32 adapterID,
         address callBackContract
     ) external returns (bool);
 
@@ -45,6 +44,4 @@ interface OracleInterface {
     function getOracleRequest(
         bytes32 requestId
     ) external view returns (Request memory);
-
-    function 
 }
