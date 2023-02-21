@@ -3,7 +3,6 @@
 pragma solidity ^0.8.16;
 
 import "./KlayOracleInterface.sol";
-import "hardhat/console.sol";
 
 contract OracleConsumerSample {
     address public immutable oracleAddress;
@@ -28,9 +27,6 @@ contract OracleConsumerSample {
 
     function swap(uint256 _klayOutput) public {
         klayOutput = _klayOutput;
-
-        console.log("response: ");
-        console.logUint(klayOutput);
         //Swap eth to klay
     }
 }

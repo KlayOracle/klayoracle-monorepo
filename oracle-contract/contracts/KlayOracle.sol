@@ -4,7 +4,6 @@ pragma solidity ^0.8.16;
 
 import "./KlayOracleInterface.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import "hardhat/console.sol";
 
 abstract contract KlayOracle is KlayOracleInterface {
     using ECDSA for bytes32;
@@ -16,13 +15,13 @@ abstract contract KlayOracle is KlayOracleInterface {
     bytes32 public immutable adapterId;
 
     //Requests variables
-    mapping(bytes32 => Request) requests;
+    mapping(bytes32 => Request) public requests;
 
     uint256 public fulfilledCount = 0;
 
-    bytes32 private latestResponse;
+    bytes32 private latestResponse; // solhint-disable-line private-vars-leading-underscore
 
-    bytes32 private lastestRequestId;
+    bytes32 private lastestRequestId; // solhint-disable-line private-vars-leading-underscore
 
     event NewOracleRequest(bytes32 requestId);
 
@@ -63,8 +62,6 @@ abstract contract KlayOracle is KlayOracleInterface {
                 block.timestamp
             )
         );
-
-        console.logBytes32(requestId);
 
         Request memory request = Request(
             requestId,

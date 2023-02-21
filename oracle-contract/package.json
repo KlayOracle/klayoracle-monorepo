@@ -14,7 +14,7 @@
         "deploy": "npx hardhat run scripts/deploy.js",
         "test": "REPORT_GAS=true  npx hardhat --network hardhat test",
         "prettier:dryrun": "prettier ./contracts/**/*.sol test/**/*.js ./scripts/**/*.js",
-        "prettier:write": "prettier --write ./contracts/**/*.sol test/**/*.js ./scripts/**/*.js",
+        "prettier:write": "prettier --write ./contracts/**/*.sol test/**/*.js ./scripts/**/*.js --config ./prettierrc.json",
         "lint:sol": "solhint contracts/**/*.sol -f table contracts/*.sol",
         "vun:check": "slither . --exclude solc-version,low-level-calls,different-pragma-directives-are-used,divide-before-multiply,assembly-usage,incorrect-versions-of-solidity,block-timestamp,incorrect-versions-of-solidity,conformance-to-solidity-naming-conventions"
     },
