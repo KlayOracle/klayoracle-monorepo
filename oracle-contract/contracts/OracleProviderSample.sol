@@ -4,7 +4,7 @@ pragma solidity ^0.8.16;
 
 import "./KlayOracle.sol";
 
-contract OracleSample is KlayOracle {
+contract OracleProviderSample is KlayOracle {
     constructor(
         address _nodeAddress,
         bytes32 _adapterId
@@ -13,11 +13,14 @@ contract OracleSample is KlayOracle {
     function _isWhitelisted(
         address _address
     ) internal pure override returns (bool) {
-        require(_address == address(0));
+        require(_address != address(0));
         return true;
     }
 
-    function _beforeFulfill() internal pure override returns (bool) {
+    function _beforeFulfill(
+        Request memory request
+    ) internal pure override returns (bool) {
+        require(request.data != bytes32(0));
         return true;
     }
 }

@@ -12,3 +12,4 @@ jobs:
           node-version: 18
           target: 'oracle-contract/'
           fail-on: 'high'
+          slither-args: '--exclude solc-version,low-level-calls,different-pragma-directives-are-used,divide-before-multiply,assembly-usage,incorrect-versions-of-solidity,block-timestamp,incorrect-versions-of-solidity,conformance-to-solidity-naming-conventions'

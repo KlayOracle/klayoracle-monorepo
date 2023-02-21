@@ -9,26 +9,42 @@ import "hardhat/console.sol";
 abstract contract KlayOracle is KlayOracleInterface {
     using ECDSA for bytes32;
 
-    string constant VERSION = "v1.0.0"; // Node can use this for compatibility checks
+    string public constant VERSION = "v1.0.0"; // Node can use this for compatibility checks
 
     address public immutable nodeAddress;
 
     bytes32 public immutable adapterId;
 
+    //Requests variables
     mapping(bytes32 => Request) requests;
 
     uint256 public fulfilledCount = 0;
 
+    bytes32 private latestResponse;
+
+    bytes32 private lastestRequestId;
+
     event NewOracleRequest(bytes32 requestId);
+
+    // Round variables
+    struct Round {
+        bytes32 answer;
+        uint256 roundTime; //How long it toook the node to aggregate the data
+        uint256 timestamp; //The timestamp of the round
+    }
+
+    Round[] public rounds;
+
+    Round public latestRound;
 
     constructor(address _nodeAddress, bytes32 _adapterId) {
         nodeAddress = _nodeAddress;
         adapterId = _adapterId;
     }
 
+    //Called by the consumer contract
     function newOracleRequest(
         bytes4 callbackFunctionId,
-        bytes32 adapterID,
         address callBackContract
     ) external override returns (bool) {
         require(
@@ -38,68 +54,79 @@ abstract contract KlayOracle is KlayOracleInterface {
 
         bytes32 requestId = keccak256(
             abi.encodePacked(
+                lastestRequestId,
                 nodeAddress,
+                adapterId,
                 callbackFunctionId,
                 callBackContract,
-                adapterID,
-                block.timestamp,
-                fulfilledCount
+                latestResponse,
+                block.timestamp
             )
         );
 
         console.logBytes32(requestId);
 
-        requests[requestId] = Request(
+        Request memory request = Request(
             requestId,
             nodeAddress,
-            adapterID,
+            adapterId,
             callbackFunctionId,
             callBackContract,
-            bytes32("0x"),
-            0
+            latestResponse,
+            block.timestamp
         );
 
         emit NewOracleRequest(requestId);
 
+        bool fulfilled = _fulfill(requestId, request);
+
+        require(fulfilled, "KlayOracle: request not fulfilled");
+
         return true;
     }
 
-    function fulfillOracleRequest(
+    function _fulfill(
         bytes32 requestId,
-        bytes32 data,
-        bytes memory signature
-    ) external returns (bool) {
-        require(
-            msg.sender == nodeAddress,
-            "Oracle: Permission needed for node"
-        );
+        Request memory request
+    ) internal returns (bool) {
+        require(_beforeFulfill(request), "KlayOracle: subscribe to DP");
 
-        address signer = data.recover(signature);
-
-        require(signer == nodeAddress, "Oracle: Invalid data");
-
-        Request storage request = requests[requestId];
-        request.timestamp = block.timestamp;
-        request.data = data;
-
-        require(_beforeFulfill(), "Oracle: Permission needed for consumer");
+        requests[requestId] = request;
 
         fulfilledCount++;
 
         (bool success, ) = request.callBackContract.call(
-            abi.encode(request.callbackFunctionId, data)
+            abi.encode(request.callbackFunctionId, request.data)
         );
 
         return success;
     }
 
-    function getOracleRequest(
-        bytes32 requestId
-    ) external view returns (Request memory) {
-        return requests[requestId];
+    //Called by the node to submit latest data
+    function newRoundData(
+        uint256 roundTime, //milliseconds
+        bytes32 data,
+        bytes32 dataHash,
+        bytes memory signature
+    ) external returns (bool) {
+        require(msg.sender == nodeAddress, "Oracle: node unknown");
+
+        address signer = dataHash.recover(signature);
+
+        require(signer == nodeAddress, "Oracle: Invalid data");
+
+        Round memory round = Round(data, roundTime, block.timestamp);
+
+        rounds.push(round);
+
+        latestRound = round;
+
+        return true;
     }
 
-    function _isWhitelisted(address _address) virtual internal returns (bool);
+    function _isWhitelisted(address _address) internal virtual returns (bool);
 
-    function _beforeFulfill() virtual internal returns (bool);
+    function _beforeFulfill(
+        Request memory request
+    ) internal virtual returns (bool);
 }
