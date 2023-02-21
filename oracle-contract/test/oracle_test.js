@@ -139,10 +139,6 @@ describe('KlayOracle', function () {
 
         await this.oracleConsumerSample.swapEthtoKlay();
 
-        console.log(
-            'latestresponse: ',
-            await this.oracleProviderSample.latestResponse()
-        );
         assert.equal(await this.oracleConsumerSample.klayOutput(), 100.2e18);
     });
 });

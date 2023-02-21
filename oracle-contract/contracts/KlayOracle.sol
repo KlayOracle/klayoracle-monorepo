@@ -117,6 +117,7 @@ abstract contract KlayOracle is KlayOracleInterface {
         rounds.push(round);
 
         latestRound = round;
+        latestResponse = data;
 
         return true;
     }
