@@ -6,7 +6,7 @@ module.exports = {
     networks: {
         baobab: {
             url: 'https://api.baobab.klaytn.net:8651',
-            accounts: [process.env.PRIVATE_KEY],
+            // accounts: [process.env.PRIVATE_KEY],
             chainId: 1001
         }
     },
