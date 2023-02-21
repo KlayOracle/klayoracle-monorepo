@@ -72,7 +72,7 @@ abstract contract KlayOracle is KlayOracleInterface {
             adapterId,
             callbackFunctionId,
             callBackContract,
-            latestResponse,
+            latestRound.answer,
             block.timestamp
         );
 
@@ -96,7 +96,7 @@ abstract contract KlayOracle is KlayOracleInterface {
         fulfilledCount++;
 
         (bool success, ) = request.callBackContract.call(
-            abi.encode(request.callbackFunctionId, request.data)
+            abi.encodePacked(request.callbackFunctionId, request.data)
         );
 
         return success;

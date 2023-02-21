@@ -13,14 +13,14 @@ contract OracleProviderSample is KlayOracle {
     function _isWhitelisted(
         address _address
     ) internal pure override returns (bool) {
-        require(_address != address(0));
+        require(_address != address(0), "KlayOracle: consumer is invalid");
         return true;
     }
 
     function _beforeFulfill(
         Request memory request
     ) internal pure override returns (bool) {
-        require(request.data != bytes32(0));
+        require(request.data != bytes32(0), "KlayOracle: data is empty");
         return true;
     }
 }

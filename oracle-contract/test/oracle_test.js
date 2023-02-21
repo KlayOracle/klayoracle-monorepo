@@ -4,7 +4,8 @@ const {
     randomBytes,
     hexlify,
     hexZeroPad,
-    hashMessage
+    hashMessage,
+    parseEther
 } = require('ethers/lib/utils');
 const { ethers } = require('hardhat');
 
@@ -26,15 +27,15 @@ before(async function () {
     this.deployer = deployer;
     this.adapterId = adapterId;
 
-    const OracleSampleConsumer = await ethers.getContractFactory(
-        'OracleSampleConsumer'
+    const OracleConsumerSample = await ethers.getContractFactory(
+        'OracleConsumerSample'
     );
-    const oracleSampleConsumer = await OracleSampleConsumer.deploy(
-        node.address
+    const oracleConsumerSample = await OracleConsumerSample.deploy(
+        oracleProviderSample.address
     );
-    await oracleSampleConsumer.deployed();
+    await oracleConsumerSample.deployed();
 
-    this.oracleSampleConsumer = oracleSampleConsumer;
+    this.oracleConsumerSample = oracleConsumerSample;
 });
 
 describe('KlayOracle', function () {
@@ -55,7 +56,7 @@ describe('KlayOracle', function () {
     });
 
     it('node should update latest answer with correct signature', async function () {
-        const latestAnswer = hexZeroPad(arrayify(100), 32);
+        const latestAnswer = hexZeroPad(parseEther('100').toHexString(), 32);
         const roundTime = 3000;
 
         const signature = await this.node.signMessage(latestAnswer);
@@ -72,13 +73,13 @@ describe('KlayOracle', function () {
         const round = await this.oracleProviderSample.latestRound();
         const blockTimestamp = (await ethers.provider.getBlock()).timestamp;
 
-        assert.equal(round.answer, latestAnswer);
+        assert.equal(round.answer, 100e18);
         assert.equal(round.roundTime, roundTime);
         assert.equal(round.timestamp, blockTimestamp);
     });
 
     it('node should not update latest answer with incorrect signature', async function () {
-        const latestAnswer = hexZeroPad(arrayify(100), 32);
+        const latestAnswer = hexZeroPad(parseEther('100').toHexString(), 32);
         const roundTime = 3000;
 
         const signature = await this.deployer.signMessage(latestAnswer);
@@ -96,7 +97,7 @@ describe('KlayOracle', function () {
     });
 
     it('wrong node should not update latest answer with correct signature', async function () {
-        const latestAnswer = hexZeroPad(arrayify(100), 32);
+        const latestAnswer = hexZeroPad(parseEther('100').toHexString(), 32);
         const roundTime = 3000;
 
         const signature = await this.node.signMessage(latestAnswer);
@@ -111,5 +112,33 @@ describe('KlayOracle', function () {
                     signature
                 )
         ).to.be.revertedWith('Oracle: node unknown');
+    });
+
+    it('should return latest answer to consumer', async function () {
+        await this.oracleConsumerSample.swapEthtoKlay();
+
+        const latestAnswer = await this.oracleConsumerSample.klayOutput();
+
+        assert.equal(latestAnswer, 100e18);
+    });
+
+    it('node should update latest answer to 101.2', async function () {
+        const latestAnswer = hexZeroPad(parseEther('100.2').toHexString(), 32);
+        const roundTime = 3000;
+
+        const signature = await this.node.signMessage(latestAnswer);
+
+        await this.oracleProviderSample
+            .connect(this.node)
+            .newRoundData(
+                roundTime,
+                latestAnswer,
+                hashMessage(latestAnswer),
+                signature
+            );
+
+        await this.oracleConsumerSample.swapEthtoKlay();
+
+        assert.equal(await this.oracleConsumerSample.klayOutput(), 100.2e18);
     });
 });
