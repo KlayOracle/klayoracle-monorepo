@@ -73,5 +73,5 @@ func generateRandomHex() string {
 	if _, err := rand.Read(bytes); err != nil {
 		log.Fatal(err)
 	}
-	return hex.EncodeToString(bytes)
+	return "0x" + hex.EncodeToString(bytes)
 }

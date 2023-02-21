@@ -1,0 +1,69 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "KlayOracleInterface",
+  "sourceName": "contracts/KlayOracleInterface.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "bytes4",
+          "name": "callbackFunctionId",
+          "type": "bytes4"
+        },
+        {
+          "internalType": "address",
+          "name": "callBackContract",
+          "type": "address"
+        }
+      ],
+      "name": "newOracleRequest",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "roundTime",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "data",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "dataHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes",
+          "name": "signature",
+          "type": "bytes"
+        }
+      ],
+      "name": "newRoundData",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
