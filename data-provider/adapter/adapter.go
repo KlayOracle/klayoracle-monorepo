@@ -5,8 +5,14 @@ import (
 
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/config"
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/protoadapter"
+	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
 	"google.golang.org/protobuf/encoding/protojson"
 )
+
+type DataProvider struct {
+	protoadapter.UnimplementedDataProviderServer
+	NodeServiceClient *protonode.NodeServiceClient
+}
 
 func NewAdapter() *protoadapter.Adapter {
 	return &protoadapter.Adapter{}

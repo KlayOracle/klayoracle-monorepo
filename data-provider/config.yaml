@@ -1,5 +1,5 @@
 env: dev #options: dev, stage, production
-service_node: 127.0.0.1
+service_node: localhost:50051
 feed:
   path: "feeds"
   adapters:
@@ -8,7 +8,7 @@ feed:
 organization:
   k_org_id: "XX-XXX-804-23"
   name: "KlayOracle Inc."
-  website: "https://klayoracle.com"
+  website: "x.test.example.com"
 ssl:
-  key: "mono-provider.key"
-  certificate: "mono-provider.crt"
+  key: ""
+  certificate: "x509/ca_cert.pem"

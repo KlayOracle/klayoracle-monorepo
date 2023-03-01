@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/klayoracle/klayoracle-monorepo/protoadapter";
+option go_package = "github.com/klayoracle/klayoracle-monorepo/data-provider/protoadapter";
 
 package protoadapter;
 
@@ -21,18 +21,12 @@ service DataProvider {
   rpc ListAdapters(Node) returns (stream Adapter);
 }
 
-message Message {
-  string text = 1;
-  bool is_valid = 2;
-}
 
 // Node sends its IP details, sign `an arbitrary message
 // and provides hash of message and signature to proof
 // that it can request information from a Data Provider
 message Node {
   string IP = 1;
-  bytes signature = 2;
-  bytes msg_hash = 3;
 }
 
 message ServerStatus {

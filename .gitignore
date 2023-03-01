@@ -3,8 +3,12 @@
 .env
 data-provider/.env
 data-provider/.log
+data-provider/certs/host/x509
+
 
 # Node
+node/certs/host/x509
+node/.log
 
 # Data Provider
 
