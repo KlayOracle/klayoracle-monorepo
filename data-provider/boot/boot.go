@@ -25,16 +25,9 @@ func Boot(wd, configPath, envPath string) {
 	config.Load(configPath)
 	config.Loaded.Logger = config.NewLogger(path.Join(wd, ".log"))
 	config.Loaded.RootWD = wd
-
-	//Create client and start handshake to Node
-	err := handShake()
-	if err != nil {
-		config.Loaded.Logger.Fatal(err)
-	}
-
 }
 
-func handShake() error {
+func HandShake() error {
 	cfg, conn, error := newNodeServiceClient()
 	client := cfg.(protonode.NodeServiceClient)
 
@@ -42,7 +35,11 @@ func handShake() error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	res, err := client.HandShake(ctx, &protonode.DPInfo{Name: "Demo"})
+	res, err := client.HandShake(ctx, &protonode.DPInfo{
+		Name:          config.Loaded.Organization.Name,
+		ListenAddress: os.Getenv("HOST_IP"),
+		KOrgId:        config.Loaded.Organization.ID,
+	})
 
 	if err != nil {
 		log.Fatal("client.HandShake(_) failed: ", err)

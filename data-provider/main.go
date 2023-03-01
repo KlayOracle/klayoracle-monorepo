@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/klayoracle/klayoracle-monorepo/data-provider/config"
 	"log"
 	"os"
 	"path"
@@ -15,4 +16,10 @@ func main() {
 	}
 
 	boot.Boot(wd, path.Join(wd, "config.yaml"), path.Join(wd, ".env"))
+
+	//Create client and start handshake to Node
+	err = boot.HandShake()
+	if err != nil {
+		config.Loaded.Logger.Fatal(err)
+	}
 }

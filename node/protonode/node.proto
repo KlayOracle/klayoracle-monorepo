@@ -9,7 +9,7 @@ service NodeService {
 }
 
 message DPInfo {
-  string ListenIP = 1;
+  string listen_address = 1;
   string name = 2;
   string k_org_id = 3;
 }

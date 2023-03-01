@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"strings"
+	"sync"
 
 	"github.com/klayoracle/klayoracle-monorepo/node/config"
 	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
@@ -18,18 +19,34 @@ import (
 )
 
 var (
-	errMissingMetadata = status.Errorf(codes.InvalidArgument, "missing metadata")
-	errInvalidToken    = status.Errorf(codes.Unauthenticated, "invalid token")
+	errMissingMetadata            = status.Errorf(codes.InvalidArgument, "missing metadata")
+	errInvalidToken               = status.Errorf(codes.Unauthenticated, "invalid token")
+	errDataProviderNotWhitelisted = status.Errorf(codes.Unknown, "you need to be whitelisted")
 )
 
 type Node struct {
 	protonode.UnimplementedNodeServiceServer
 	Sever         *grpc.Server
-	providerPeers map[string]string
+	dataProviders map[string]*protonode.DPInfo
+	mu            sync.Mutex
 }
 
 func (n *Node) HandShake(ctx context.Context, provider *protonode.DPInfo) (*protonode.HandShakeStatus, error) {
-	fmt.Println("Handshake occurred ...")
+
+	//@Todo confirm organization is whitelisted in DB
+	//Node runner uses cmd to add and remove from supported organization
+	if isDPWhitelist(provider) != true {
+		return nil, errDataProviderNotWhitelisted
+	}
+
+	n.mu.Lock()
+	defer n.mu.Unlock()
+
+	config.Loaded.Logger.Info("Registering provider ", provider.ListenAddress)
+
+	n.dataProviders[provider.ListenAddress] = provider
+
+	//Check DP Peers to find out Org is not yet registered
 	return &protonode.HandShakeStatus{Status: true, ErrorMsg: ""}, nil
 }
 
@@ -48,9 +65,12 @@ func NewNodeServiceServer() (*grpc.Server, error) {
 	}
 	s := grpc.NewServer(opts...)
 
-	protonode.RegisterNodeServiceServer(s, &Node{})
+	protonode.RegisterNodeServiceServer(s, &Node{
+		dataProviders: make(map[string]*protonode.DPInfo),
+		Sever:         s,
+	})
 
-	config.Loaded.Logger.Info("Running Node Service on port: ", os.Getenv("HOST_IP"))
+	config.Loaded.Logger.Info("Running Node Service on", os.Getenv("HOST_IP"))
 
 	return s, nil
 }
@@ -81,4 +101,8 @@ func ensureValidToken(ctx context.Context, req interface{}, info *grpc.UnaryServ
 	}
 	// Continue execution of handler after ensuring a valid token.
 	return handler(ctx, req)
+}
+
+func isDPWhitelist(dpi *protonode.DPInfo) bool {
+	return true
 }
