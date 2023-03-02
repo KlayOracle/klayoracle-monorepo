@@ -22,6 +22,7 @@ var (
 	errMissingMetadata            = status.Errorf(codes.InvalidArgument, "missing metadata")
 	errInvalidToken               = status.Errorf(codes.Unauthenticated, "invalid token")
 	errDataProviderNotWhitelisted = status.Errorf(codes.Unknown, "you need to be whitelisted")
+	errAddingToKnownPeer          = status.Errorf(codes.Unknown, "cannot add to known dp known peers")
 )
 
 type Node struct {
@@ -42,12 +43,26 @@ func (n *Node) HandShake(ctx context.Context, provider *protonode.DPInfo) (*prot
 	n.mu.Lock()
 	defer n.mu.Unlock()
 
-	config.Loaded.Logger.Info("Registering provider ", provider.ListenAddress)
+	config.Loaded.Logger.Info("Registering provider ", provider.ListenAddress, " with Node ", os.Getenv("HOST_IP"))
 
 	n.dataProviders[provider.ListenAddress] = provider
 
+	err := addPeer(provider)
+
+	if err != nil {
+		return nil, nil
+	}
+
 	//Check DP Peers to find out Org is not yet registered
 	return &protonode.HandShakeStatus{Status: true, ErrorMsg: ""}, nil
+}
+
+func addPeer(p *protonode.DPInfo) error {
+	//for listenAddr, _ := range p. {
+	//
+	//}
+
+	return fmt.Errorf("")
 }
 
 func NewNodeServiceServer() (*grpc.Server, error) {
@@ -70,7 +85,7 @@ func NewNodeServiceServer() (*grpc.Server, error) {
 		Sever:         s,
 	})
 
-	config.Loaded.Logger.Info("Running Node Service on", os.Getenv("HOST_IP"))
+	config.Loaded.Logger.Info("Starting Node Service on ", os.Getenv("HOST_IP"))
 
 	return s, nil
 }

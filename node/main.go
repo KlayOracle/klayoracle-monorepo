@@ -32,11 +32,9 @@ func main() {
 		config.Loaded.Logger.Fatal("failed to listen: %v", err)
 	}
 
-	node := core.Node{}
-	node.Sever = s
-
 	// @Todo Blocking action carried out, no code will run after this, use routine
 	if err := s.Serve(lis); err != nil {
+		s.Stop()
 		config.Loaded.Logger.Fatal("failed to serve: %v", err)
 	}
 }

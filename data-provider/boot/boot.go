@@ -27,13 +27,11 @@ func Boot(wd, configPath, envPath string) {
 	config.Loaded.RootWD = wd
 }
 
-func HandShake() error {
+func HandShake() (*grpc.ClientConn, error) {
 	cfg, conn, error := newNodeServiceClient()
 	client := cfg.(protonode.NodeServiceClient)
 
-	defer conn.Close()
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second) //Enough time to authenticate and add DP to known peers
 	defer cancel()
 	res, err := client.HandShake(ctx, &protonode.DPInfo{
 		Name:          config.Loaded.Organization.Name,
@@ -45,9 +43,11 @@ func HandShake() error {
 		log.Fatal("client.HandShake(_) failed: ", err)
 	}
 
-	fmt.Println(res.Status)
+	if res.Status == true {
+		config.Loaded.Logger.Info("client.HandShake(_) passed with response ", res.Status, " from ", os.Getenv("HOST_IP"))
+	}
 
-	return error
+	return conn, error
 }
 
 type OauthTokenSource struct {

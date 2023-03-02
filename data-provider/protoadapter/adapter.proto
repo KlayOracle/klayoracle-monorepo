@@ -4,11 +4,13 @@ option go_package = "github.com/klayoracle/klayoracle-monorepo/data-provider/pro
 
 package protoadapter;
 
-service DataProvider {
+service DataProviderService {
   // Server streaming RPC
   // Node as client sends request using Stub to Data Provider as Server
   // Gets a continuous unending stream to notify Node of connection
   rpc Ping(Node) returns(stream ServerStatus);
+
+  rpc AddToKnowPeers(DPInfo) returns(Null);
 
   // Unary RPC
   // Node as client sends request to retrieve details of an Adapter
@@ -21,6 +23,12 @@ service DataProvider {
   rpc ListAdapters(Node) returns (stream Adapter);
 }
 
+
+message DPInfo {
+  string listen_address = 1;
+  string name = 2;
+  string k_org_id = 3;
+}
 
 // Node sends its IP details, sign `an arbitrary message
 // and provides hash of message and signature to proof

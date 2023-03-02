@@ -1,5 +1,6 @@
 package bootstrap
 
-func listBootstrap() []string {
-	return []string{"localhost:50001"}
+// Nodes Bootstrap nodes for coordinating Node providers
+func Nodes() []string {
+	return []string{"localhost:50002"}
 }
