@@ -2,13 +2,14 @@ package adapter
 
 import (
 	"fmt"
+	"os"
+	"sync"
+
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/bootstrap"
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/config"
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/protoadapter"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/encoding/protojson"
-	"os"
-	"sync"
 )
 
 type DataProvider struct {

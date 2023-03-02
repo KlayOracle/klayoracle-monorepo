@@ -2,14 +2,15 @@ package main
 
 import (
 	"fmt"
-	"github.com/klayoracle/klayoracle-monorepo/data-provider/adapter"
-	"github.com/klayoracle/klayoracle-monorepo/data-provider/config"
-	"golang.org/x/net/context"
-	"google.golang.org/grpc"
 	"log"
 	"net"
 	"os"
 	"path"
+
+	"github.com/klayoracle/klayoracle-monorepo/data-provider/adapter"
+	"github.com/klayoracle/klayoracle-monorepo/data-provider/config"
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
 
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/boot"
 )
