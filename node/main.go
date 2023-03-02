@@ -1,12 +1,13 @@
 package main
 
 import (
-	"github.com/klayoracle/klayoracle-monorepo/node/config"
-	"github.com/klayoracle/klayoracle-monorepo/node/core"
 	"log"
 	"net"
 	"os"
 	"path"
+
+	"github.com/klayoracle/klayoracle-monorepo/node/config"
+	"github.com/klayoracle/klayoracle-monorepo/node/core"
 
 	"github.com/klayoracle/klayoracle-monorepo/node/boot"
 )
