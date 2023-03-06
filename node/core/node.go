@@ -4,13 +4,14 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
-	"github.com/klayoracle/klayoracle-monorepo/data-provider/protoadapter"
-	"google.golang.org/grpc/credentials/insecure"
 	"os"
 	"path"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/klayoracle/klayoracle-monorepo/data-provider/protoadapter"
+	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/klayoracle/klayoracle-monorepo/node/config"
 	"github.com/klayoracle/klayoracle-monorepo/node/protonode"

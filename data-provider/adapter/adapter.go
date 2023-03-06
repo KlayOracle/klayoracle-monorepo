@@ -3,15 +3,16 @@ package adapter
 import (
 	"context"
 	"fmt"
-	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
-	"golang.org/x/oauth2"
-	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/credentials/oauth"
 	"log"
 	"os"
 	"path"
 	"sync"
 	"time"
+
+	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
+	"golang.org/x/oauth2"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/oauth"
 
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/bootstrap"
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/config"
