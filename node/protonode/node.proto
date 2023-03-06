@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option go_package = "github.com/klayoracle/klayoracle-monorepo/node/protonode";
+
+package protonode;
+
+service NodeService {
+  rpc HandShake(DPInfo) returns (HandShakeStatus);
+}
+
+message DPInfo {
+  string listen_address = 1;
+  string name = 2;
+  string k_org_id = 3;
+  map<string, DPInfo> knownPeers = 4;
+  map<string, DPInfo> bootstraps = 5;
+}
+
+message DPInfos {
+  repeated DPInfo list = 1;
+}
+
+message HandShakeStatus {
+  bool status = 1;
+  string error_msg = 2;
+}

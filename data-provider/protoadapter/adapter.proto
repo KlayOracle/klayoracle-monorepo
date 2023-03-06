@@ -1,29 +1,41 @@
 syntax = "proto3";
 
-option go_package = "github.com/klayoracle/klayoracle-monorepo/protoadapter";
+option go_package = "github.com/klayoracle/klayoracle-monorepo/data-provider/protoadapter";
 
 package protoadapter;
 
-service DataProvider {
+service DataProviderService {
   // Server streaming RPC
   // Node as client sends request using Stub to Data Provider as Server
   // Gets a continuous unending stream to notify Node of connection
-  rpc Ping(Node) returns(stream ServerStatus);
+//  rpc Ping(Node) returns(stream ServerStatus);
+
+//  rpc AddToKnowPeers(DPInfo) returns(Null);
+
+  rpc ListKnownPeers(Null) returns(DPInfos);
 
   // Unary RPC
   // Node as client sends request to retrieve details of an Adapter
   // Waits and gets a one time response and connection is closed
-  rpc GetAdapter(AdapterHead) returns(Adapter);
+//  rpc GetAdapter(AdapterHead) returns(Adapter);
 
   // Server streaming RPC
   // Node as client requests for Adapter lists from Data Providers as Server
   // Data Providers sends a stream of all available adapter and closes connection after sending the last one
-  rpc ListAdapters(Node) returns (stream Adapter);
+//  rpc ListAdapters(Node) returns (stream Adapter);
 }
 
-message Message {
-  string text = 1;
-  bool is_valid = 2;
+
+message DPInfo {
+  string listen_address = 1;
+  string name = 2;
+  string k_org_id = 3;
+  map<string, DPInfo> knownPeers = 4;
+  map<string, DPInfo> bootstraps = 5;
+}
+
+message DPInfos {
+  repeated DPInfo list = 1;
 }
 
 // Node sends its IP details, sign `an arbitrary message
@@ -31,8 +43,6 @@ message Message {
 // that it can request information from a Data Provider
 message Node {
   string IP = 1;
-  bytes signature = 2;
-  bytes msg_hash = 3;
 }
 
 message ServerStatus {

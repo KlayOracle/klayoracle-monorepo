@@ -12,6 +12,13 @@ proto-dp: proto-installed
         --go-grpc_out=. --go-grpc_opt=paths=source_relative \
         data-provider/protoadapter/*.proto
 
+.PHONY: proto-node
+proto-node: proto-installed
+	@protoc --go_out=. --go_opt=paths=source_relative \
+        --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+        node/protonode/*.proto
+
+
 .PHONY: gomodtidy-dp
 gomodtidy-dp: ## Run go mod tidy on all modules.
 	cd ./data-provider && go mod tidy
@@ -31,3 +38,11 @@ adapter-id-gen: build-adapter-id-gen
 	else \
 		cd data-provider && ./bin/generate_adapter_id $(ADAPTERS); \
 	fi
+
+.PHONY: node-server
+node-server:
+	@cd ./node && GRPC_GO_LOG_VERBOSITY_LEVEL=99 GRPC_GO_LOG_SEVERITY_LEVEL=info go run main.go
+
+.PHONY: dp-client
+dp-client:
+	@cd ./data-provider && GRPC_GO_LOG_VERBOSITY_LEVEL=99 GRPC_GO_LOG_SEVERITY_LEVEL=info go run main.go

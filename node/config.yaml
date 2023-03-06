@@ -1,0 +1,8 @@
+env: stage #options: dev, stage, production
+organization:
+  k_org_id: "XX-XXX-804-23"
+  name: "KlayOracle Inc."
+  website: "https://klayoracle.com"
+ssl:
+  key: "x509/server_key.pem"
+  certificate: "x509/server_cert.pem"
