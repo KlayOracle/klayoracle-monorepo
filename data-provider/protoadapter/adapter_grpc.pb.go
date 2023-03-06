@@ -8,7 +8,6 @@ package protoadapter
 
 import (
 	context "context"
-
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -23,19 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DataProviderServiceClient interface {
-	// Server streaming RPC
-	// Node as client sends request using Stub to Data Provider as Server
-	// Gets a continuous unending stream to notify Node of connection
-	Ping(ctx context.Context, in *Node, opts ...grpc.CallOption) (DataProviderService_PingClient, error)
-	AddToKnowPeers(ctx context.Context, in *DPInfo, opts ...grpc.CallOption) (*Null, error)
-	// Unary RPC
-	// Node as client sends request to retrieve details of an Adapter
-	// Waits and gets a one time response and connection is closed
-	GetAdapter(ctx context.Context, in *AdapterHead, opts ...grpc.CallOption) (*Adapter, error)
-	// Server streaming RPC
-	// Node as client requests for Adapter lists from Data Providers as Server
-	// Data Providers sends a stream of all available adapter and closes connection after sending the last one
-	ListAdapters(ctx context.Context, in *Node, opts ...grpc.CallOption) (DataProviderService_ListAdaptersClient, error)
+	ListKnownPeers(ctx context.Context, in *Null, opts ...grpc.CallOption) (*DPInfos, error)
 }
 
 type dataProviderServiceClient struct {
@@ -46,105 +33,20 @@ func NewDataProviderServiceClient(cc grpc.ClientConnInterface) DataProviderServi
 	return &dataProviderServiceClient{cc}
 }
 
-func (c *dataProviderServiceClient) Ping(ctx context.Context, in *Node, opts ...grpc.CallOption) (DataProviderService_PingClient, error) {
-	stream, err := c.cc.NewStream(ctx, &DataProviderService_ServiceDesc.Streams[0], "/protoadapter.DataProviderService/Ping", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &dataProviderServicePingClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type DataProviderService_PingClient interface {
-	Recv() (*ServerStatus, error)
-	grpc.ClientStream
-}
-
-type dataProviderServicePingClient struct {
-	grpc.ClientStream
-}
-
-func (x *dataProviderServicePingClient) Recv() (*ServerStatus, error) {
-	m := new(ServerStatus)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *dataProviderServiceClient) AddToKnowPeers(ctx context.Context, in *DPInfo, opts ...grpc.CallOption) (*Null, error) {
-	out := new(Null)
-	err := c.cc.Invoke(ctx, "/protoadapter.DataProviderService/AddToKnowPeers", in, out, opts...)
+func (c *dataProviderServiceClient) ListKnownPeers(ctx context.Context, in *Null, opts ...grpc.CallOption) (*DPInfos, error) {
+	out := new(DPInfos)
+	err := c.cc.Invoke(ctx, "/protoadapter.DataProviderService/ListKnownPeers", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
-}
-
-func (c *dataProviderServiceClient) GetAdapter(ctx context.Context, in *AdapterHead, opts ...grpc.CallOption) (*Adapter, error) {
-	out := new(Adapter)
-	err := c.cc.Invoke(ctx, "/protoadapter.DataProviderService/GetAdapter", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dataProviderServiceClient) ListAdapters(ctx context.Context, in *Node, opts ...grpc.CallOption) (DataProviderService_ListAdaptersClient, error) {
-	stream, err := c.cc.NewStream(ctx, &DataProviderService_ServiceDesc.Streams[1], "/protoadapter.DataProviderService/ListAdapters", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &dataProviderServiceListAdaptersClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type DataProviderService_ListAdaptersClient interface {
-	Recv() (*Adapter, error)
-	grpc.ClientStream
-}
-
-type dataProviderServiceListAdaptersClient struct {
-	grpc.ClientStream
-}
-
-func (x *dataProviderServiceListAdaptersClient) Recv() (*Adapter, error) {
-	m := new(Adapter)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
 }
 
 // DataProviderServiceServer is the server API for DataProviderService service.
 // All implementations must embed UnimplementedDataProviderServiceServer
 // for forward compatibility
 type DataProviderServiceServer interface {
-	// Server streaming RPC
-	// Node as client sends request using Stub to Data Provider as Server
-	// Gets a continuous unending stream to notify Node of connection
-	Ping(*Node, DataProviderService_PingServer) error
-	AddToKnowPeers(context.Context, *DPInfo) (*Null, error)
-	// Unary RPC
-	// Node as client sends request to retrieve details of an Adapter
-	// Waits and gets a one time response and connection is closed
-	GetAdapter(context.Context, *AdapterHead) (*Adapter, error)
-	// Server streaming RPC
-	// Node as client requests for Adapter lists from Data Providers as Server
-	// Data Providers sends a stream of all available adapter and closes connection after sending the last one
-	ListAdapters(*Node, DataProviderService_ListAdaptersServer) error
+	ListKnownPeers(context.Context, *Null) (*DPInfos, error)
 	mustEmbedUnimplementedDataProviderServiceServer()
 }
 
@@ -152,17 +54,8 @@ type DataProviderServiceServer interface {
 type UnimplementedDataProviderServiceServer struct {
 }
 
-func (UnimplementedDataProviderServiceServer) Ping(*Node, DataProviderService_PingServer) error {
-	return status.Errorf(codes.Unimplemented, "method Ping not implemented")
-}
-func (UnimplementedDataProviderServiceServer) AddToKnowPeers(context.Context, *DPInfo) (*Null, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddToKnowPeers not implemented")
-}
-func (UnimplementedDataProviderServiceServer) GetAdapter(context.Context, *AdapterHead) (*Adapter, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAdapter not implemented")
-}
-func (UnimplementedDataProviderServiceServer) ListAdapters(*Node, DataProviderService_ListAdaptersServer) error {
-	return status.Errorf(codes.Unimplemented, "method ListAdapters not implemented")
+func (UnimplementedDataProviderServiceServer) ListKnownPeers(context.Context, *Null) (*DPInfos, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListKnownPeers not implemented")
 }
 func (UnimplementedDataProviderServiceServer) mustEmbedUnimplementedDataProviderServiceServer() {}
 
@@ -177,82 +70,22 @@ func RegisterDataProviderServiceServer(s grpc.ServiceRegistrar, srv DataProvider
 	s.RegisterService(&DataProviderService_ServiceDesc, srv)
 }
 
-func _DataProviderService_Ping_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(Node)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(DataProviderServiceServer).Ping(m, &dataProviderServicePingServer{stream})
-}
-
-type DataProviderService_PingServer interface {
-	Send(*ServerStatus) error
-	grpc.ServerStream
-}
-
-type dataProviderServicePingServer struct {
-	grpc.ServerStream
-}
-
-func (x *dataProviderServicePingServer) Send(m *ServerStatus) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func _DataProviderService_AddToKnowPeers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DPInfo)
+func _DataProviderService_ListKnownPeers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Null)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DataProviderServiceServer).AddToKnowPeers(ctx, in)
+		return srv.(DataProviderServiceServer).ListKnownPeers(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protoadapter.DataProviderService/AddToKnowPeers",
+		FullMethod: "/protoadapter.DataProviderService/ListKnownPeers",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DataProviderServiceServer).AddToKnowPeers(ctx, req.(*DPInfo))
+		return srv.(DataProviderServiceServer).ListKnownPeers(ctx, req.(*Null))
 	}
 	return interceptor(ctx, in, info, handler)
-}
-
-func _DataProviderService_GetAdapter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AdapterHead)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DataProviderServiceServer).GetAdapter(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/protoadapter.DataProviderService/GetAdapter",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DataProviderServiceServer).GetAdapter(ctx, req.(*AdapterHead))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DataProviderService_ListAdapters_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(Node)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(DataProviderServiceServer).ListAdapters(m, &dataProviderServiceListAdaptersServer{stream})
-}
-
-type DataProviderService_ListAdaptersServer interface {
-	Send(*Adapter) error
-	grpc.ServerStream
-}
-
-type dataProviderServiceListAdaptersServer struct {
-	grpc.ServerStream
-}
-
-func (x *dataProviderServiceListAdaptersServer) Send(m *Adapter) error {
-	return x.ServerStream.SendMsg(m)
 }
 
 // DataProviderService_ServiceDesc is the grpc.ServiceDesc for DataProviderService service.
@@ -263,25 +96,10 @@ var DataProviderService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*DataProviderServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "AddToKnowPeers",
-			Handler:    _DataProviderService_AddToKnowPeers_Handler,
-		},
-		{
-			MethodName: "GetAdapter",
-			Handler:    _DataProviderService_GetAdapter_Handler,
+			MethodName: "ListKnownPeers",
+			Handler:    _DataProviderService_ListKnownPeers_Handler,
 		},
 	},
-	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "Ping",
-			Handler:       _DataProviderService_Ping_Handler,
-			ServerStreams: true,
-		},
-		{
-			StreamName:    "ListAdapters",
-			Handler:       _DataProviderService_ListAdapters_Handler,
-			ServerStreams: true,
-		},
-	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "data-provider/protoadapter/adapter.proto",
 }

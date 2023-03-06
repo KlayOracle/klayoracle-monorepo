@@ -24,8 +24,10 @@ func main() {
 	//Load config, logger e.t.c
 	boot.Boot(wd, path.Join(wd, "config.yaml"), path.Join(wd, ".env"))
 
+	dp := adapter.NewDataProvider()
+
 	//Start Data Provider service
-	s, err := adapter.NewDataProviderService()
+	s, err := dp.NewDataProviderService()
 	if err != nil {
 		config.Loaded.Logger.Fatal(err)
 	}
@@ -48,7 +50,7 @@ func main() {
 
 	//Create client and start handshake to Node Service
 	go func() {
-		conn, err := boot.HandShake()
+		conn, err := dp.HandShake()
 		connChan <- conn
 
 		if err != nil {
@@ -63,7 +65,7 @@ func main() {
 			config.Loaded.Logger.Info("Closing client connection to ", conn.Target())
 			conn.Close()
 		case <-ctx.Done(): //If DP Server crashes or Handshake fails
-			s.Stop() //Don't take chances with resources and be sure DP Service closes
+			//s.Stop() //Don't take chances with resources and be sure DP Service closes
 			fmt.Println("Data provider operation... exited")
 			return
 		}

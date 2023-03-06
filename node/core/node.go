@@ -4,10 +4,13 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
+	"github.com/klayoracle/klayoracle-monorepo/data-provider/protoadapter"
+	"google.golang.org/grpc/credentials/insecure"
 	"os"
 	"path"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/klayoracle/klayoracle-monorepo/node/config"
 	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
@@ -47,10 +50,12 @@ func (n *Node) HandShake(ctx context.Context, provider *protonode.DPInfo) (*prot
 
 	n.dataProviders[provider.ListenAddress] = provider
 
-	err := addPeer(provider)
+	config.Loaded.Logger.Info("Adding provider to known peers ", provider.ListenAddress)
 
+	err := addPeer(provider)
 	if err != nil {
-		return nil, nil
+		config.Loaded.Logger.Fatal("error adding to known peer: ", err)
+		return nil, errAddingToKnownPeer
 	}
 
 	//Check DP Peers to find out Org is not yet registered
@@ -58,11 +63,100 @@ func (n *Node) HandShake(ctx context.Context, provider *protonode.DPInfo) (*prot
 }
 
 func addPeer(p *protonode.DPInfo) error {
-	//for listenAddr, _ := range p. {
+
+	//Send a grpc request to all bootstrap nodes for Known peers
+	//Identify the bootstrap dp node with the longest known peers chain
+	// Add new dp Info to its peers and loop through the all bootstrap nodes to update the list of known peers
+
+	//Gather known peers from all bootstrap dp node
+	//Identify the longest peer chain
+	var (
+		longestChain   = 0
+		longestChainDP = ""
+		peerList       = map[string]*protoadapter.DPInfos{}
+		peers          = &protoadapter.DPInfos{}
+		err            error
+	)
+
+	for listenAddr, _ := range p.Bootstraps {
+		config.Loaded.Logger.Info("Fetching know peers for bootstrap dp: ", listenAddr)
+		peers, err = getPeerList(listenAddr)
+		if err != nil {
+			return err
+		}
+
+		peerList[listenAddr] = peers
+
+		if len(peers.List) > longestChain {
+			longestChain = len(peers.List)
+			longestChainDP = listenAddr
+		}
+
+		config.Loaded.Logger.Info("Found peers: ")
+		config.Loaded.Logger.Info(peers)
+	}
+
+	config.Loaded.Logger.Infow("dp bootstrap with the longest peer", longestChainDP, longestChain)
+
+	//list := append(peerList[longestChainDP].List, &protoadapter.DPInfo{
+	//	ListenAddress: p.ListenAddress,
+	//	KOrgId:        p.KOrgId,
+	//})
+
+	//bootstraps := bootstrap.Nodes()
+
+	//for i, _ := range list {
+	//dp := peerList[longestChainDP].List[i]
 	//
+	////Bootstrap node can't add self as peer
+	//if slices.Contains(bootstraps, p.ListenAddress) {
+	//	continue
 	//}
 
-	return fmt.Errorf("")
+	//client, err := newDPClient(dp.ListenAddress)
+	//if err != nil {
+	//	return fmt.Errorf("failed connecting to client: %v", err)
+	//}
+	//
+	//ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second) //Enough time to authenticate and add DP to known peers
+	//defer cancel()
+
+	//res, err := client.Add(ctx, &protoadapter.Null{})
+	//
+	//if err != nil {
+	//	return fmt.Errorf("client.ListKnowPeers(_) failed: %v", err)
+	//}
+	//}
+
+	return nil
+}
+
+func getPeerList(listenAddr string) (*protoadapter.DPInfos, error) {
+
+	client, err := newDPClient(listenAddr)
+	if err != nil {
+		return nil, fmt.Errorf("failed connecting to client: %v", err)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second) //Enough time to authenticate and add DP to known peers
+	defer cancel()
+
+	res, err := client.ListKnownPeers(ctx, &protoadapter.Null{})
+
+	if err != nil {
+		return nil, fmt.Errorf("client.ListKnowPeers(_) failed: %v", err)
+	}
+
+	return res, nil
+}
+
+func newDPClient(listenAddr string) (protoadapter.DataProviderServiceClient, error) {
+	conn, err := grpc.Dial(listenAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		return nil, fmt.Errorf("dial failed: %v", err)
+	}
+
+	return protoadapter.NewDataProviderServiceClient(conn), nil
 }
 
 func NewNodeServiceServer() (*grpc.Server, error) {
