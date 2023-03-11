@@ -15,7 +15,7 @@ import (
 func main() {
 	wd, err := os.Getwd()
 	if err != nil {
-		log.Fatal("Cannot determine working directory: ", err)
+		log.Fatal("cannot determine working directory: ", err)
 	}
 
 	boot.Boot(wd, path.Join(wd, "config.yaml"), path.Join(wd, ".env"))

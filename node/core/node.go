@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"golang.org/x/exp/slices"
 	"os"
 	"path"
 	"strings"
@@ -12,8 +13,6 @@ import (
 	"time"
 
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/bootstrap"
-	"golang.org/x/exp/slices"
-
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/protoadapter"
 	"google.golang.org/grpc/credentials/insecure"
 
@@ -30,7 +29,7 @@ var (
 	errMissingMetadata            = status.Errorf(codes.InvalidArgument, "missing metadata")
 	errInvalidToken               = status.Errorf(codes.Unauthenticated, "invalid token")
 	errDataProviderNotWhitelisted = status.Errorf(codes.Unknown, "you need to be whitelisted")
-	errAddingToKnownPeer          = status.Errorf(codes.Unknown, "cannot add to known dp known peers")
+	errAddingToKnownPeer          = status.Errorf(codes.Unknown, "cannot add to known DP known peers")
 )
 
 type Node struct {
@@ -51,16 +50,20 @@ func (n *Node) HandShake(ctx context.Context, provider *protonode.DPInfo) (*prot
 	n.mu.Lock()
 	defer n.mu.Unlock()
 
-	config.Loaded.Logger.Info("Registering provider ", provider.ListenAddress, " with Node ", os.Getenv("HOST_IP"))
+	config.Loaded.Logger.Infow("registering provider with service node ", "provider", provider.ListenAddress, "service node", os.Getenv("HOST_IP"))
 
 	n.dataProviders[provider.ListenAddress] = provider
 
-	config.Loaded.Logger.Info("Adding provider to known peers ", provider.ListenAddress)
+	config.Loaded.Logger.Infow("attempting to add provider to all bootstrap dp known peers ", "listen address", provider.ListenAddress)
 
-	err := addPeer(provider)
-	if err != nil {
-		config.Loaded.Logger.Fatal("error adding to known peer: ", err)
-		return nil, errAddingToKnownPeer
+	if slices.Contains(bootstrap.Nodes(), provider.ListenAddress) {
+		config.Loaded.Logger.Warnw("ignoring adding to known peer", "reason", "bootstrap dp", "listen address", provider.ListenAddress)
+	} else {
+		err := addPeer(provider)
+		if err != nil {
+			config.Loaded.Logger.Fatal("error adding to known peer: ", err)
+			return nil, errAddingToKnownPeer
+		}
 	}
 
 	//Check DP Peers to find out Org is not yet registered
@@ -87,10 +90,10 @@ func addPeer(p *protonode.DPInfo) error {
 
 	//@Todo If a bootstrap node does not respond, it should not stop a new peer from responding
 	for _, listenAddr := range bootstraps {
-		config.Loaded.Logger.Info("Fetching know peers for bootstrap dp: ", listenAddr)
+		config.Loaded.Logger.Info("fetching known peers for bootstrap DP: ", listenAddr)
 		peers, err = getPeerList(listenAddr)
 		if err != nil {
-			config.Loaded.Logger.Warn("Bootstrap DP is unresponsive ", listenAddr)
+			config.Loaded.Logger.Warn("bootstrap DP is unresponsive on ", listenAddr)
 
 			//return err
 		} else {
@@ -102,28 +105,26 @@ func addPeer(p *protonode.DPInfo) error {
 				longestChainDP = listenAddr
 			}
 
-			config.Loaded.Logger.Info("Peers found for: ", listenAddr)
-			config.Loaded.Logger.Info(peers)
+			config.Loaded.Logger.Info("peers found for ", listenAddr)
+			if len(peers.List) > 0 {
+				config.Loaded.Logger.Info(peers)
+			} else {
+				config.Loaded.Logger.Warn("No known peers discovered")
+			}
 		}
 	}
 
-	config.Loaded.Logger.Infow("dp bootstrap with the longest peer", longestChainDP, longestChain)
+	config.Loaded.Logger.Infow("DP bootstrap with the longest peer", longestChainDP, longestChain)
 
 	dp := &protoadapter.DPInfo{}
 
 	err = castBtwDPInfo(p, dp)
 
 	if err != nil {
-		config.Loaded.Logger.Fatal("Conversion between DPInfo gone wrong: ", err)
+		config.Loaded.Logger.Fatal("conversion between DPInfo gone wrong: ", err)
 	}
 
-	list := peerList[longestChainDP].List
-
-	if slices.Contains(bootstraps, dp.ListenAddress) {
-		config.Loaded.Logger.Warnw("Ignoring broadcasting bootstrap DP as known peer", "Skipping", dp.ListenAddress)
-	} else {
-		list = append(list, dp)
-	}
+	list := append(peerList[longestChainDP].List, dp)
 
 	for _, bt := range bootstraps {
 
@@ -144,7 +145,9 @@ func addPeer(p *protonode.DPInfo) error {
 				_, err = client.AddToKnownPeers(ctx, newDp)
 
 				if err != nil {
-					config.Loaded.Logger.Warnw("dp.AddToKnownPeers(_) failed", "Skipping", bt)
+					config.Loaded.Logger.Warnw("dp.AddToKnownPeers(_) failed", "reason", "unresponsive bootstrap dp", "skipping", bt)
+				} else {
+					config.Loaded.Logger.Infow("Added dp to bootstrap dp known peer ", "boostrap dp", bt, "added peer", newDp.ListenAddress)
 				}
 			}
 
@@ -207,7 +210,7 @@ func NewNodeServiceServer() (*grpc.Server, error) {
 		Sever:         s,
 	})
 
-	config.Loaded.Logger.Info("Starting Node Service on ", os.Getenv("HOST_IP"))
+	config.Loaded.Logger.Info("starting Node service on ", os.Getenv("HOST_IP"))
 
 	return s, nil
 }

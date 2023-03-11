@@ -69,7 +69,7 @@ func (dp *DataProvider) NewDataProviderService() (*grpc.Server, error) {
 
 	protoadapter.RegisterDataProviderServiceServer(s, dp)
 
-	config.Loaded.Logger.Info("Starting DP Service on ", os.Getenv("HOST_IP"))
+	config.Loaded.Logger.Info("starting DP service on ", os.Getenv("HOST_IP"))
 
 	return s, nil
 }
@@ -157,7 +157,7 @@ func (dp *DataProvider) ListKnownPeers(ctx context.Context, null *protoadapter.N
 
 func (dp *DataProvider) AddToKnownPeers(ctx context.Context, info *protoadapter.DPInfo) (*protoadapter.Null, error) {
 
-	config.Loaded.Logger.Info("Adding ", info.ListenAddress, " to known peers of bootstrap DP ", dp.listenAddress)
+	config.Loaded.Logger.Info("adding ", info.ListenAddress, " to known peers of bootstrap DP ", dp.listenAddress)
 
 	dp.mu.Lock()
 	defer dp.mu.Unlock()

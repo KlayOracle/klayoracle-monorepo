@@ -26,22 +26,22 @@ func main() {
 	logger := cfg.Logger
 
 	if len(adapterList) < 1 {
-		logger.Infow("No Args passed", "example command: ", "ADAPTERS=KLAY_USD.json WEMIX_USD.json make adapter-id-gen")
+		logger.Infow("no args passed", "example command: ", "ADAPTERS=KLAY_USD.json WEMIX_USD.json make adapter-id-gen")
 	}
 
 	for _, s := range adapterList {
 		adapterPath := path.Join(cfg.RootWD, cfg.Feed.Path, s)
-		logger.Infow("Loading adapter", "path", adapterPath)
+		logger.Infow("loading adapter", "path", adapterPath)
 
 		file, err := os.Open(adapterPath)
 
 		if err != nil {
-			logger.Errorw("Error opening file", "adapter", adapterPath, "error", err)
+			logger.Errorw("error opening file", "adapter", adapterPath, "error", err)
 		}
 
 		fileStream, err := io.ReadAll(file)
 		if err != nil {
-			logger.Errorw("Error reading file", "adapter", adapterPath, "error", err)
+			logger.Errorw("error reading file", "adapter", adapterPath, "error", err)
 		}
 
 		feed := adapter.NewAdapter()
@@ -51,19 +51,19 @@ func main() {
 
 		updatedStream, err := protojson.Marshal(feed)
 		if err != nil {
-			logger.Errorw("Error marshaling", "adapter", adapterPath, "error", err)
+			logger.Errorw("error marshaling", "adapter", adapterPath, "error", err)
 		}
 
-		logger.Infow("Updated adapter", "file", s, "adapter_id", feed.AdapterId)
+		logger.Infow("updated adapter", "file", s, "adapter_id", feed.AdapterId)
 
 		err = os.WriteFile(adapterPath, updatedStream, 0644)
 		if err != nil {
-			logger.Errorw("Error updating adapter id", "adapter", adapterPath, "error", err)
+			logger.Errorw("error updating adapter id", "adapter", adapterPath, "error", err)
 		}
 
 		err = file.Close()
 		if err != nil {
-			logger.Errorw("Error closing adapter file", "adapter", adapterPath, "error", err)
+			logger.Errorw("error closing adapter file", "adapter", adapterPath, "error", err)
 		}
 	}
 }
