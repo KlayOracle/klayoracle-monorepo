@@ -5,12 +5,13 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"golang.org/x/exp/slices"
 	"os"
 	"path"
 	"strings"
 	"sync"
 	"time"
+
+	"golang.org/x/exp/slices"
 
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/bootstrap"
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/protoadapter"
