@@ -6,9 +6,9 @@ feed:
     - KLAY_USD.json
     - RANDOM.json
 organization:
-  k_org_id: "AA-BBB-CCC-23"
+  k_org_id: 535797165684
   name: "KlayOracle Inc."
-  website: "x.test.example.com"
+  website: "dp-1.origineum.com"
 ssl:
   key: ""
-  certificate: "x509/ca_cert.pem"
+  certificate: "x509/535797165684.pem"

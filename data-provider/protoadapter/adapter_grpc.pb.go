@@ -8,7 +8,6 @@ package protoadapter
 
 import (
 	context "context"
-
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -23,6 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DataProviderServiceClient interface {
+	AddToKnownPeers(ctx context.Context, in *DPInfo, opts ...grpc.CallOption) (*Null, error)
 	ListKnownPeers(ctx context.Context, in *Null, opts ...grpc.CallOption) (*DPInfos, error)
 }
 
@@ -32,6 +32,15 @@ type dataProviderServiceClient struct {
 
 func NewDataProviderServiceClient(cc grpc.ClientConnInterface) DataProviderServiceClient {
 	return &dataProviderServiceClient{cc}
+}
+
+func (c *dataProviderServiceClient) AddToKnownPeers(ctx context.Context, in *DPInfo, opts ...grpc.CallOption) (*Null, error) {
+	out := new(Null)
+	err := c.cc.Invoke(ctx, "/protoadapter.DataProviderService/AddToKnownPeers", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *dataProviderServiceClient) ListKnownPeers(ctx context.Context, in *Null, opts ...grpc.CallOption) (*DPInfos, error) {
@@ -47,6 +56,7 @@ func (c *dataProviderServiceClient) ListKnownPeers(ctx context.Context, in *Null
 // All implementations must embed UnimplementedDataProviderServiceServer
 // for forward compatibility
 type DataProviderServiceServer interface {
+	AddToKnownPeers(context.Context, *DPInfo) (*Null, error)
 	ListKnownPeers(context.Context, *Null) (*DPInfos, error)
 	mustEmbedUnimplementedDataProviderServiceServer()
 }
@@ -55,6 +65,9 @@ type DataProviderServiceServer interface {
 type UnimplementedDataProviderServiceServer struct {
 }
 
+func (UnimplementedDataProviderServiceServer) AddToKnownPeers(context.Context, *DPInfo) (*Null, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddToKnownPeers not implemented")
+}
 func (UnimplementedDataProviderServiceServer) ListKnownPeers(context.Context, *Null) (*DPInfos, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListKnownPeers not implemented")
 }
@@ -69,6 +82,24 @@ type UnsafeDataProviderServiceServer interface {
 
 func RegisterDataProviderServiceServer(s grpc.ServiceRegistrar, srv DataProviderServiceServer) {
 	s.RegisterService(&DataProviderService_ServiceDesc, srv)
+}
+
+func _DataProviderService_AddToKnownPeers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DPInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DataProviderServiceServer).AddToKnownPeers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protoadapter.DataProviderService/AddToKnownPeers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DataProviderServiceServer).AddToKnownPeers(ctx, req.(*DPInfo))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _DataProviderService_ListKnownPeers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -96,6 +127,10 @@ var DataProviderService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "protoadapter.DataProviderService",
 	HandlerType: (*DataProviderServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "AddToKnownPeers",
+			Handler:    _DataProviderService_AddToKnownPeers_Handler,
+		},
 		{
 			MethodName: "ListKnownPeers",
 			Handler:    _DataProviderService_ListKnownPeers_Handler,

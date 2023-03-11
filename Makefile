@@ -46,3 +46,11 @@ node-server:
 .PHONY: dp-client
 dp-client:
 	@cd ./data-provider && GRPC_GO_LOG_VERBOSITY_LEVEL=99 GRPC_GO_LOG_SEVERITY_LEVEL=info go run main.go
+
+.PHONY: node-server-nolog
+node-server-nolog:
+	@cd ./node && go run main.go
+
+.PHONY: dp-client-nolog
+dp-client-nolog:
+	@cd ./data-provider && go run main.go

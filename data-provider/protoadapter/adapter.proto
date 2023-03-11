@@ -10,7 +10,7 @@ service DataProviderService {
   // Gets a continuous unending stream to notify Node of connection
 //  rpc Ping(Node) returns(stream ServerStatus);
 
-//  rpc AddToKnowPeers(DPInfo) returns(Null);
+  rpc AddToKnownPeers(DPInfo) returns(Null);
 
   rpc ListKnownPeers(Null) returns(DPInfos);
 
