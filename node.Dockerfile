@@ -28,8 +28,8 @@ RUN apt-get update
 
 COPY --from=build /var/klayoracle /var/klayoracle
 
-#ARG PORT
-#EXPOSE $PORT
+ARG PORT
+EXPOSE $PORT
 ENV WORK_DIR=/var/klayoracle
 
 CMD ./var/klayoracle/kloc

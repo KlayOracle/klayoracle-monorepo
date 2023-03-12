@@ -62,9 +62,8 @@ build-node:
 
 .PHONY: node-image
 node-image:
-	@docker build -t klayoracle-node -f node.Dockerfile .
-
+	@docker build -t klayoracle-node:dev -f node.Dockerfile . --build-arg PORT=${PORT}
 
 .PHONY: node-container
 node-container:
-	@docker run -d -p ${HOST_PORT}:${NODE_PORT} --env-file node/.env --network="host" klayoracle-node:latest
+	@docker run -d -p ${HOST_PORT}:${NODE_PORT} --env-file node/.env klayoracle-node:dev
