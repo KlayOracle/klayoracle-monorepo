@@ -54,3 +54,17 @@ node-server-nolog:
 .PHONY: dp-client-nolog
 dp-client-nolog:
 	@cd ./data-provider && go run main.go
+
+.PHONY: build-node
+build-node:
+	@cd ./node && go build -o bin/node
+
+
+.PHONY: node-image
+node-image:
+	@docker build -t klayoracle-node -f node.Dockerfile .
+
+
+.PHONY: node-container
+node-container:
+	@docker run -d -p ${HOST_PORT}:${NODE_PORT} --env-file node/.env --network="host" klayoracle-node:latest
