@@ -18,7 +18,7 @@ import (
 func main() {
 	wd, err := os.Getwd()
 	if err != nil {
-		log.Fatal("Cannot determine working directory: ", err)
+		log.Fatal("cannot determine working directory: ", err)
 	}
 
 	//Load config, logger e.t.c
@@ -62,11 +62,11 @@ func main() {
 	for {
 		select {
 		case conn := <-connChan:
-			config.Loaded.Logger.Info("Closing client connection to ", conn.Target())
+			config.Loaded.Logger.Info("closing client connection to ", conn.Target())
 			conn.Close()
 		case <-ctx.Done(): //If DP Server crashes or Handshake fails
 			//s.Stop() //Don't take chances with resources and be sure DP Service closes
-			fmt.Println("Data provider operation... exited")
+			fmt.Println("data provider operation... exited")
 			return
 		}
 	}

@@ -46,3 +46,24 @@ node-server:
 .PHONY: dp-client
 dp-client:
 	@cd ./data-provider && GRPC_GO_LOG_VERBOSITY_LEVEL=99 GRPC_GO_LOG_SEVERITY_LEVEL=info go run main.go
+
+.PHONY: node-server-nolog
+node-server-nolog:
+	@cd ./node && go run main.go
+
+.PHONY: dp-client-nolog
+dp-client-nolog:
+	@cd ./data-provider && go run main.go
+
+.PHONY: build-node
+build-node:
+	@cd ./node && go build -o bin/node
+
+
+.PHONY: node-image
+node-image:
+	@docker build -t klayoracle-node:dev -f node.Dockerfile . --build-arg PORT=${PORT}
+
+.PHONY: node-container
+node-container:
+	@docker run -d -p ${HOST_PORT}:${NODE_PORT} --env-file node/.env klayoracle-node:dev

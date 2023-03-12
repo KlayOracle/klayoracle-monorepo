@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net"
 	"os"
@@ -15,8 +16,14 @@ import (
 func main() {
 	wd, err := os.Getwd()
 	if err != nil {
-		log.Fatal("Cannot determine working directory: ", err)
+		log.Fatal("cannot determine working directory: ", err)
 	}
+
+	if os.Getenv("WORK_DIR") != "" {
+		wd = os.Getenv("WORK_DIR")
+	}
+
+	fmt.Println("Working directory: ", wd)
 
 	boot.Boot(wd, path.Join(wd, "config.yaml"), path.Join(wd, ".env"))
 

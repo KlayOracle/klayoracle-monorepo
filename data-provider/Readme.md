@@ -47,11 +47,3 @@ Replace `KLAY_USD.json WEMIX_USD.json` with you list of Adapters to generate a n
 
 ## Step 3
 
-Generate on ssl certificate in the [certs folder](certs). By running the below command
-
-```shell
-openssl req -x509 -out localhost.crt -keyout localhost.key \
--newkey rsa:2048 -nodes -sha256 \
--subj '/CN=localhost' -extensions EXT -config <( \
-printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
-```
