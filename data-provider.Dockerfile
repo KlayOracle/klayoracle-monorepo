@@ -1,22 +1,35 @@
 #Build Image
-FROM golang:1.19-buster as gobuild
+FROM golang:1.19-buster as build
 RUN go version
-WORKDIR /klayoracle
+WORKDIR /data-provider
+
+RUN mkdir node
+RUN mkdir data-provider
 
 COPY Makefile ./
-COPY go.mod go.sum ./
-RUN go mod download
+COPY node /node/
+COPY data-provider /data-provider/
 
-COPY data-provider data-provider
+COPY node/go.mod node/go.sum /node/
+COPY data-provider/go.mod data-provider/go.sum /data-provider/
 
-RUN make node-build-provider
+WORKDIR /node
+RUN go mod tidy
 
-#Final Image
+WORKDIR -
+WORKDIR /data-provider
+RUN go mod tidy
+RUN go build -o kloc-dp . && cp -r . /var/klayoracle
+
+##Final Image
 FROM ubuntu:20.04
 
-#Install Dependecies needed
-#Pass ENV and ARG
-#Install kloc command
-#Check health of node
+RUN apt-get update
 
-CMD ["kloc", "run"]
+COPY --from=build /var/klayoracle /var/klayoracle
+
+ARG PORT
+EXPOSE $PORT
+ENV WORK_DIR=/var/klayoracle
+
+CMD ./var/klayoracle/kloc-dp

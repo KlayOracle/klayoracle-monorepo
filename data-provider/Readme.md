@@ -47,3 +47,9 @@ Replace `KLAY_USD.json WEMIX_USD.json` with you list of Adapters to generate a n
 
 ## Step 3
 
+```shell
+PORT=50051 make node-image
+HOST_PORT=50051 NODE_PORT=50051 make node-container
+```
+
+While making image port `50051` will be exposed. `HOST_PORT` on host is bind to `NODE_PORT` in container.

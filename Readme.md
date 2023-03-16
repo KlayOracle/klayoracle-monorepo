@@ -33,3 +33,8 @@ Feel free to email engineering@klayoracle.com
 ## Connect with KlayOracle
 
 [Website](https://klayoracle.com) | [Dorahacks](https://community.dorahacks.io/t/klayoracle-an-open-source-oracle-framework-to-securely-integrate-off-chain-data-with-klaytn-smart-contracts/58) | [Twitter](https://twitter.com/klayoracle) | [Medium](https://klayoracle.medium.com/) | [Telegram](https://t.me/klayoracle) | [YouTube](https://www.youtube.com/@klayoracle)
+
+## Contributors
+
+- [Oluwafemi Alofe](https://www.linkedin.com/in/oluwafemialofe/)
+- [Paul Oladimeji](https://www.linkedin.com/in/pauloladimeji/)

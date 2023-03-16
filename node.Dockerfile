@@ -19,7 +19,7 @@ RUN go mod tidy
 WORKDIR -
 WORKDIR /node
 RUN go mod tidy
-RUN go build -o kloc . && cp -r . /var/klayoracle
+RUN go build -o kloc-node . && cp -r . /var/klayoracle
 
 ##Final Image
 FROM ubuntu:20.04
@@ -32,4 +32,4 @@ ARG PORT
 EXPOSE $PORT
 ENV WORK_DIR=/var/klayoracle
 
-CMD ./var/klayoracle/kloc
+CMD ./var/klayoracle/kloc-node

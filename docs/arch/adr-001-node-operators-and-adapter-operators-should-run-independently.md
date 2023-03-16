@@ -204,7 +204,7 @@ KlayOracle will build and maintain a public dashboard known as ***KlayOracle Exp
 
 - [1] — [Inspiration for the dispute resolution process](https://github.com/redstone-finance/redstone-oracles-monorepo/blob/main/packages/oracle-node/docs/DISPUTE_RESOLUTION.md)
 - [2] — [How nodes find each other](https://ethereum-classic-guide.readthedocs.io/en/latest/docs/appendices/how_nodes_find_each_other.html)
-- [3] — [Reference to feeds](https://github.com/alofeoluwafemi/klay-oracle/blob/development/adapter/jobs/klay_usd.adpater.json)
+- [3] — [Reference to feeds](https://github.com/alofeoluwafemi/klay-oracle/blob/development/adapter/Jobs/klay_usd.adpater.json)
 - [4] — [EIP-712](https://eips.ethereum.org/EIPS/eip-712)
 - [5] — [Sign an EIP-712 message](https://docs.venly.io/widget/widget/sign-a-eip712-message)
 

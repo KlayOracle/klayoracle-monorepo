@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"path"
@@ -51,6 +52,32 @@ func NewDataProvider() *DataProvider {
 
 func NewAdapter() *protoadapter.Adapter {
 	return &protoadapter.Adapter{}
+}
+
+func ListAdapters() []*protoadapter.Adapter {
+	var adapters []*protoadapter.Adapter
+
+	for _, adp := range config.Loaded.Feed.Adapters {
+		adapterPath := path.Join(config.Loaded.RootWD, config.Loaded.Feed.Path, adp)
+
+		file, err := os.Open(adapterPath)
+		if err != nil {
+			config.Loaded.Logger.Errorw("error opening file", "adapter", adapterPath, "error", err)
+		}
+
+		fileStream, err := io.ReadAll(file)
+		if err != nil {
+			config.Loaded.Logger.Errorw("error reading file", "adapter", adapterPath, "error", err)
+		}
+
+		feed := NewAdapter()
+
+		Import(fileStream, feed)
+
+		adapters = append(adapters, feed)
+	}
+
+	return adapters
 }
 
 func Import(stream []byte, p *protoadapter.Adapter) {

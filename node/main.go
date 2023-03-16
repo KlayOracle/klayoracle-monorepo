@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"google.golang.org/grpc"
 	"log"
 	"net"
 	"os"
@@ -23,12 +24,13 @@ func main() {
 		wd = os.Getenv("WORK_DIR")
 	}
 
-	fmt.Println("Working directory: ", wd)
+	config.Loaded.Logger.Info("Working directory: ", wd)
 
 	boot.Boot(wd, path.Join(wd, "config.yaml"), path.Join(wd, ".env"))
 
 	//Start Node service
-	s, err := core.NewNodeServiceServer()
+	n := &core.Node{}
+	s, err := core.NewNodeServiceServer(n)
 	if err != nil {
 		config.Loaded.Logger.Fatal(err)
 	}
@@ -39,9 +41,22 @@ func main() {
 		config.Loaded.Logger.Fatal("failed to listen: %v", err)
 	}
 
-	// @Todo Blocking action carried out, no code will run after this, use routine
-	if err := s.Serve(lis); err != nil {
-		s.Stop()
-		config.Loaded.Logger.Fatal("failed to serve: %v", err)
+	shutServer := make(chan *grpc.Server, 1)
+
+	go func() {
+		if err := s.Serve(lis); err != nil {
+			shutServer <- s
+		}
+	}()
+
+	for {
+		select {
+		case job := <-n.Jobs:
+			fmt.Printf("Adapter Job: %v", job)
+		case <-shutServer: //If DP Server crashes or Handshake fails
+			s.Stop()
+			config.Loaded.Logger.Fatal("failed to serve: %v", err)
+			return
+		}
 	}
 }

@@ -24,6 +24,7 @@ func TestAdapterMarshalOk(t *testing.T) {
 				"job_type": "DATA_FEED",
 				"adapter_id":"0x8b7460cccfa0aca303ee85c3fb81c344faad2fbab415adc32b2984008b7efd76",
 				"oracle_address": "0xCC4377b912c4517Fe895817c6a7c6937D92A70B3",
+				"frequency": 5
 				"category": 2,
 				"feeds": [
 						{
@@ -50,6 +51,7 @@ func TestAdapterMarshalOk(t *testing.T) {
 	assert.Equal(t, newAdapter.JobType, protoadapter.JobTypes_DATA_FEED)
 	assert.Equal(t, newAdapter.AdapterId, "0x8b7460cccfa0aca303ee85c3fb81c344faad2fbab415adc32b2984008b7efd76")
 	assert.Equal(t, newAdapter.OracleAddress, "0xCC4377b912c4517Fe895817c6a7c6937D92A70B3")
+	assert.Equal(t, newAdapter.Frequency, 5)
 
 	importedAdapter := []*protoadapter.Feed{
 		{
