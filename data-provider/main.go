@@ -71,7 +71,7 @@ func main() {
 
 		for _, adapterCfg := range adapters {
 			adapterCfg := adapterCfg
-			
+
 			go func() {
 				ticker := time.NewTicker(time.Duration(adapterCfg.Frequency) * time.Second)
 
