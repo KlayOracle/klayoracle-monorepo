@@ -45,7 +45,7 @@ func main() {
 	shutServer := make(chan *grpc.Server, 1)
 
 	go func() {
-		if err := s.Serve(lis); err != nil {
+		if err = s.Serve(lis); err != nil {
 			shutServer <- s
 		}
 	}()
