@@ -70,8 +70,9 @@ func main() {
 		config.Loaded.Logger.Infow("send adapters to node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "total", len(adapters))
 
 		for _, adapterCfg := range adapters {
+			adapterCfg := adapterCfg
+			
 			go func() {
-				adapterCfg := adapterCfg
 				ticker := time.NewTicker(time.Duration(adapterCfg.Frequency) * time.Second)
 
 				for {
