@@ -27,6 +27,11 @@ gomodtidy-dp: ## Run go mod tidy on all modules.
 test-dp:
 	@cd ./data-provider && go test -v ./...
 
+.PHONY: test-node
+test-node:
+	@cd ./node && go test -v ./...
+
+
 .PHONY: build-adapter-id-gen
 build-adapter-id-gen:
 	@cd ./data-provider/utils/generateadptid && go build -o ../bin/generate_adapter_id generate_adapter_id.go
