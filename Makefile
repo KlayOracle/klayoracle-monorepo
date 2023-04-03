@@ -69,6 +69,26 @@ build-node:
 node-image:
 	@docker build -t klayoracle-node:dev -f node.Dockerfile . --build-arg PORT=${PORT}
 
-.PHONY: node-container
-node-container:
-	@docker run -d -p ${HOST_PORT}:${NODE_PORT} --env-file node/.env klayoracle-node:dev
+#.PHONY: node-container
+#node-container:
+#	@docker run -d -p ${HOST_PORT}:${NODE_PORT} --env-file node/.env klayoracle-node:dev
+
+.PHONY: dp-image
+dp-image:
+	@docker build -t klayoracle-dp:dev -f dp.Dockerfile . --build-arg PORT=${PORT}
+
+#.PHONY: dp-container
+#dp-container:
+#	@docker run -d -p ${HOST_PORT}:${NODE_PORT} --net klayoracle --env-file data-provider/.env klayoracle-dp:dev
+
+.PHONY: docker-network
+docker-network:
+	@docker network create klayoracle
+
+.PHONY: net-cluster
+net-cluster:
+	@docker run -d --net klayoracle --name bootstrap_node1 --env-file node/.env klayoracle-node:dev
+	docker run -d --net klayoracle --name bootstrap_dp1 --env-file data-provider/.env klayoracle-dp:dev
+	docker run -d --net klayoracle --name bootstrap_dp2 --env-file data-provider/.env klayoracle-dp:dev
+	docker run -d --net klayoracle --name bootstrap_dp3 --env-file data-provider/.env klayoracle-dp:dev
+	docker run -d --net klayoracle --name bootstrap_dp4 --env-file data-provider/.env klayoracle-dp:dev

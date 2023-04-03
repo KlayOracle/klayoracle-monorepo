@@ -26,10 +26,10 @@ func main() {
 		wd = os.Getenv("WORK_DIR")
 	}
 
-	config.Loaded.Logger.Info("Working directory: ", wd)
-
 	//Load config, logger e.t.c
 	boot.Boot(wd, path.Join(wd, "config.yaml"), path.Join(wd, ".env"))
+
+	config.Loaded.Logger.Info("Working directory: ", wd)
 
 	dp := adapter.NewDataProvider()
 
@@ -73,7 +73,7 @@ func main() {
 			adapterCfg := adapterCfg
 
 			go func() {
-				ticker := time.NewTicker(time.Duration(adapterCfg.Frequency) * time.Second)
+				ticker := time.NewTicker(time.Duration(adapterCfg.Frequency))
 
 				for {
 					select {

@@ -25,9 +25,9 @@ func main() {
 		wd = os.Getenv("WORK_DIR")
 	}
 
-	config.Loaded.Logger.Info("Working directory: ", wd)
-
 	boot.Boot(wd, path.Join(wd, "config.yaml"), path.Join(wd, ".env"))
+
+	config.Loaded.Logger.Info("Working directory: ", wd)
 
 	//Start Node service
 	n := &core.Node{}

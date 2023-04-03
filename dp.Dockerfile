@@ -1,7 +1,7 @@
 #Build Image
 FROM golang:1.19-buster as build
 RUN go version
-WORKDIR /data-provider
+WORKDIR /klayoracle
 
 RUN mkdir node
 RUN mkdir data-provider

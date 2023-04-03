@@ -137,7 +137,7 @@ func (s OauthTokenSource) Token() (token *oauth2.Token, err error) {
 }
 
 func newNodeServiceClient() (interface{}, *grpc.ClientConn, error) {
-	oauthKey := os.Getenv("OAUTH_TOKEN")
+	oauthKey := os.Getenv("BEARER_TOKEN")
 
 	rpcCredentials := oauth.TokenSource{TokenSource: OauthTokenSource{
 		AuthKey: oauthKey,
