@@ -67,7 +67,7 @@ func main() {
 
 		adapters := adapter.ListAdapters()
 
-		config.Loaded.Logger.Infow("send adapters to node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "total", len(adapters))
+		config.Loaded.Logger.Infow("send feeds to node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "total", len(adapters))
 
 		for _, adapterCfg := range adapters {
 			adapterCfg := adapterCfg
