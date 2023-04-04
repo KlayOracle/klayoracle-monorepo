@@ -106,4 +106,5 @@ message Feed {
   repeated Header headers = 2;
   RequestType request_type = 3;
   repeated Reducer reducers = 4;
+  string payload = 5;
 }

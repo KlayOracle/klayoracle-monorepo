@@ -1,6 +1,7 @@
 package adapter
 
 import (
+	"encoding/json"
 	"os"
 	"path"
 	"testing"
@@ -31,7 +32,8 @@ func TestAdapterMarshalOk(t *testing.T) {
 						"url": "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=KLAY&tsyms=USD",
 						"request_type": 0,
 						"headers": [{"field": {"Content-Type" : "application/json"}},{"field": {"Authorization" : "${BEARER_TOKEN}"}}],
-						"reducers": [{"function": "PARSE","args": ["RAW","KLAY","USD","PRICE"]},{"function": "MUL","args": ["1000000000"]}]
+						"reducers": [{"function": "PARSE","args": ["RAW","KLAY","USD","PRICE"]},{"function": "MUL","args": ["1000000000"]}],
+      					"payload": "{\"type\":\"limit\",\"side\":\"buy\",\"price\":1.058e-9,\"size\":100,\"currency\":[\"USDT_BTC\",\"WEMIX_KLAY\",\"KLAY_USDT\"]}"
 						},
 						{
 						"url": "https://rest.coinapi.io/v1/exchangerate/KLAY/USD",
@@ -79,6 +81,7 @@ func TestAdapterMarshalOk(t *testing.T) {
 					Args:     []string{"1000000000"},
 				},
 			},
+			Payload: `{"type":"limit","side":"buy","price":1.058e-9,"size":100,"currency":["USDT_BTC","WEMIX_KLAY","KLAY_USDT"]}`,
 		},
 		{
 			Url:         "https://rest.coinapi.io/v1/exchangerate/KLAY/USD",
@@ -133,6 +136,13 @@ func TestAdapterMarshalOk(t *testing.T) {
 			assert.Equal(t, reducer.Function, importedReducer.Function)
 			assert.EqualValues(t, reducer.Args, importedReducer.Args)
 		}
+
+		var payload1, payload2 interface{}
+
+		json.Unmarshal([]byte(feed.Payload), &payload1)
+		json.Unmarshal([]byte(importedFeed.Payload), &payload2)
+
+		assert.Equal(t, payload1, payload2)
 	}
 
 }
