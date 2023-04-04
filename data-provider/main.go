@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
 	"log"
 	"net"
 	"os"
 	"path"
 	"time"
+
+	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
 
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/adapter"
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/config"
