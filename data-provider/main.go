@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
 	"log"
 	"net"
 	"os"
@@ -77,6 +78,41 @@ func main() {
 
 				for t := range ticker.C {
 					config.Loaded.Logger.Infow("sending adapter request to service node", "timer", t, "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "adapter", adapterCfg.AdapterId, "name", adapterCfg.Name)
+
+					func() {
+						ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+						defer cancel()
+
+						ctx = context.WithValue(ctx, "provider", os.Getenv("HOST_IP"))
+						client := protonode.NewNodeServiceClient(conn)
+
+						stream, err := client.QueueJob(ctx)
+						if err != nil {
+							config.Loaded.Logger.Fatalw("error sending adapter request to service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
+						}
+
+						nodeAdapter := new(protonode.Adapter)
+
+						adapter.CastBtwDPInfo(adapterCfg, nodeAdapter)
+
+						fmt.Println(nodeAdapter)
+						fmt.Println("Stream: ", stream)
+						//if err = stream.Send(nodeAdapter); err != nil {
+						//	config.Loaded.Logger.Warnw("error sending adapter request to service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
+						//}
+						//
+						//oracleRequest, err := stream.Recv()
+						//if err != nil {
+						//	config.Loaded.Logger.Warnw("error receiving oracle request response from service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
+						//}
+						//
+						//if err = stream.CloseSend(); err != nil {
+						//	config.Loaded.Logger.Warnw("error receiving oracle request response from service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
+						//}
+						//
+						//fmt.Println("Oracle Request: ", oracleRequest)
+
+					}()
 				}
 			}()
 		}
@@ -86,7 +122,7 @@ func main() {
 		select {
 		case conn := <-connChan:
 			config.Loaded.Logger.Info("closing client connection to ", conn.Target())
-			conn.Close()
+			//conn.Close()
 		case <-ctx.Done(): //If DP Server crashes or Handshake fails
 			s.Stop() //Don't take chances with resources and be sure DP Service closes
 			fmt.Println("data provider operation... exited")

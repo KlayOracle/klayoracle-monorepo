@@ -75,23 +75,32 @@ func (n *Node) HandShake(ctx context.Context, provider *protonode.DPInfo) (*prot
 
 func (n *Node) QueueJob(stream protonode.NodeService_QueueJobServer) error {
 	for {
+		provider := stream.Context().Value("provider").(string)
 		adapterData, err := stream.Recv()
 		if err == io.EOF {
 			config.Loaded.Logger.Infow("no adapter request available to read",
 				"service node",
-				os.Getenv("HOST_IP"), "data provider", "", "adapter", adapterData.AdapterId, "name", adapterData.Name)
+				os.Getenv("HOST_IP"), "data provider", provider, "adapter", adapterData.AdapterId, "name", adapterData.Name)
 
 			return nil
 		}
 		if err != nil {
 			config.Loaded.Logger.Infow("error reading adapter request",
 				"service node",
-				os.Getenv("HOST_IP"), "data provider", "Unknown")
+				os.Getenv("HOST_IP"), "data provider", provider)
 
 			return err
 		}
 
-		n.Jobs <- adapterData
+		_, ok := n.dataProviders[provider]
+
+		if ok {
+			config.Loaded.Logger.Infow("new queue request", "from", provider, "request", adapterData)
+			n.Jobs <- adapterData
+		} else {
+			config.Loaded.Logger.Warnw("adapter has not registered an handshake", "service node",
+				os.Getenv("HOST_IP"), "data provider", adapterData.AdapterId)
+		}
 	}
 
 	return nil

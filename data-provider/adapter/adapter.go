@@ -191,14 +191,14 @@ func (dp *DataProvider) AddToKnownPeers(ctx context.Context, info *protoadapter.
 
 	dpInfo := new(protonode.DPInfo)
 
-	castBtwDPInfo(info, dpInfo)
+	CastBtwDPInfo(info, dpInfo)
 
 	dp.knownPeers[info.ListenAddress] = dpInfo
 
 	return new(protoadapter.Null), nil
 }
 
-func castBtwDPInfo(from, to interface{}) error {
+func CastBtwDPInfo(from, to interface{}) error {
 	b, err := json.Marshal(from)
 
 	if err != nil {
