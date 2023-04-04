@@ -75,11 +75,8 @@ func main() {
 			go func() {
 				ticker := time.NewTicker(time.Duration(adapterCfg.Frequency))
 
-				for {
-					select {
-					case t := <-ticker.C:
-						config.Loaded.Logger.Infow("sending adapter request to service node", "timer", t, "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "adapter", adapterCfg.AdapterId, "name", adapterCfg.Name)
-					}
+				for t := range ticker.C {
+					config.Loaded.Logger.Infow("sending adapter request to service node", "timer", t, "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "adapter", adapterCfg.AdapterId, "name", adapterCfg.Name)
 				}
 			}()
 		}
