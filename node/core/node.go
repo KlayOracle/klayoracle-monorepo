@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"path"
 	"strings"
@@ -38,6 +39,7 @@ type Node struct {
 	Sever         *grpc.Server
 	dataProviders map[string]*protonode.DPInfo
 	mu            sync.Mutex
+	Jobs          chan *protonode.Adapter //Using multiple routines to R&W to channel is safe without mutex.
 }
 
 func (n *Node) HandShake(ctx context.Context, provider *protonode.DPInfo) (*protonode.HandShakeStatus, error) {
@@ -51,10 +53,6 @@ func (n *Node) HandShake(ctx context.Context, provider *protonode.DPInfo) (*prot
 	n.mu.Lock()
 	defer n.mu.Unlock()
 
-	config.Loaded.Logger.Infow("registering provider with service node ", "provider", provider.ListenAddress, "service node", os.Getenv("HOST_IP"))
-
-	n.dataProviders[provider.ListenAddress] = provider
-
 	config.Loaded.Logger.Infow("attempting to add provider to all bootstrap dp known peers ", "listen address", provider.ListenAddress)
 
 	if slices.Contains(bootstrap.Nodes(), provider.ListenAddress) {
@@ -67,8 +65,36 @@ func (n *Node) HandShake(ctx context.Context, provider *protonode.DPInfo) (*prot
 		}
 	}
 
+	config.Loaded.Logger.Infow("registering provider with service node ", "provider", provider.ListenAddress, "service node", os.Getenv("HOST_IP"))
+
+	n.dataProviders[provider.ListenAddress] = provider
+
 	//Check DP Peers to find out Org is not yet registered
 	return &protonode.HandShakeStatus{Status: true, ErrorMsg: ""}, nil
+}
+
+func (n *Node) QueueJob(stream protonode.NodeService_QueueJobServer) error {
+	for {
+		adapterData, err := stream.Recv()
+		if err == io.EOF {
+			config.Loaded.Logger.Infow("no adapter request available to read",
+				"service node",
+				os.Getenv("HOST_IP"), "data provider", "", "adapter", adapterData.AdapterId, "name", adapterData.Name)
+
+			return nil
+		}
+		if err != nil {
+			config.Loaded.Logger.Infow("error reading adapter request",
+				"service node",
+				os.Getenv("HOST_IP"), "data provider", "Unknown")
+
+			return err
+		}
+
+		n.Jobs <- adapterData
+	}
+
+	return nil
 }
 
 func addPeer(p *protonode.DPInfo) error {
@@ -191,7 +217,7 @@ func newDPClient(listenAddr string) (protoadapter.DataProviderServiceClient, err
 	return protoadapter.NewDataProviderServiceClient(conn), nil
 }
 
-func NewNodeServiceServer() (*grpc.Server, error) {
+func NewNodeServiceServer(n *Node) (*grpc.Server, error) {
 	certFilePath := path.Join(config.Loaded.RootWD, "certs/host", config.Loaded.SSL.Certificate)
 	keyFilePath := path.Join(config.Loaded.RootWD, "certs/host", config.Loaded.SSL.Key)
 
@@ -206,10 +232,10 @@ func NewNodeServiceServer() (*grpc.Server, error) {
 	}
 	s := grpc.NewServer(opts...)
 
-	protonode.RegisterNodeServiceServer(s, &Node{
-		dataProviders: make(map[string]*protonode.DPInfo),
-		Sever:         s,
-	})
+	n.dataProviders = make(map[string]*protonode.DPInfo)
+	n.Sever = s
+
+	protonode.RegisterNodeServiceServer(s, n)
 
 	config.Loaded.Logger.Info("starting Node service on ", os.Getenv("HOST_IP"))
 

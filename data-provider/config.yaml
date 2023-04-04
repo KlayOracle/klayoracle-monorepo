@@ -1,10 +1,10 @@
 env: dev #options: dev, stage, production
-service_node: 0.0.0.0:50051
+service_node: bootstrap_node1:50051
 feed:
   path: "feeds"
   adapters:
     - KLAY_USD.json
-    - RANDOM.json
+    - WEMIX_USD.json
 organization:
   k_org_id: 535797165684
   name: "KlayOracle Inc."

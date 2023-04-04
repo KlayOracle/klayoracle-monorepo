@@ -45,5 +45,24 @@ ADAPTERS="KLAY_USD.json WEMIX_USD.json" make adapter-id-gen
 
 Replace `KLAY_USD.json WEMIX_USD.json` with you list of Adapters to generate a new `adapter_id` for, seperated by single space.
 
-## Step 3
+## Step 3 : Start Node
 
+```shell
+PORT=50051 make node-image
+HOST_PORT=50051 NODE_PORT=50051 make node-container
+```
+
+While making image port `50051` will be exposed and while running container `HOST_PORT` on host is bind to `NODE_PORT`.
+
+## Step 4 : Run 4 DP
+
+In Dev "0.0.0.0:50002", "0.0.0.0:50003", "0.0.0.0:50004" are bootstrap data providers.
+
+Run 3 DP containers for bootstraps and several others. The bootstrap data providers will register all joining dp and you should see them in container logs as they join.
+
+```shell
+PORT=50052 make dp-image
+
+
+
+In reality, all of this will be running on different host, independently. So when the host is down all the nodes or dp won't go offline at once.

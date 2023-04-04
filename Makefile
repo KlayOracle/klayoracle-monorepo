@@ -1,3 +1,4 @@
+NETWORK=$(shell docker network list | grep "klayoracle")
 
 .PHONY: proto-installed
 proto-installed:
@@ -27,17 +28,24 @@ gomodtidy-dp: ## Run go mod tidy on all modules.
 test-dp:
 	@cd ./data-provider && go test -v ./...
 
+.PHONY: test-node
+test-node:
+	@cd ./node && go test -v ./...
+
+
 .PHONY: build-adapter-id-gen
 build-adapter-id-gen:
 	@cd ./data-provider/utils/generateadptid && go build -o ../bin/generate_adapter_id generate_adapter_id.go
 
 .PHONY: adapter-id-gen
 adapter-id-gen: build-adapter-id-gen
-	@if [ -z "$(ADAPTERS)" ]; then \
-		echo "Specify valid adapter files. ADAPTERS="KLAY_USD.json WEMIX_USD.json""; \
-	else \
-		cd data-provider && ./bin/generate_adapter_id $(ADAPTERS); \
-	fi
+	cd data-provider/utils &&  go run generateadptid/generate_adapter_id.go ${ADAPTERS}
+
+#	@if [ -z "$(ADAPTERS)" ]; then \
+#		echo "Specify valid adapter files. ADAPTERS="KLAY_USD.json WEMIX_USD.json""; \
+#	else \
+#		cd data-provider && ./bin/generate_adapter_id $(ADAPTERS); \
+#	fi
 
 .PHONY: node-server
 node-server:
@@ -64,6 +72,23 @@ build-node:
 node-image:
 	@docker build -t klayoracle-node:dev -f node.Dockerfile . --build-arg PORT=${PORT}
 
-.PHONY: node-container
-node-container:
-	@docker run -d -p ${HOST_PORT}:${NODE_PORT} --env-file node/.env klayoracle-node:dev
+.PHONY: dp-image
+dp-image:
+	@docker build -t klayoracle-dp:dev -f dp.Dockerfile . --build-arg PORT=${PORT}
+
+.PHONY: docker-network
+docker-network:
+	@if [ -z "$(NETWORK)" ];	then	\
+    	 docker network create klayoracle;		\
+    else \
+    	echo "$(NETWORK)";	\
+    fi
+
+.PHONY: net-cluster
+net-cluster:
+	@make docker-network
+	docker run -d --net klayoracle --name bootstrap_node1 --env-file node/.env klayoracle-node:dev
+	docker run -d --net klayoracle --name bootstrap_dp1 --env-file data-provider/.env --env HOST_IP=bootstrap_dp1:50002 klayoracle-dp:dev
+	docker run -d --net klayoracle --name bootstrap_dp2 --env-file data-provider/.env --env HOST_IP=bootstrap_dp2:50002 klayoracle-dp:dev
+	docker run -d --net klayoracle --name bootstrap_dp3 --env-file data-provider/.env --env HOST_IP=bootstrap_dp3:50002 klayoracle-dp:dev
+	docker run -d --net klayoracle --name common_dp --env-file data-provider/.env --env HOST_IP=common_dp:50002 klayoracle-dp:dev

@@ -6,6 +6,18 @@ package protonode;
 
 service NodeService {
   rpc HandShake(DPInfo) returns (HandShakeStatus);
+
+  rpc QueueJob(stream Adapter) returns(stream OracleRequest);
+}
+
+message OracleRequest {
+  bytes request_id = 1;
+  bytes nodeAddress = 2;
+  bytes adapter_id = 3;
+  bytes callback_function_id = 4;
+  bytes callback_contract = 5;
+  bytes data = 6;
+  bytes timestamp = 7;  //Gets it as uint256, but since proto types only support uint64, we do this to avoid truncation
 }
 
 message DPInfo {
@@ -23,4 +35,56 @@ message DPInfos {
 message HandShakeStatus {
   bool status = 1;
   string error_msg = 2;
+}
+
+
+enum JobTypes {
+  DATA_FEED = 0;
+  RANDOM_NUMBER = 1;
+}
+
+enum RequestType {
+  GET = 0;
+  POST = 1;
+}
+
+enum FeedCategory {
+  RNG = 0;          // random number generator
+  SPORT = 1;        // live scores, past data e.t.c
+  PRICE_FEED = 2;   // data such as spot prices
+  WEATHER = 3;      // transactions or balances happening on other blockchains
+  FLIGHT  = 4;      // departure and arrival statuses on-chain
+  BLOCKCHAIN = 5;   // transactions or balances happening on other blockchains
+  NFT_DATA = 6;     // floor Prices, Asset Listings, Collection Details
+}
+
+message Adapter {
+  bool active = 1;
+  string name = 2;
+  JobTypes job_type = 3;
+  string adapter_id = 4;
+  string oracle_address = 5;
+  repeated Feed feeds = 6;
+  FeedCategory category = 7;
+  int64 frequency = 8;
+}
+
+message Adapters {
+  repeated Adapter adapters = 1;
+}
+
+message Reducer {
+  string function = 1;
+  repeated string args = 2;
+}
+
+message Feed {
+  string url = 1;
+  message Header {
+    map<string, string> field = 1;
+  }
+  repeated Header headers = 2;
+  RequestType request_type = 3;
+  repeated Reducer reducers = 4;
+  string payload = 5;
 }

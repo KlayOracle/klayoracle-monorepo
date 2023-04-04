@@ -25,7 +25,6 @@ service DataProviderService {
 //  rpc ListAdapters(Node) returns (stream Adapter);
 }
 
-
 message DPInfo {
   string listen_address = 1;
   string name = 2;
@@ -87,6 +86,7 @@ message Adapter {
   string oracle_address = 5;
   repeated Feed feeds = 6;
   FeedCategory category = 7;
+  int64 frequency = 8;
 }
 
 message Adapters {
@@ -106,4 +106,5 @@ message Feed {
   repeated Header headers = 2;
   RequestType request_type = 3;
   repeated Reducer reducers = 4;
+  string payload = 5;
 }

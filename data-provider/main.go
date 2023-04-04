@@ -6,6 +6,7 @@ import (
 	"net"
 	"os"
 	"path"
+	"time"
 
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/adapter"
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/config"
@@ -21,8 +22,14 @@ func main() {
 		log.Fatal("cannot determine working directory: ", err)
 	}
 
+	if os.Getenv("WORK_DIR") != "" {
+		wd = os.Getenv("WORK_DIR")
+	}
+
 	//Load config, logger e.t.c
 	boot.Boot(wd, path.Join(wd, "config.yaml"), path.Join(wd, ".env"))
+
+	config.Loaded.Logger.Info("Working directory: ", wd)
 
 	dp := adapter.NewDataProvider()
 
@@ -57,6 +64,22 @@ func main() {
 			cancel()
 			config.Loaded.Logger.Fatal("DP Handshake: ", err)
 		}
+
+		adapters := adapter.ListAdapters()
+
+		config.Loaded.Logger.Infow("send feeds to node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "total", len(adapters))
+
+		for _, adapterCfg := range adapters {
+			adapterCfg := adapterCfg
+
+			go func() {
+				ticker := time.NewTicker(time.Duration(adapterCfg.Frequency))
+
+				for t := range ticker.C {
+					config.Loaded.Logger.Infow("sending adapter request to service node", "timer", t, "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "adapter", adapterCfg.AdapterId, "name", adapterCfg.Name)
+				}
+			}()
+		}
 	}()
 
 	for {
@@ -65,7 +88,7 @@ func main() {
 			config.Loaded.Logger.Info("closing client connection to ", conn.Target())
 			conn.Close()
 		case <-ctx.Done(): //If DP Server crashes or Handshake fails
-			//s.Stop() //Don't take chances with resources and be sure DP Service closes
+			s.Stop() //Don't take chances with resources and be sure DP Service closes
 			fmt.Println("data provider operation... exited")
 			return
 		}
