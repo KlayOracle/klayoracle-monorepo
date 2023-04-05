@@ -82,7 +82,7 @@ func main() {
 					func() {
 						cfg, conn, err := adapter.NewNodeServiceClient()
 						defer conn.Close()
-						
+
 						if err != nil {
 							config.Loaded.Logger.Warnw("error sending adapter request to service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
 						}
