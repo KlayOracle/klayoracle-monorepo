@@ -81,6 +81,9 @@ func main() {
 
 					func() {
 						cfg, conn, err := adapter.NewNodeServiceClient()
+						if err != nil {
+							config.Loaded.Logger.Fatalw("error sending adapter request to service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
+						}
 						defer conn.Close()
 
 						client := cfg.(protonode.NodeServiceClient)
