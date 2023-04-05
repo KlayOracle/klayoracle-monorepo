@@ -60,7 +60,7 @@ func main() {
 	go func() {
 		conn, err := dp.HandShake()
 		defer func() {
-			err := conn.Close()
+			err = conn.Close()
 			config.Loaded.Logger.Warnw("Cannot close connection", "error", err)
 		}()
 
@@ -85,7 +85,7 @@ func main() {
 					func() {
 						cfg, conn, err := adapter.NewNodeServiceClient()
 						defer func() {
-							err := conn.Close()
+							err = conn.Close()
 							config.Loaded.Logger.Warnw("Cannot close connection", "error", err)
 						}()
 
