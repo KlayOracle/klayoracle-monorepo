@@ -81,10 +81,11 @@ func main() {
 
 					func() {
 						cfg, conn, err := adapter.NewNodeServiceClient()
-						if err != nil {
-							config.Loaded.Logger.Fatalw("error sending adapter request to service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
-						}
 						defer conn.Close()
+						
+						if err != nil {
+							config.Loaded.Logger.Warnw("error sending adapter request to service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
+						}
 
 						client := cfg.(protonode.NodeServiceClient)
 
@@ -95,13 +96,13 @@ func main() {
 						nodeAdapter := new(protonode.Adapter)
 						err = adapter.CastBtwDPInfo(adapterCfg, nodeAdapter)
 						if err != nil {
-							config.Loaded.Logger.Fatalw("error sending adapter request to service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
+							config.Loaded.Logger.Warnw("error sending adapter request to service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
 						}
 
 						status, err := client.QueueJob(ctx, nodeAdapter)
 
 						if err != nil || status.Status == 1 {
-							config.Loaded.Logger.Fatalw("error sending adapter request to service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
+							config.Loaded.Logger.Warnw("error sending adapter request to service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
 						}
 
 					}()
