@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	"google.golang.org/grpc/metadata"
 	"log"
 	"net"
 	"os"
 	"path"
 	"time"
+
+	"google.golang.org/grpc/metadata"
 
 	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
 
