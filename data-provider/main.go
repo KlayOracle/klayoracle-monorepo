@@ -59,7 +59,10 @@ func main() {
 	//Create client and start handshake to Node Service
 	go func() {
 		conn, err := dp.HandShake()
-		defer conn.Close()
+		defer func() {
+			err := conn.Close()
+			config.Loaded.Logger.Warnw("Cannot close connection", "error", err)
+		}()
 
 		if err != nil {
 			cancel()
@@ -81,6 +84,11 @@ func main() {
 
 					func() {
 						cfg, conn, err := adapter.NewNodeServiceClient()
+						defer func() {
+							err := conn.Close()
+							config.Loaded.Logger.Warnw("Cannot close connection", "error", err)
+						}()
+
 						if err != nil {
 							config.Loaded.Logger.Warnw("error sending adapter request to service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
 						}
@@ -98,11 +106,11 @@ func main() {
 						}
 
 						status, err := client.QueueJob(ctx, nodeAdapter)
+
 						if err != nil || status.Status == 1 {
 							config.Loaded.Logger.Warnw("error sending adapter request to service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
 						}
 
-						defer conn.Close()
 					}()
 				}
 			}()
