@@ -85,7 +85,7 @@ func main() {
 
 						client := cfg.(protonode.NodeServiceClient)
 
-						ctx := context.Background()
+						ctx = context.Background()
 						md := metadata.Pairs("provider", os.Getenv("HOST_IP"))
 						ctx = metadata.NewOutgoingContext(ctx, md)
 
