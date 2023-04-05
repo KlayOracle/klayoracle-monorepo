@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net"
 	"os"
@@ -50,14 +49,9 @@ func main() {
 		}
 	}()
 
-	for {
-		select {
-		case job := <-n.Jobs:
-			fmt.Printf("Adapter Job: %v", job)
-		case <-shutServer: //If DP Server crashes or Handshake fails
-			s.Stop()
-			config.Loaded.Logger.Fatal("failed to serve: %v", err)
-			return
-		}
+	for range shutServer {
+		s.Stop()
+		config.Loaded.Logger.Fatal("failed to serve: %v", err)
+		return
 	}
 }
