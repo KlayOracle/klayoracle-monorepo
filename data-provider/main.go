@@ -107,12 +107,17 @@ func main() {
 		}
 	}()
 
-	for {
-		select {
-		case <-ctx.Done(): //If DP Server crashes or Handshake fails
-			s.Stop() //Don't take chances with resources and be sure DP Service closes
-			fmt.Println("data provider operation... exited")
-			return
-		}
+	for range ctx.Done() {
+		s.Stop() //Don't take chances with resources and be sure DP Service closes
+		fmt.Println("data provider operation... exited")
+		return
 	}
+	//for {
+	//	select {
+	//	case <-ctx.Done(): //If DP Server crashes or Handshake fails
+	//		s.Stop() //Don't take chances with resources and be sure DP Service closes
+	//		fmt.Println("data provider operation... exited")
+	//		return
+	//	}
+	//}
 }
