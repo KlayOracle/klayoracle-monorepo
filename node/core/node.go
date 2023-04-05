@@ -5,7 +5,6 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"io"
 	"os"
 	"path"
 	"strings"
@@ -39,7 +38,7 @@ type Node struct {
 	Sever         *grpc.Server
 	dataProviders map[string]*protonode.DPInfo
 	mu            sync.Mutex
-	Jobs          chan *protonode.Adapter //Using multiple routines to R&W to channel is safe without mutex.
+	Jobs          []*protonode.Adapter //Using multiple routines to R&W to channel is safe without mutex.
 }
 
 func (n *Node) HandShake(ctx context.Context, provider *protonode.DPInfo) (*protonode.HandShakeStatus, error) {
@@ -73,37 +72,31 @@ func (n *Node) HandShake(ctx context.Context, provider *protonode.DPInfo) (*prot
 	return &protonode.HandShakeStatus{Status: true, ErrorMsg: ""}, nil
 }
 
-func (n *Node) QueueJob(stream protonode.NodeService_QueueJobServer) error {
-	for {
-		provider := stream.Context().Value("provider").(string)
-		adapterData, err := stream.Recv()
-		if err == io.EOF {
-			config.Loaded.Logger.Infow("no adapter request available to read",
-				"service node",
-				os.Getenv("HOST_IP"), "data provider", provider, "adapter", adapterData.AdapterId, "name", adapterData.Name)
+func (n *Node) QueueJob(ctx context.Context, adapter *protonode.Adapter) (*protonode.RequestStatus, error) {
+	md, _ := metadata.FromIncomingContext(ctx)
+	provider := md["provider"][0]
 
-			return nil
-		}
-		if err != nil {
-			config.Loaded.Logger.Infow("error reading adapter request",
-				"service node",
-				os.Getenv("HOST_IP"), "data provider", provider)
+	_, ok := n.dataProviders[provider]
 
-			return err
-		}
+	if ok {
+		config.Loaded.Logger.Infow("new queue request", "data provider", provider, "request", adapter)
+		n.mu.Lock()
+		defer n.mu.Unlock()
+		n.Jobs = append(n.Jobs, adapter)
 
-		_, ok := n.dataProviders[provider]
+		config.Loaded.Logger.Info("Job in queue: ", len(n.Jobs))
+	} else {
+		config.Loaded.Logger.Warnw("adapter has not registered an handshake", "service node",
+			os.Getenv("HOST_IP"), "data provider", provider)
 
-		if ok {
-			config.Loaded.Logger.Infow("new queue request", "from", provider, "request", adapterData)
-			n.Jobs <- adapterData
-		} else {
-			config.Loaded.Logger.Warnw("adapter has not registered an handshake", "service node",
-				os.Getenv("HOST_IP"), "data provider", adapterData.AdapterId)
-		}
+		return &protonode.RequestStatus{
+			Status: 1,
+		}, fmt.Errorf("adapter has not registered an handshake")
 	}
 
-	return nil
+	return &protonode.RequestStatus{
+		Status: 0,
+	}, nil
 }
 
 func addPeer(p *protonode.DPInfo) error {

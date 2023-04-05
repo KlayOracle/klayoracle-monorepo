@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"google.golang.org/grpc/metadata"
 	"log"
 	"net"
 	"os"
@@ -11,11 +12,9 @@ import (
 	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
 
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/adapter"
+	"github.com/klayoracle/klayoracle-monorepo/data-provider/boot"
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/config"
 	"golang.org/x/net/context"
-	"google.golang.org/grpc"
-
-	"github.com/klayoracle/klayoracle-monorepo/data-provider/boot"
 )
 
 func main() {
@@ -42,7 +41,6 @@ func main() {
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
-	connChan := make(chan *grpc.ClientConn)
 
 	lis, err := net.Listen("tcp", os.Getenv("HOST_IP"))
 	if err != nil {
@@ -60,7 +58,7 @@ func main() {
 	//Create client and start handshake to Node Service
 	go func() {
 		conn, err := dp.HandShake()
-		connChan <- conn
+		defer conn.Close()
 
 		if err != nil {
 			cancel()
@@ -81,37 +79,23 @@ func main() {
 					config.Loaded.Logger.Infow("sending adapter request to service node", "timer", t, "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "adapter", adapterCfg.AdapterId, "name", adapterCfg.Name)
 
 					func() {
-						ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-						defer cancel()
+						cfg, conn, err := adapter.NewNodeServiceClient()
+						defer conn.Close()
 
-						ctx = context.WithValue(ctx, "provider", os.Getenv("HOST_IP"))
-						client := protonode.NewNodeServiceClient(conn)
+						client := cfg.(protonode.NodeServiceClient)
 
-						stream, err := client.QueueJob(ctx)
-						if err != nil {
-							config.Loaded.Logger.Fatalw("error sending adapter request to service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
-						}
+						ctx := context.Background()
+						md := metadata.Pairs("provider", os.Getenv("HOST_IP"))
+						ctx = metadata.NewOutgoingContext(ctx, md)
 
 						nodeAdapter := new(protonode.Adapter)
-
 						adapter.CastBtwDPInfo(adapterCfg, nodeAdapter)
 
-						fmt.Println(nodeAdapter)
-						fmt.Println("Stream: ", stream)
-						//if err = stream.Send(nodeAdapter); err != nil {
-						//	config.Loaded.Logger.Warnw("error sending adapter request to service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
-						//}
-						//
-						//oracleRequest, err := stream.Recv()
-						//if err != nil {
-						//	config.Loaded.Logger.Warnw("error receiving oracle request response from service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
-						//}
-						//
-						//if err = stream.CloseSend(); err != nil {
-						//	config.Loaded.Logger.Warnw("error receiving oracle request response from service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
-						//}
-						//
-						//fmt.Println("Oracle Request: ", oracleRequest)
+						status, err := client.QueueJob(ctx, nodeAdapter)
+
+						if err != nil || status.Status == 1 {
+							config.Loaded.Logger.Fatalw("error sending adapter request to service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
+						}
 
 					}()
 				}
@@ -121,9 +105,6 @@ func main() {
 
 	for {
 		select {
-		case conn := <-connChan:
-			config.Loaded.Logger.Info("closing client connection to ", conn.Target())
-			//conn.Close()
 		case <-ctx.Done(): //If DP Server crashes or Handshake fails
 			s.Stop() //Don't take chances with resources and be sure DP Service closes
 			fmt.Println("data provider operation... exited")

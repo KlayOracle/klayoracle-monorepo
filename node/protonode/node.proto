@@ -7,7 +7,16 @@ package protonode;
 service NodeService {
   rpc HandShake(DPInfo) returns (HandShakeStatus);
 
-  rpc QueueJob(stream Adapter) returns(stream OracleRequest);
+  rpc QueueJob(Adapter) returns(RequestStatus);
+}
+
+enum Status {
+  OK = 0;
+  NOT_OK = 1;
+}
+
+message RequestStatus {
+  uint64 Status = 1;
 }
 
 message OracleRequest {

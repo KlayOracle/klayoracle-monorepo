@@ -102,7 +102,7 @@ func (dp *DataProvider) NewDataProviderService() (*grpc.Server, error) {
 }
 
 func (dp *DataProvider) HandShake() (*grpc.ClientConn, error) {
-	cfg, conn, error := newNodeServiceClient()
+	cfg, conn, error := NewNodeServiceClient()
 	client := cfg.(protonode.NodeServiceClient)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second) //Enough time to authenticate and add DP to known peers
@@ -136,7 +136,7 @@ func (s OauthTokenSource) Token() (token *oauth2.Token, err error) {
 	}, nil
 }
 
-func newNodeServiceClient() (interface{}, *grpc.ClientConn, error) {
+func NewNodeServiceClient() (interface{}, *grpc.ClientConn, error) {
 	oauthKey := os.Getenv("OAUTH_TOKEN")
 
 	rpcCredentials := oauth.TokenSource{TokenSource: OauthTokenSource{

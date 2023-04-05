@@ -8,7 +8,6 @@ package protonode
 
 import (
 	context "context"
-
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -24,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NodeServiceClient interface {
 	HandShake(ctx context.Context, in *DPInfo, opts ...grpc.CallOption) (*HandShakeStatus, error)
-	QueueJob(ctx context.Context, opts ...grpc.CallOption) (NodeService_QueueJobClient, error)
+	QueueJob(ctx context.Context, in *Adapter, opts ...grpc.CallOption) (*RequestStatus, error)
 }
 
 type nodeServiceClient struct {
@@ -44,35 +43,13 @@ func (c *nodeServiceClient) HandShake(ctx context.Context, in *DPInfo, opts ...g
 	return out, nil
 }
 
-func (c *nodeServiceClient) QueueJob(ctx context.Context, opts ...grpc.CallOption) (NodeService_QueueJobClient, error) {
-	stream, err := c.cc.NewStream(ctx, &NodeService_ServiceDesc.Streams[0], "/protonode.NodeService/QueueJob", opts...)
+func (c *nodeServiceClient) QueueJob(ctx context.Context, in *Adapter, opts ...grpc.CallOption) (*RequestStatus, error) {
+	out := new(RequestStatus)
+	err := c.cc.Invoke(ctx, "/protonode.NodeService/QueueJob", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &nodeServiceQueueJobClient{stream}
-	return x, nil
-}
-
-type NodeService_QueueJobClient interface {
-	Send(*Adapter) error
-	Recv() (*OracleRequest, error)
-	grpc.ClientStream
-}
-
-type nodeServiceQueueJobClient struct {
-	grpc.ClientStream
-}
-
-func (x *nodeServiceQueueJobClient) Send(m *Adapter) error {
-	return x.ClientStream.SendMsg(m)
-}
-
-func (x *nodeServiceQueueJobClient) Recv() (*OracleRequest, error) {
-	m := new(OracleRequest)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
+	return out, nil
 }
 
 // NodeServiceServer is the server API for NodeService service.
@@ -80,7 +57,7 @@ func (x *nodeServiceQueueJobClient) Recv() (*OracleRequest, error) {
 // for forward compatibility
 type NodeServiceServer interface {
 	HandShake(context.Context, *DPInfo) (*HandShakeStatus, error)
-	QueueJob(NodeService_QueueJobServer) error
+	QueueJob(context.Context, *Adapter) (*RequestStatus, error)
 	mustEmbedUnimplementedNodeServiceServer()
 }
 
@@ -91,8 +68,8 @@ type UnimplementedNodeServiceServer struct {
 func (UnimplementedNodeServiceServer) HandShake(context.Context, *DPInfo) (*HandShakeStatus, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HandShake not implemented")
 }
-func (UnimplementedNodeServiceServer) QueueJob(NodeService_QueueJobServer) error {
-	return status.Errorf(codes.Unimplemented, "method QueueJob not implemented")
+func (UnimplementedNodeServiceServer) QueueJob(context.Context, *Adapter) (*RequestStatus, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueueJob not implemented")
 }
 func (UnimplementedNodeServiceServer) mustEmbedUnimplementedNodeServiceServer() {}
 
@@ -125,30 +102,22 @@ func _NodeService_HandShake_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _NodeService_QueueJob_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(NodeServiceServer).QueueJob(&nodeServiceQueueJobServer{stream})
-}
-
-type NodeService_QueueJobServer interface {
-	Send(*OracleRequest) error
-	Recv() (*Adapter, error)
-	grpc.ServerStream
-}
-
-type nodeServiceQueueJobServer struct {
-	grpc.ServerStream
-}
-
-func (x *nodeServiceQueueJobServer) Send(m *OracleRequest) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func (x *nodeServiceQueueJobServer) Recv() (*Adapter, error) {
-	m := new(Adapter)
-	if err := x.ServerStream.RecvMsg(m); err != nil {
+func _NodeService_QueueJob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Adapter)
+	if err := dec(in); err != nil {
 		return nil, err
 	}
-	return m, nil
+	if interceptor == nil {
+		return srv.(NodeServiceServer).QueueJob(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protonode.NodeService/QueueJob",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NodeServiceServer).QueueJob(ctx, req.(*Adapter))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 // NodeService_ServiceDesc is the grpc.ServiceDesc for NodeService service.
@@ -162,14 +131,11 @@ var NodeService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "HandShake",
 			Handler:    _NodeService_HandShake_Handler,
 		},
-	},
-	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "QueueJob",
-			Handler:       _NodeService_QueueJob_Handler,
-			ServerStreams: true,
-			ClientStreams: true,
+			MethodName: "QueueJob",
+			Handler:    _NodeService_QueueJob_Handler,
 		},
 	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "node/protonode/node.proto",
 }

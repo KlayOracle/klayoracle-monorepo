@@ -57,11 +57,11 @@ dp-client:
 
 .PHONY: node-server-nolog
 node-server-nolog:
-	@cd ./node && go run main.go
+	@cd ./node && HOST_IP=0.0.0.0:50051 environment=local go run main.go
 
 .PHONY: dp-client-nolog
 dp-client-nolog:
-	@cd ./data-provider && go run main.go
+	@cd ./data-provider && HOST_IP=0.0.0.0:50002 go run main.go
 
 .PHONY: build-node
 build-node:
