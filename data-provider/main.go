@@ -90,7 +90,10 @@ func main() {
 						ctx = metadata.NewOutgoingContext(ctx, md)
 
 						nodeAdapter := new(protonode.Adapter)
-						adapter.CastBtwDPInfo(adapterCfg, nodeAdapter)
+						err = adapter.CastBtwDPInfo(adapterCfg, nodeAdapter)
+						if err != nil {
+							config.Loaded.Logger.Fatalw("error sending adapter request to service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
+						}
 
 						status, err := client.QueueJob(ctx, nodeAdapter)
 
