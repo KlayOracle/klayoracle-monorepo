@@ -3,10 +3,11 @@ package reducer
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/PaesslerAG/jsonpath"
 	"math/big"
 	"reflect"
 	"strconv"
+
+	"github.com/PaesslerAG/jsonpath"
 )
 
 func Parse(data interface{}, path string) (interface{}, error) {
