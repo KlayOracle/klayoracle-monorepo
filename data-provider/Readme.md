@@ -31,6 +31,11 @@ Example
 }
 ```
 
+### Understanding JSON path usage for PARSE Reducer
+
+- https://pkg.go.dev/github.com/PaesslerAG/jsonpath#example-Get
+- [node](../node/reducer/reducer_test.go)
+
 Add environment variables in the `.env` file. 
 E.g. In the sample above, `${X_COIN_API_KEY}` will be substituted using the value of `X_COIN_API_KEY` in the .env file.
 
@@ -60,9 +65,3 @@ In Dev "0.0.0.0:50002", "0.0.0.0:50003", "0.0.0.0:50004" are bootstrap data prov
 
 Run 3 DP containers for bootstraps and several others. The bootstrap data providers will register all joining dp and you should see them in container logs as they join.
 
-```shell
-PORT=50052 make dp-image
-
-
-
-In reality, all of this will be running on different host, independently. So when the host is down all the nodes or dp won't go offline at once.
