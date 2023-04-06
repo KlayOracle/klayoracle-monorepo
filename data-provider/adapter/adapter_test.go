@@ -32,14 +32,14 @@ func TestAdapterMarshalOk(t *testing.T) {
 						"url": "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=KLAY&tsyms=USD",
 						"request_type": 0,
 						"headers": [{"field": {"Content-Type" : "application/json"}},{"field": {"Authorization" : "${BEARER_TOKEN}"}}],
-						"reducers": [{"function": "PARSE","args": ["RAW","KLAY","USD","PRICE"]},{"function": "MUL","args": ["1000000000"]}],
+						"reducers": [{"function": "PARSE","args": ["$.RAW.KLAY.USD.PRICE"]},{"function": "MUL","args": ["1000000000"]}],
       					"payload": "{\"type\":\"limit\",\"side\":\"buy\",\"price\":1.058e-9,\"size\":100,\"currency\":[\"USDT_BTC\",\"WEMIX_KLAY\",\"KLAY_USDT\"]}"
 						},
 						{
 						"url": "https://rest.coinapi.io/v1/exchangerate/KLAY/USD",
 						"request_type": 1,
 						"headers": [{"field": {"X-CoinAPI-Key": "${X_COIN_API_KEY}"}}],
-						"reducers": [{"function": "PARSE","args": ["rate"]},{"function": "MUL","args": ["1000000000"]}]
+						"reducers": [{"function": "PARSE","args": ["$.rate"]},{"function": "MUL","args": ["1000000000"]}]
 						}
 					]
 				}
@@ -74,7 +74,7 @@ func TestAdapterMarshalOk(t *testing.T) {
 			Reducers: []*protoadapter.Reducer{
 				{
 					Function: "PARSE",
-					Args:     []string{"RAW", "KLAY", "USD", "PRICE"},
+					Args:     []string{"$.RAW.KLAY.USD.PRICE"},
 				},
 				{
 					Function: "MUL",
@@ -96,7 +96,7 @@ func TestAdapterMarshalOk(t *testing.T) {
 			Reducers: []*protoadapter.Reducer{
 				{
 					Function: "PARSE",
-					Args:     []string{"rate"},
+					Args:     []string{"$.rate"},
 				},
 				{
 					Function: "MUL",
