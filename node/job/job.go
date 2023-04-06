@@ -3,12 +3,13 @@ package job
 import (
 	"bytes"
 	"fmt"
-	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
-	"github.com/klayoracle/klayoracle-monorepo/node/reducer"
 	"io"
 	"math/big"
 	"net/http"
 	"time"
+
+	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
+	"github.com/klayoracle/klayoracle-monorepo/node/reducer"
 )
 
 var reducers = map[string]interface{}{

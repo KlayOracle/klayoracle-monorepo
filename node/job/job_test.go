@@ -1,12 +1,13 @@
 package job
 
 import (
-	"github.com/klayoracle/klayoracle-monorepo/node/boot"
-	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
-	"google.golang.org/protobuf/encoding/protojson"
 	"os"
 	"path"
 	"testing"
+
+	"github.com/klayoracle/klayoracle-monorepo/node/boot"
+	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 func TestJob(t *testing.T) {
