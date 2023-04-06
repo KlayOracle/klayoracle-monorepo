@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/PaesslerAG/jsonpath"
-	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
+	"math/big"
 	"reflect"
 	"strconv"
 )
 
-func PARSE(data interface{}, path string) (interface{}, error) {
+func Parse(data interface{}, path string) (interface{}, error) {
 	var jsonData interface{}
 
 	err := json.Unmarshal([]byte(data.(string)), &jsonData)
@@ -29,50 +29,52 @@ func PARSE(data interface{}, path string) (interface{}, error) {
 	return value, nil
 }
 
-// PARSE_DEPRECATED use PARSE instead
-func PARSE_DEPRECATED(data interface{}, arg protonode.Reducer) (interface{}, error) {
-	var (
-		jsonData interface{}
-		value    interface{}
-	)
-
-	err := json.Unmarshal([]byte(data.(string)), &jsonData)
+func StringToFloat64(value string) (float64, error) {
+	result, err := strconv.ParseFloat(value, 64)
 	if err != nil {
-		return nil, err
+		return 0, err
+	}
+	return result, nil
+}
+
+func StringToFloat32(value string, precision uint) (float32, error) {
+	result, err := strconv.ParseFloat(value, 32)
+	if err != nil {
+		return 0, err
+	}
+	return float32(result), nil
+}
+
+func StringToUint64(value string) (uint64, error) {
+	result, err := strconv.ParseUint(value, 10, 64)
+	if err != nil {
+		return 0, err
+	}
+	return result, nil
+}
+
+func Float64MulByUint(value float64, times uint64) (*big.Int, error) {
+	newFloatVal := new(big.Float).SetFloat64(value)
+	timesFloatVal := new(big.Float).SetUint64(times)
+
+	newFloatVal.Abs(newFloatVal)
+	newFloatVal.Mul(newFloatVal, timesFloatVal)
+
+	result := new(big.Int)
+	newFloatVal.Int(result)
+
+	if result.Cmp(big.NewInt(0)) == 0 {
+		return big.NewInt(0), fmt.Errorf("zero value returned")
 	}
 
-	jsonType := fmt.Sprintf("%T", jsonData)
+	return result, nil
+}
 
-	if jsonType == "[]interface {}" {
-		var result []interface{}
+func NumberDivByUint(value uint64, times uint64) (*big.Int, error) {
+	newUnitVal := new(big.Int).SetUint64(value)
+	divUnitVal := new(big.Int).SetUint64(times)
 
-		result = jsonData.([]interface{})
+	result := new(big.Int).Div(newUnitVal, divUnitVal)
 
-		for i := 0; i < len(arg.Args); i++ {
-			index, _ := strconv.ParseInt(arg.Args[i], 10, 64)
-
-			if i == len(arg.Args)-1 {
-				value = result[index]
-			} else {
-				result = result[index].([]interface{})
-			}
-		}
-	}
-
-	if jsonType == "map[string]interface {}" {
-		var result map[string]interface{}
-
-		result = jsonData.(map[string]interface{})
-
-		for i := 0; i < len(arg.Args); i++ {
-
-			if i == len(arg.Args)-1 {
-				value = result[arg.Args[i]]
-			} else {
-				result = result[arg.Args[i]].(map[string]interface{})
-			}
-		}
-	}
-
-	return value, nil
+	return result, nil
 }
