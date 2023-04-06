@@ -15,18 +15,16 @@
         },
         {
           "field":{
-            "Authorization":"${BEARER_TOKEN}"
+            "Authorization":"${CRYPTO_COMPARE_API_KEY}"
           }
         }
       ],
+      "requestType":0,
       "reducers":[
         {
           "function":"PARSE",
           "args":[
-            "RAW",
-            "KLAY",
-            "USD",
-            "PRICE"
+            "$.RAW.KLAY.USD.PRICE"
           ]
         },
         {
@@ -46,12 +44,12 @@
           }
         }
       ],
-      "requestType":"POST",
+      "requestType":0,
       "reducers":[
         {
           "function":"PARSE",
           "args":[
-            "rate"
+            "$.rate"
           ]
         },
         {

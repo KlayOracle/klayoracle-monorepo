@@ -77,5 +77,22 @@ func NumberDivByUint(value uint64, times uint64) (*big.Int, error) {
 
 	result := new(big.Int).Div(newUnitVal, divUnitVal)
 
+	if result.Cmp(big.NewInt(0)) == 0 {
+		return big.NewInt(0), fmt.Errorf("zero value returned")
+	}
+
+	return result, nil
+}
+
+func NumberMulByUint(value uint64, times uint64) (*big.Int, error) {
+	newUnitVal := new(big.Int).SetUint64(value)
+	divUnitVal := new(big.Int).SetUint64(times)
+
+	result := new(big.Int).Mul(newUnitVal, divUnitVal)
+
+	if result.Cmp(big.NewInt(0)) == 0 {
+		return big.NewInt(0), fmt.Errorf("zero value returned")
+	}
+
 	return result, nil
 }
