@@ -1,6 +1,8 @@
 package reducer
 
 import (
+	"math/big"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -41,7 +43,7 @@ func TestPARSE(t *testing.T) {
 
 	for index, jsonResponse := range jsons {
 
-		result, err := PARSE(jsonResponse, reducers[index])
+		result, err := Parse(jsonResponse, reducers[index])
 
 		if err != nil {
 			assert.Fail(t, err.Error())
@@ -49,4 +51,32 @@ func TestPARSE(t *testing.T) {
 
 		assert.Equal(t, result, results[index])
 	}
+}
+
+func TestReducer(t *testing.T) {
+
+	floatResult, err := Parse(jsons[2], reducers[2])
+
+	if err != nil {
+		assert.Fail(t, err.Error())
+	}
+
+	assert.Equal(t, floatResult, results[2])
+
+	stringFloat := strconv.FormatFloat(floatResult.(float64), 'E', -1, 64)
+
+	assert.Equal(t, stringFloat, "2.336E-01")
+
+	floatVal, err := StringToFloat64(stringFloat)
+	if err != nil {
+		assert.Fail(t, err.Error())
+	}
+	assert.Equal(t, floatVal, results[2])
+
+	uintResult, err := Float64MulByUint(floatVal, 1e9)
+	if err != nil {
+		assert.Fail(t, err.Error())
+	}
+
+	assert.Equal(t, uintResult, big.NewInt(233600000))
 }

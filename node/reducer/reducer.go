@@ -38,7 +38,7 @@ func StringToFloat64(value string) (float64, error) {
 	return result, nil
 }
 
-func StringToFloat32(value string, precision uint) (float32, error) {
+func StringToFloat32(value string) (float32, error) {
 	result, err := strconv.ParseFloat(value, 32)
 	if err != nil {
 		return 0, err
