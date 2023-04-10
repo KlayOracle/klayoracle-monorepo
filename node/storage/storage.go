@@ -2,9 +2,10 @@ package storage
 
 import (
 	"context"
-	"github.com/jackc/pgx/v4"
 	"log"
 	"os"
+
+	"github.com/jackc/pgx/v4"
 )
 
 var Conn *pgx.Conn

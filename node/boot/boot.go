@@ -1,8 +1,9 @@
 package boot
 
 import (
-	"github.com/klayoracle/klayoracle-monorepo/node/storage"
 	"path"
+
+	"github.com/klayoracle/klayoracle-monorepo/node/storage"
 
 	"github.com/joho/godotenv"
 

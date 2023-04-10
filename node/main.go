@@ -1,12 +1,13 @@
 package main
 
 import (
-	"github.com/klayoracle/klayoracle-monorepo/node/storage"
-	"google.golang.org/grpc"
 	"log"
 	"net"
 	"os"
 	"path"
+
+	"github.com/klayoracle/klayoracle-monorepo/node/storage"
+	"google.golang.org/grpc"
 
 	"github.com/klayoracle/klayoracle-monorepo/node/config"
 	"github.com/klayoracle/klayoracle-monorepo/node/core"
