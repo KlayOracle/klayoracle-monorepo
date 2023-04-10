@@ -1,12 +1,12 @@
 package main
 
 import (
+	"github.com/klayoracle/klayoracle-monorepo/node/storage"
+	"google.golang.org/grpc"
 	"log"
 	"net"
 	"os"
 	"path"
-
-	"google.golang.org/grpc"
 
 	"github.com/klayoracle/klayoracle-monorepo/node/config"
 	"github.com/klayoracle/klayoracle-monorepo/node/core"
@@ -25,6 +25,7 @@ func main() {
 	}
 
 	boot.Boot(wd, path.Join(wd, "config.yaml"), path.Join(wd, ".env"))
+	defer storage.Conn.Close(storage.ConnCtx)
 
 	config.Loaded.Logger.Info("Working directory: ", wd)
 

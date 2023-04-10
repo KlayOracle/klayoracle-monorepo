@@ -22,6 +22,14 @@ var reducers = map[string]interface{}{
 	"UINT_MUL_UINT":      reducer.NumberMulByUint,
 }
 
+// Aggregate Off-chain
+// Sort prices in DESC order
+// Get Median / Mean
+// Store answers in DB
+// Use TWAP (Time weighted average price) to get final answer
+// Send answer Onchain
+// Monitor deviation and update answer based on deviation
+
 // Run should not halt execution of program if error occurred
 // simply pass error back to go routine anonymous function to log
 func Run(feed protonode.Adapter) error {
@@ -88,3 +96,8 @@ func reduce(f *protonode.Feed, jsonString string) {
 	//
 	//}
 }
+
+//Setup postgres database:
+//- store adapter request sent to node (node)
+//- oracle response to adapter (dp)
+//- answer history to allow TWAP calculation (node)

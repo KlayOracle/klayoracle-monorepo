@@ -92,3 +92,11 @@ net-cluster:
 	docker run -d --net klayoracle --name bootstrap_dp2 --env-file data-provider/.env --env HOST_IP=bootstrap_dp2:50002 klayoracle-dp:dev
 	docker run -d --net klayoracle --name bootstrap_dp3 --env-file data-provider/.env --env HOST_IP=bootstrap_dp3:50002 klayoracle-dp:dev
 	docker run -d --net klayoracle --name common_dp --env-file data-provider/.env --env HOST_IP=common_dp:50002 klayoracle-dp:dev
+
+.PHONY: node-tables
+node-tables:
+	@cockroach sql --url $(COCKROACH_DNS_URL) --file ./node/dbinit.sql
+
+.PHONY: drop-tables
+drop-tables:
+	@cockroach sql --url $(COCKROACH_DNS_URL) --execute="DROP TABLE IF EXISTS node_feeds"

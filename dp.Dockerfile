@@ -32,4 +32,10 @@ ARG PORT
 EXPOSE $PORT
 ENV WORK_DIR=/var/klayoracle
 
+#Install PGS Driver
+#Install cockroach cli
+#COPY over PGS certificate to CERT PATH
+#Env Variable: COCKROACH_CERTS_DIR
+#Default: ${HOME}/.cockroach-certs/
+
 CMD ./var/klayoracle/kloc-dp
