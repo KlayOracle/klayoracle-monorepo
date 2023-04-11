@@ -2,14 +2,15 @@ package storage
 
 import (
 	"context"
+	"os"
+	"time"
+
 	"github.com/cockroachdb/cockroach-go/v2/crdb/crdbpgx"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
 	"github.com/klayoracle/klayoracle-monorepo/node/config"
 	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
 	"google.golang.org/protobuf/encoding/protojson"
-	"os"
-	"time"
 )
 
 var Conn *pgx.Conn
