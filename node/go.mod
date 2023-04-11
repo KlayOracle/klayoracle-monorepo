@@ -4,6 +4,8 @@ go 1.18
 
 require (
 	github.com/PaesslerAG/jsonpath v0.1.1
+	github.com/cockroachdb/cockroach-go/v2 v2.3.3
+	github.com/google/uuid v1.3.0
 	github.com/jackc/pgx/v4 v4.18.1
 	github.com/joho/godotenv v1.5.1
 	github.com/klayoracle/klayoracle-monorepo/data-provider v0.0.0-00010101000000-000000000000

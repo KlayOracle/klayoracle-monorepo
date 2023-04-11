@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"github.com/klayoracle/klayoracle-monorepo/node/storage"
 	"os"
 	"path"
 	"strings"
@@ -83,6 +84,8 @@ func (n *Node) QueueJob(ctx context.Context, adapter *protonode.Adapter) (*proto
 		n.mu.Lock()
 		defer n.mu.Unlock()
 		n.Jobs = append(n.Jobs, adapter)
+
+		storage.StoreJob(provider, adapter)
 
 		config.Loaded.Logger.Info("Job in queue: ", len(n.Jobs))
 	} else {
