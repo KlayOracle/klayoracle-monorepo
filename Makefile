@@ -38,14 +38,12 @@ build-adapter-id-gen:
 	@cd ./data-provider/utils/generateadptid && go build -o ../bin/generate_adapter_id generate_adapter_id.go
 
 .PHONY: adapter-id-gen
-adapter-id-gen: build-adapter-id-gen
+adapter-id-gen:
 	cd data-provider/utils &&  go run generateadptid/generate_adapter_id.go ${ADAPTERS}
 
-#	@if [ -z "$(ADAPTERS)" ]; then \
-#		echo "Specify valid adapter files. ADAPTERS="KLAY_USD.json WEMIX_USD.json""; \
-#	else \
-#		cd data-provider && ./bin/generate_adapter_id $(ADAPTERS); \
-#	fi
+.PHONY: adapter-dry-run
+adapter-dry-run:
+	cd data-provider/utils &&  go run dryrun/dryrun.go ${ADAPTERS}
 
 .PHONY: node-server
 node-server:

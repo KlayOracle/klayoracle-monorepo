@@ -3,6 +3,7 @@ package job
 import (
 	"bytes"
 	"fmt"
+	"github.com/klayoracle/klayoracle-monorepo/node/config"
 	"io"
 	"math/big"
 	"net/http"
@@ -12,7 +13,7 @@ import (
 	"github.com/klayoracle/klayoracle-monorepo/node/reducer"
 )
 
-var reducers = map[string]interface{}{
+var reducers = map[string]func([]interface{}) (interface{}, error){
 	"PARSE":              reducer.Parse,
 	"STRING_TO_FLOAT32":  reducer.StringToFloat32,
 	"STRING_TO_FLOAT64":  reducer.StringToFloat64,
@@ -33,21 +34,42 @@ var reducers = map[string]interface{}{
 // Run should not halt execution of program if error occurred
 // simply pass error back to go routine anonymous function to log
 func Run(feed protonode.Adapter) error {
-	var answers []*big.Int
 
-	for _, feed := range feed.Feeds {
-		response, err := request(feed)
-		if err != nil {
-			return err
-		}
-
-		reduce(feed, response)
-		fmt.Println(response)
+	answers, err := aggregate(feed)
+	if err != nil {
+		return err
 	}
 
 	fmt.Println(answers)
 
 	return nil
+}
+
+// DryRun for dev purposes to test if everythign will work on production
+func DryRun(feed protonode.Adapter) ([]*big.Int, error) {
+	return aggregate(feed)
+}
+
+func aggregate(feed protonode.Adapter) ([]*big.Int, error) {
+	var answers []*big.Int
+
+	for _, feed := range feed.Feeds {
+		response, err := request(feed)
+		if err != nil {
+			config.Loaded.Logger.Warnw("error processing feeds request", "url", feed.Url, "body", feed.Payload, "header", feed.Headers)
+			return nil, err
+		}
+
+		output, err := reduce(feed, response)
+		if err != nil {
+			config.Loaded.Logger.Warnw("error processing while reducing", "error", err)
+			return nil, err
+		}
+
+		answers = append(answers, output)
+	}
+
+	return answers, nil
 }
 
 func request(f *protonode.Feed) (string, error) {
@@ -89,15 +111,50 @@ func request(f *protonode.Feed) (string, error) {
 	return string(body), nil
 }
 
-func reduce(f *protonode.Feed, jsonString string) {
+func reduce(f *protonode.Feed, jsonString string) (*big.Int, error) {
 
-	//for _, reducer := range collection {
-	//
-	//
-	//}
+	var (
+		result    interface{}
+		reducer   *protonode.Reducer
+		parseFunc func([]interface{}) (interface{}, error)
+		err       error
+	)
+
+	reducer = f.Reducers[0]
+	parseFunc = reducers[reducer.Function]
+	args := []interface{}{jsonString, reducer.Args[0]}
+
+	config.Loaded.Logger.Infow("running", "reducer", "PARSE", "args", args)
+
+	result, err = parseFunc(args)
+	if err != nil {
+		return nil, err
+	}
+
+	config.Loaded.Logger.Infow("result", "reducer", "PARSE", "output", result)
+
+	otherReducers := f.Reducers[1:]
+
+	for _, reducer = range otherReducers {
+		var args []interface{}
+
+		parseFunc = reducers[reducer.Function]
+		args = append(args, result)
+
+		for _, arg := range reducer.Args {
+			args = append(args, interface{}(arg))
+		}
+
+		config.Loaded.Logger.Infow("running ", "reducer", reducer.Function, "args", args)
+
+		result, err = parseFunc(args)
+		if err != nil {
+			return nil, err
+		}
+
+		config.Loaded.Logger.Infow("result", "reducer", reducer.Function, "output", result)
+
+	}
+
+	return result.(*big.Int), err
 }
-
-//Setup postgres database:
-//- store adapter request sent to node (node)
-//- oracle response to adapter (dp)
-//- answer history to allow TWAP calculation (node)
