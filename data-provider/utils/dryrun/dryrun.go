@@ -3,14 +3,15 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
+	"os"
+	"path"
+
 	"github.com/klayoracle/klayoracle-monorepo/node/boot"
 	"github.com/klayoracle/klayoracle-monorepo/node/config"
 	"github.com/klayoracle/klayoracle-monorepo/node/job"
 	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
 	"google.golang.org/protobuf/encoding/protojson"
-	"io"
-	"os"
-	"path"
 )
 
 func main() {

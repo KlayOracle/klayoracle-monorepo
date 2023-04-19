@@ -3,11 +3,12 @@ package job
 import (
 	"bytes"
 	"fmt"
-	"github.com/klayoracle/klayoracle-monorepo/node/config"
 	"io"
 	"math/big"
 	"net/http"
 	"time"
+
+	"github.com/klayoracle/klayoracle-monorepo/node/config"
 
 	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
 	"github.com/klayoracle/klayoracle-monorepo/node/reducer"
