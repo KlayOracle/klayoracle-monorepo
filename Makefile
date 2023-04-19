@@ -2,7 +2,7 @@ NETWORK=$(shell docker network list | grep "klayoracle")
 
 .PHONY: proto-installed
 proto-installed:
-	@ if ! which protoc > /dev/null; then \
+	@if ! which protoc > /dev/null; then \
 		echo "error: protoc not installed" >&2; \
 		exit 1; \
 	fi
@@ -32,6 +32,9 @@ test-dp:
 test-node:
 	@cd ./node && go test -v ./...
 
+.PHONY: pre-commit
+pre-commit:
+	@./pre-commit.sh
 
 .PHONY: build-adapter-id-gen
 build-adapter-id-gen:
@@ -43,7 +46,7 @@ adapter-id-gen:
 
 .PHONY: adapter-dry-run
 adapter-dry-run:
-	cd data-provider/utils &&  go run dryrun/dryrun.go ${ADAPTERS}
+	@cd data-provider/utils &&  go run dryrun/dryrun.go ${ADAPTERS}
 
 .PHONY: node-server
 node-server:
