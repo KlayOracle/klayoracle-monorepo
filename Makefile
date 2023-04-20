@@ -2,7 +2,7 @@ NETWORK=$(shell docker network list | grep "klayoracle")
 
 .PHONY: proto-installed
 proto-installed:
-	@ if ! which protoc > /dev/null; then \
+	@if ! which protoc > /dev/null; then \
 		echo "error: protoc not installed" >&2; \
 		exit 1; \
 	fi
@@ -32,20 +32,21 @@ test-dp:
 test-node:
 	@cd ./node && go test -v ./...
 
+.PHONY: pre-commit
+pre-commit:
+	@./pre-commit.sh
 
 .PHONY: build-adapter-id-gen
 build-adapter-id-gen:
 	@cd ./data-provider/utils/generateadptid && go build -o ../bin/generate_adapter_id generate_adapter_id.go
 
 .PHONY: adapter-id-gen
-adapter-id-gen: build-adapter-id-gen
+adapter-id-gen:
 	cd data-provider/utils &&  go run generateadptid/generate_adapter_id.go ${ADAPTERS}
 
-#	@if [ -z "$(ADAPTERS)" ]; then \
-#		echo "Specify valid adapter files. ADAPTERS="KLAY_USD.json WEMIX_USD.json""; \
-#	else \
-#		cd data-provider && ./bin/generate_adapter_id $(ADAPTERS); \
-#	fi
+.PHONY: adapter-dry-run
+adapter-dry-run:
+	@cd data-provider/utils &&  go run dryrun/dryrun.go ${ADAPTERS}
 
 .PHONY: node-server
 node-server:
@@ -92,3 +93,7 @@ net-cluster:
 	docker run -d --net klayoracle --name bootstrap_dp2 --env-file data-provider/.env --env HOST_IP=bootstrap_dp2:50002 klayoracle-dp:dev
 	docker run -d --net klayoracle --name bootstrap_dp3 --env-file data-provider/.env --env HOST_IP=bootstrap_dp3:50002 klayoracle-dp:dev
 	docker run -d --net klayoracle --name common_dp --env-file data-provider/.env --env HOST_IP=common_dp:50002 klayoracle-dp:dev
+
+.PHONY: node-tables
+node-tables:
+	@cockroach sql --url $(COCKROACH_DNS_URL) --file ./node/dbinit.sql

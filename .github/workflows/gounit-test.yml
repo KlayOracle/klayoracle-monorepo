@@ -21,5 +21,5 @@ jobs:
         with:
           go-version: ${{ matrix.go }}
       - name: Running Test For ${{ matrix.directory }}
-        run: go test -v ./...
+        run: COCKROACH_DNS_URL=postgresql://github:6f3orPokVrwV15q-iVjutQ@github-actions-7562.8nj.cockroachlabs.cloud:26257/github_action_bootstrap_node_1?sslmode=verify-full go test -v ./...
         working-directory: ${{ matrix.directory }}

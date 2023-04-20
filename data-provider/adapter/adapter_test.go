@@ -26,20 +26,20 @@ func TestAdapterMarshalOk(t *testing.T) {
 				"adapter_id":"0x8b7460cccfa0aca303ee85c3fb81c344faad2fbab415adc32b2984008b7efd76",
 				"oracle_address": "0xCC4377b912c4517Fe895817c6a7c6937D92A70B3",
 				"category": 2,
-				"frequency": 5,
+				"frequency": 30000000000,
 				"feeds": [
 						{
 						"url": "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=KLAY&tsyms=USD",
 						"request_type": 0,
 						"headers": [{"field": {"Content-Type" : "application/json"}},{"field": {"Authorization" : "${BEARER_TOKEN}"}}],
-						"reducers": [{"function": "PARSE","args": ["$.RAW.KLAY.USD.PRICE"]},{"function": "MUL","args": ["1000000000"]}],
+						"reducers": [{"function": "PARSE","args": ["$.RAW.KLAY.USD.PRICE"]},{"function": "FLOAT64_MUL_UINT64","args": ["1000000000"]}],
       					"payload": "{\"type\":\"limit\",\"side\":\"buy\",\"price\":1.058e-9,\"size\":100,\"currency\":[\"USDT_BTC\",\"WEMIX_KLAY\",\"KLAY_USDT\"]}"
 						},
 						{
 						"url": "https://rest.coinapi.io/v1/exchangerate/KLAY/USD",
 						"request_type": 1,
 						"headers": [{"field": {"X-CoinAPI-Key": "${X_COIN_API_KEY}"}}],
-						"reducers": [{"function": "PARSE","args": ["$.rate"]},{"function": "MUL","args": ["1000000000"]}]
+						"reducers": [{"function": "PARSE","args": ["$.rate"]},{"function": "FLOAT64_MUL_UINT64","args": ["1000000000"]}]
 						}
 					]
 				}
@@ -53,7 +53,7 @@ func TestAdapterMarshalOk(t *testing.T) {
 	assert.Equal(t, newAdapter.JobType, protoadapter.JobTypes_DATA_FEED)
 	assert.Equal(t, newAdapter.AdapterId, "0x8b7460cccfa0aca303ee85c3fb81c344faad2fbab415adc32b2984008b7efd76")
 	assert.Equal(t, newAdapter.OracleAddress, "0xCC4377b912c4517Fe895817c6a7c6937D92A70B3")
-	assert.Equal(t, newAdapter.Frequency, int64(5))
+	assert.Equal(t, newAdapter.Frequency, int64(30000000000))
 
 	importedAdapter := []*protoadapter.Feed{
 		{
@@ -77,7 +77,7 @@ func TestAdapterMarshalOk(t *testing.T) {
 					Args:     []string{"$.RAW.KLAY.USD.PRICE"},
 				},
 				{
-					Function: "MUL",
+					Function: "FLOAT64_MUL_UINT64",
 					Args:     []string{"1000000000"},
 				},
 			},
@@ -99,7 +99,7 @@ func TestAdapterMarshalOk(t *testing.T) {
 					Args:     []string{"$.rate"},
 				},
 				{
-					Function: "MUL",
+					Function: "FLOAT64_MUL_UINT64",
 					Args:     []string{"1000000000"},
 				},
 			},
