@@ -39,7 +39,7 @@ before(async function () {
 });
 
 describe('KlayOracle', function () {
-    it('should verify verison is v1.0.0', async function () {
+    it('should verify version is v1.0.0', async function () {
         assert.equal(await this.oracleProviderSample.VERSION(), 'v1.0.0');
     });
 

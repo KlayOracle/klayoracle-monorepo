@@ -21,14 +21,14 @@ abstract contract KlayOracle is KlayOracleInterface {
 
     bytes32 private latestResponse; // solhint-disable-line private-vars-leading-underscore
 
-    bytes32 private lastestRequestId; // solhint-disable-line private-vars-leading-underscore
+    bytes32 private latestRequestId; // solhint-disable-line private-vars-leading-underscore
 
     event NewOracleRequest(bytes32 requestId);
 
     // Round variables
     struct Round {
         bytes32 answer;
-        uint256 roundTime; //How long it toook the node to aggregate the data
+        uint256 roundTime;
         uint256 timestamp; //The timestamp of the round
     }
 
@@ -48,12 +48,12 @@ abstract contract KlayOracle is KlayOracleInterface {
     ) external override returns (bool) {
         require(
             _isWhitelisted(msg.sender),
-            "Oracle: Permission needed for consumer"
+            "Oracle: consumer is not whitelisted"
         );
 
         bytes32 requestId = keccak256(
             abi.encodePacked(
-                lastestRequestId,
+                latestRequestId,
                 nodeAddress,
                 adapterId,
                 callbackFunctionId,
@@ -86,7 +86,7 @@ abstract contract KlayOracle is KlayOracleInterface {
         bytes32 requestId,
         Request memory request
     ) internal returns (bool) {
-        require(_beforeFulfill(request), "KlayOracle: subscribe to DP");
+        require(_beforeFulfill(request), "KlayOracle: subscribe to DP"); //Provider can perform: charge
 
         requests[requestId] = request;
 
