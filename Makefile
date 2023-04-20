@@ -97,7 +97,3 @@ net-cluster:
 .PHONY: node-tables
 node-tables:
 	@cockroach sql --url $(COCKROACH_DNS_URL) --file ./node/dbinit.sql
-
-.PHONY: drop-tables
-drop-tables:
-	@cockroach sql --url $(COCKROACH_DNS_URL) --execute="DROP TABLE IF EXISTS node_feeds"

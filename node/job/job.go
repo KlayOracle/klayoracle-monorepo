@@ -2,11 +2,12 @@ package job
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"math/big"
 	"net/http"
 	"time"
+
+	"github.com/klayoracle/klayoracle-monorepo/node/storage"
 
 	"github.com/klayoracle/klayoracle-monorepo/node/config"
 
@@ -24,29 +25,93 @@ var reducers = map[string]func([]interface{}) (interface{}, error){
 	"UINT_MUL_UINT":      reducer.NumberMulByUint,
 }
 
+const TimeWeight = 1 //Time duration to check for cumulative price
+
 // Aggregate Off-chain
-// Sort prices in DESC order
-// Get Median / Mean
-// Store answers in DB
-// Use TWAP (Time weighted average price) to get final answer
-// Send answer Onchain
-// Monitor deviation and update answer based on deviation
+// Fetch answers in DB from last time.Now() - time.Hour * TimeWeight
+// Use TWAP (Time weighted average price) to get round answer
+// Store round answer
+// Send round answer On-chain
+// Monitor deviation and update answer based on deviation (Not done)
 
 // Run should not halt execution of program if error occurred
 // simply pass error back to go routine anonymous function to log
-func Run(feed protonode.Adapter) error {
+func Run(feed protonode.Adapter) (int64, error) {
 
+	//Aggregate
 	answers, err := aggregate(feed)
 	if err != nil {
-		return err
+		return 0, err
+	} else {
+
+		t0 := time.Now().Add(-time.Hour * TimeWeight)
+
+		rows, err := storage.FetchResponsesFromT0(&feed, t0)
+		if err != nil {
+			return 0, err
+		} else {
+			var priceHistory []int64
+
+			for rows.Next() {
+				var responses []int64
+
+				if err := rows.Scan(&responses); err != nil {
+					return 0, err
+				}
+
+				priceHistory = append(priceHistory, responses...)
+			}
+
+			var int64Answers []int64
+
+			for _, answer := range answers {
+				int64Answers = append(int64Answers, answer.Int64())
+			}
+
+			priceHistory = append(priceHistory, int64Answers...)
+
+			//TWAP
+			roundAnswer := getTWAP(priceHistory)
+
+			//Store Round
+			err := storage.StoreResponses(&feed, int64Answers, roundAnswer)
+			if err != nil {
+				return 0, err
+			}
+
+			rows, err := storage.FetchRoundSize(&feed)
+			if err != nil {
+				return 0, err
+			}
+
+			var roundSize int
+
+			for rows.Next() {
+				rows.Scan(&roundSize)
+			}
+
+			config.Loaded.Logger.Infow("round", "number", roundSize, "answer", roundAnswer)
+
+			return roundAnswer, nil
+		}
 	}
 
-	fmt.Println(answers)
-
-	return nil
+	return 0, nil
 }
 
-// DryRun for dev purposes to test if everythign will work on production
+func getTWAP(prices []int64) int64 {
+	var sum int64
+
+	for _, price := range prices {
+		sum += price
+	}
+
+	len := len(prices)
+
+	return sum / int64(len)
+}
+
+// DryRun for dev purposes to test if everything will work on production
 func DryRun(feed protonode.Adapter) ([]*big.Int, error) {
 	return aggregate(feed)
 }

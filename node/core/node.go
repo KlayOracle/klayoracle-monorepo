@@ -86,9 +86,12 @@ func (n *Node) QueueJob(ctx context.Context, adapter *protonode.Adapter) (*proto
 		defer n.mu.Unlock()
 		n.Jobs = append(n.Jobs, adapter)
 
-		storage.StoreJob(provider, adapter)
+		err := storage.StoreJob(adapter)
+		if err != nil {
+			config.Loaded.Logger.Warnw("error storing job", "err", err)
+		}
 
-		config.Loaded.Logger.Info("Job in queue: ", len(n.Jobs))
+		config.Loaded.Logger.Info("job in queue: ", len(n.Jobs))
 	} else {
 		config.Loaded.Logger.Warnw("adapter has not registered an handshake", "service node",
 			os.Getenv("HOST_IP"), "data provider", provider)
@@ -101,6 +104,10 @@ func (n *Node) QueueJob(ctx context.Context, adapter *protonode.Adapter) (*proto
 	return &protonode.RequestStatus{
 		Status: 0,
 	}, nil
+}
+
+func execJob(job *protonode.Adapter, position int64) {
+	//
 }
 
 func addPeer(p *protonode.DPInfo) error {
