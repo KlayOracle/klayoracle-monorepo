@@ -2,9 +2,10 @@ package core
 
 import (
 	"context"
+	"os"
+
 	"github.com/klayoracle/klayoracle-monorepo/node/config"
 	"github.com/klaytn/klaytn/client"
-	"os"
 )
 
 var (

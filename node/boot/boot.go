@@ -1,8 +1,9 @@
 package boot
 
 import (
-	"github.com/klayoracle/klayoracle-monorepo/node/core"
 	"path"
+
+	"github.com/klayoracle/klayoracle-monorepo/node/core"
 
 	"github.com/klayoracle/klayoracle-monorepo/node/storage"
 

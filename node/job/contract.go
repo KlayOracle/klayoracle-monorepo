@@ -3,6 +3,12 @@ package job
 import (
 	"crypto/ecdsa"
 	"fmt"
+	"log"
+	"math/big"
+	"os"
+	"strings"
+	"time"
+
 	"github.com/klayoracle/klayoracle-monorepo/node/config"
 	"github.com/klayoracle/klayoracle-monorepo/node/contracts/oracle"
 	"github.com/klayoracle/klayoracle-monorepo/node/core"
@@ -13,11 +19,6 @@ import (
 	"github.com/klaytn/klaytn/common"
 	"github.com/klaytn/klaytn/common/hexutil"
 	"github.com/klaytn/klaytn/crypto"
-	"log"
-	"math/big"
-	"os"
-	"strings"
-	"time"
 )
 
 func nodeSigningKey() *ecdsa.PrivateKey {
