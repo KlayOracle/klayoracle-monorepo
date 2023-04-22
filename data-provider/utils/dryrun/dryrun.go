@@ -3,10 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/klayoracle/klayoracle-monorepo/node/core"
 	"io"
 	"os"
 	"path"
+
+	"github.com/klayoracle/klayoracle-monorepo/node/core"
 
 	"github.com/klayoracle/klayoracle-monorepo/node/boot"
 	"github.com/klayoracle/klayoracle-monorepo/node/config"

@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
 	"log"
 	"net"
 	"os"
 	"path"
+
+	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
 
 	"google.golang.org/grpc"
 
