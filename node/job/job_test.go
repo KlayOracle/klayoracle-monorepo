@@ -10,20 +10,13 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
-func TestJob(t *testing.T) {
-
-	wd, _ := os.Getwd()
-	boot.Boot(path.Join(wd, ".."), path.Join(wd, "..", "config.yaml"), path.Join(wd, "..", ".env"))
-
-	newAdapter := protonode.Adapter{}
-
-	byt := []byte(`
+var byt = []byte(`
 				{
 				"active": true,
 				"name": "KLAY_USD",
 				"job_type": "DATA_FEED",
 				"adapter_id":"0x8b7460cccfa0aca303ee85c3fb81c344faad2fbab415adc32b2984008b7efd76",
-				"oracle_address": "0xCC4377b912c4517Fe895817c6a7c6937D92A70B3",
+				"oracle_address": "0x6e776d60fcb8c744748402a47de34295ced8f393",
 				"category": 2,
 				"frequency": 30000000000,
 				"feeds": [
@@ -44,8 +37,28 @@ func TestJob(t *testing.T) {
 				}
 				`)
 
+func TestJob(t *testing.T) {
+
+	wd, _ := os.Getwd()
+	boot.Boot(path.Join(wd, ".."), path.Join(wd, "..", "config.yaml"), path.Join(wd, "..", ".env"))
+
+	newAdapter := protonode.Adapter{}
+
 	stream := []byte(os.ExpandEnv(string(byt)))
 	protojson.Unmarshal(stream, &newAdapter)
 
 	Run(newAdapter)
+}
+
+func TestUpdateRoundAnswer(t *testing.T) {
+	wd, _ := os.Getwd()
+	boot.Boot(path.Join(wd, ".."), path.Join(wd, "..", "config.yaml"), path.Join(wd, "..", ".env"))
+
+	newAdapter := protonode.Adapter{}
+
+	stream := []byte(os.ExpandEnv(string(byt)))
+	protojson.Unmarshal(stream, &newAdapter)
+
+	//DeployNewOracleProviderSample(os.Getenv("PUBLIC_ADDRESS"), "0x2a465136f2276513295f8eb454f01b6b472d1b70e38f5e6c9c538299aa1d4ea5")
+	UpdateRoundAnswer(&newAdapter, 10)
 }

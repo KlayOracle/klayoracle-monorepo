@@ -27,7 +27,7 @@ var (
 )
 
 // KlayOracleABI is the input ABI used to generate the binding from.
-const KlayOracleABI = "[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"}],\"name\":\"NewOracleRequest\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"VERSION\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"adapterId\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"fulfilledCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"latestRound\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"answer\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"roundTime\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"callbackFunctionId\",\"type\":\"bytes4\"},{\"internalType\":\"address\",\"name\":\"callBackContract\",\"type\":\"address\"}],\"name\":\"newOracleRequest\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"roundTime\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"data\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"dataHash\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"}],\"name\":\"newRoundData\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"nodeAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"requests\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"nodeAddress\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"adapterId\",\"type\":\"bytes32\"},{\"internalType\":\"bytes4\",\"name\":\"callbackFunctionId\",\"type\":\"bytes4\"},{\"internalType\":\"address\",\"name\":\"callBackContract\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"data\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"rounds\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"answer\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"roundTime\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]"
+const KlayOracleABI = "[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"}],\"name\":\"NewOracleRequest\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"VERSION\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_hashedMessage\",\"type\":\"bytes32\"},{\"internalType\":\"uint8\",\"name\":\"_v\",\"type\":\"uint8\"},{\"internalType\":\"bytes32\",\"name\":\"_r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"_s\",\"type\":\"bytes32\"}],\"name\":\"VerifyKlaytnMessage\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"roundAnswer\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"roundTime\",\"type\":\"uint256\"}],\"name\":\"_getHash\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"adapterId\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"fulfilledCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"latestRound\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"answer\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"roundTime\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"callbackFunctionId\",\"type\":\"bytes4\"},{\"internalType\":\"address\",\"name\":\"callBackContract\",\"type\":\"address\"}],\"name\":\"newOracleRequest\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"roundTime\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"roundAnswer\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"}],\"name\":\"newRoundData\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"nodeAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"requests\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"nodeAddress\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"adapterId\",\"type\":\"bytes32\"},{\"internalType\":\"bytes4\",\"name\":\"callbackFunctionId\",\"type\":\"bytes4\"},{\"internalType\":\"address\",\"name\":\"callBackContract\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"data\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"rounds\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"answer\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"roundTime\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"sig\",\"type\":\"bytes\"}],\"name\":\"splitSignature\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"r\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"s\",\"type\":\"bytes32\"},{\"internalType\":\"uint8\",\"name\":\"v\",\"type\":\"uint8\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}]"
 
 // KlayOracleBinRuntime is the compiled bytecode used for adding genesis block without deploying code.
 const KlayOracleBinRuntime = ``
@@ -198,6 +198,58 @@ func (_KlayOracle *KlayOracleSession) VERSION() (string, error) {
 // Solidity: function VERSION() view returns(string)
 func (_KlayOracle *KlayOracleCallerSession) VERSION() (string, error) {
 	return _KlayOracle.Contract.VERSION(&_KlayOracle.CallOpts)
+}
+
+// VerifyKlaytnMessage is a free data retrieval call binding the contract method 0xbe2bb8cd.
+//
+// Solidity: function VerifyKlaytnMessage(bytes32 _hashedMessage, uint8 _v, bytes32 _r, bytes32 _s) pure returns(address)
+func (_KlayOracle *KlayOracleCaller) VerifyKlaytnMessage(opts *bind.CallOpts, _hashedMessage [32]byte, _v uint8, _r [32]byte, _s [32]byte) (common.Address, error) {
+	var (
+		ret0 = new(common.Address)
+	)
+	out := ret0
+	err := _KlayOracle.contract.Call(opts, out, "VerifyKlaytnMessage", _hashedMessage, _v, _r, _s)
+	return *ret0, err
+}
+
+// VerifyKlaytnMessage is a free data retrieval call binding the contract method 0xbe2bb8cd.
+//
+// Solidity: function VerifyKlaytnMessage(bytes32 _hashedMessage, uint8 _v, bytes32 _r, bytes32 _s) pure returns(address)
+func (_KlayOracle *KlayOracleSession) VerifyKlaytnMessage(_hashedMessage [32]byte, _v uint8, _r [32]byte, _s [32]byte) (common.Address, error) {
+	return _KlayOracle.Contract.VerifyKlaytnMessage(&_KlayOracle.CallOpts, _hashedMessage, _v, _r, _s)
+}
+
+// VerifyKlaytnMessage is a free data retrieval call binding the contract method 0xbe2bb8cd.
+//
+// Solidity: function VerifyKlaytnMessage(bytes32 _hashedMessage, uint8 _v, bytes32 _r, bytes32 _s) pure returns(address)
+func (_KlayOracle *KlayOracleCallerSession) VerifyKlaytnMessage(_hashedMessage [32]byte, _v uint8, _r [32]byte, _s [32]byte) (common.Address, error) {
+	return _KlayOracle.Contract.VerifyKlaytnMessage(&_KlayOracle.CallOpts, _hashedMessage, _v, _r, _s)
+}
+
+// GetHash is a free data retrieval call binding the contract method 0x77d3bfb9.
+//
+// Solidity: function _getHash(bytes32 roundAnswer, uint256 roundTime) view returns(bytes32)
+func (_KlayOracle *KlayOracleCaller) GetHash(opts *bind.CallOpts, roundAnswer [32]byte, roundTime *big.Int) ([32]byte, error) {
+	var (
+		ret0 = new([32]byte)
+	)
+	out := ret0
+	err := _KlayOracle.contract.Call(opts, out, "_getHash", roundAnswer, roundTime)
+	return *ret0, err
+}
+
+// GetHash is a free data retrieval call binding the contract method 0x77d3bfb9.
+//
+// Solidity: function _getHash(bytes32 roundAnswer, uint256 roundTime) view returns(bytes32)
+func (_KlayOracle *KlayOracleSession) GetHash(roundAnswer [32]byte, roundTime *big.Int) ([32]byte, error) {
+	return _KlayOracle.Contract.GetHash(&_KlayOracle.CallOpts, roundAnswer, roundTime)
+}
+
+// GetHash is a free data retrieval call binding the contract method 0x77d3bfb9.
+//
+// Solidity: function _getHash(bytes32 roundAnswer, uint256 roundTime) view returns(bytes32)
+func (_KlayOracle *KlayOracleCallerSession) GetHash(roundAnswer [32]byte, roundTime *big.Int) ([32]byte, error) {
+	return _KlayOracle.Contract.GetHash(&_KlayOracle.CallOpts, roundAnswer, roundTime)
 }
 
 // AdapterId is a free data retrieval call binding the contract method 0x5fb86b01.
@@ -414,6 +466,46 @@ func (_KlayOracle *KlayOracleCallerSession) Rounds(arg0 *big.Int) (struct {
 	return _KlayOracle.Contract.Rounds(&_KlayOracle.CallOpts, arg0)
 }
 
+// SplitSignature is a free data retrieval call binding the contract method 0xa7bb5803.
+//
+// Solidity: function splitSignature(bytes sig) pure returns(bytes32 r, bytes32 s, uint8 v)
+func (_KlayOracle *KlayOracleCaller) SplitSignature(opts *bind.CallOpts, sig []byte) (struct {
+	R [32]byte
+	S [32]byte
+	V uint8
+}, error) {
+	ret := new(struct {
+		R [32]byte
+		S [32]byte
+		V uint8
+	})
+	out := ret
+	err := _KlayOracle.contract.Call(opts, out, "splitSignature", sig)
+	return *ret, err
+}
+
+// SplitSignature is a free data retrieval call binding the contract method 0xa7bb5803.
+//
+// Solidity: function splitSignature(bytes sig) pure returns(bytes32 r, bytes32 s, uint8 v)
+func (_KlayOracle *KlayOracleSession) SplitSignature(sig []byte) (struct {
+	R [32]byte
+	S [32]byte
+	V uint8
+}, error) {
+	return _KlayOracle.Contract.SplitSignature(&_KlayOracle.CallOpts, sig)
+}
+
+// SplitSignature is a free data retrieval call binding the contract method 0xa7bb5803.
+//
+// Solidity: function splitSignature(bytes sig) pure returns(bytes32 r, bytes32 s, uint8 v)
+func (_KlayOracle *KlayOracleCallerSession) SplitSignature(sig []byte) (struct {
+	R [32]byte
+	S [32]byte
+	V uint8
+}, error) {
+	return _KlayOracle.Contract.SplitSignature(&_KlayOracle.CallOpts, sig)
+}
+
 // NewOracleRequest is a paid mutator transaction binding the contract method 0xec2b83f1.
 //
 // Solidity: function newOracleRequest(bytes4 callbackFunctionId, address callBackContract) returns(bool)
@@ -435,25 +527,25 @@ func (_KlayOracle *KlayOracleTransactorSession) NewOracleRequest(callbackFunctio
 	return _KlayOracle.Contract.NewOracleRequest(&_KlayOracle.TransactOpts, callbackFunctionId, callBackContract)
 }
 
-// NewRoundData is a paid mutator transaction binding the contract method 0x77f8632f.
+// NewRoundData is a paid mutator transaction binding the contract method 0x09c980c1.
 //
-// Solidity: function newRoundData(uint256 roundTime, bytes32 data, bytes32 dataHash, bytes signature) returns(bool)
-func (_KlayOracle *KlayOracleTransactor) NewRoundData(opts *bind.TransactOpts, roundTime *big.Int, data [32]byte, dataHash [32]byte, signature []byte) (*types.Transaction, error) {
-	return _KlayOracle.contract.Transact(opts, "newRoundData", roundTime, data, dataHash, signature)
+// Solidity: function newRoundData(uint256 roundTime, bytes32 roundAnswer, bytes signature) returns(bool)
+func (_KlayOracle *KlayOracleTransactor) NewRoundData(opts *bind.TransactOpts, roundTime *big.Int, roundAnswer [32]byte, signature []byte) (*types.Transaction, error) {
+	return _KlayOracle.contract.Transact(opts, "newRoundData", roundTime, roundAnswer, signature)
 }
 
-// NewRoundData is a paid mutator transaction binding the contract method 0x77f8632f.
+// NewRoundData is a paid mutator transaction binding the contract method 0x09c980c1.
 //
-// Solidity: function newRoundData(uint256 roundTime, bytes32 data, bytes32 dataHash, bytes signature) returns(bool)
-func (_KlayOracle *KlayOracleSession) NewRoundData(roundTime *big.Int, data [32]byte, dataHash [32]byte, signature []byte) (*types.Transaction, error) {
-	return _KlayOracle.Contract.NewRoundData(&_KlayOracle.TransactOpts, roundTime, data, dataHash, signature)
+// Solidity: function newRoundData(uint256 roundTime, bytes32 roundAnswer, bytes signature) returns(bool)
+func (_KlayOracle *KlayOracleSession) NewRoundData(roundTime *big.Int, roundAnswer [32]byte, signature []byte) (*types.Transaction, error) {
+	return _KlayOracle.Contract.NewRoundData(&_KlayOracle.TransactOpts, roundTime, roundAnswer, signature)
 }
 
-// NewRoundData is a paid mutator transaction binding the contract method 0x77f8632f.
+// NewRoundData is a paid mutator transaction binding the contract method 0x09c980c1.
 //
-// Solidity: function newRoundData(uint256 roundTime, bytes32 data, bytes32 dataHash, bytes signature) returns(bool)
-func (_KlayOracle *KlayOracleTransactorSession) NewRoundData(roundTime *big.Int, data [32]byte, dataHash [32]byte, signature []byte) (*types.Transaction, error) {
-	return _KlayOracle.Contract.NewRoundData(&_KlayOracle.TransactOpts, roundTime, data, dataHash, signature)
+// Solidity: function newRoundData(uint256 roundTime, bytes32 roundAnswer, bytes signature) returns(bool)
+func (_KlayOracle *KlayOracleTransactorSession) NewRoundData(roundTime *big.Int, roundAnswer [32]byte, signature []byte) (*types.Transaction, error) {
+	return _KlayOracle.Contract.NewRoundData(&_KlayOracle.TransactOpts, roundTime, roundAnswer, signature)
 }
 
 // KlayOracleNewOracleRequestIterator is returned from FilterNewOracleRequest and is used to iterate over the raw logs and unpacked data for NewOracleRequest events raised by the KlayOracle contract.

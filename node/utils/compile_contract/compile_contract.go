@@ -6,8 +6,12 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"regexp"
 	"strings"
 )
+
+var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
+var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
 
 func main() {
 	wd, _ := os.Getwd()
@@ -20,7 +24,7 @@ func main() {
 
 	for _, contractName := range contractNames {
 		buildFilename := buildDir + "/" + contractName
-		bindingFilename := targetDir + "/" + contractName + ".go"
+		bindingFilename := targetDir + "/" + toSnakeCase(contractName) + ".go"
 		cmd := exec.Command(
 			abiGen, fmt.Sprintf("--bin=%s.bin", buildFilename),
 			fmt.Sprintf("--abi=%s.abi", buildFilename),
@@ -55,4 +59,10 @@ func main() {
 			log.Fatalln("Cannot write to: ", bindingFilename, err)
 		}
 	}
+}
+
+func toSnakeCase(str string) string {
+	snake := matchFirstCap.ReplaceAllString(str, "${1}_${2}")
+	snake = matchAllCap.ReplaceAllString(snake, "${1}_${2}")
+	return strings.Replace(strings.Trim(strings.ToLower(snake), "_"), "klay_oracle", "klayoracle", 1)
 }

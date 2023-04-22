@@ -2,7 +2,7 @@
   "active": true,
   "name": "WEMIX_USD",
   "adapterId": "0x2a465136f2276513295f8eb454f01b6b472d1b70e38f5e6c9c538299aa1d4ea5",
-  "oracleAddress": "0xcbE8E1F7aF9e21192E4260152aDC91c8805Be222",
+  "oracleAddress": "0xa216a09f3a52c81be89fd684539f494a257a6a03",
   "feeds": [
     {
       "url": "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=WEMIX&tsyms=USD",

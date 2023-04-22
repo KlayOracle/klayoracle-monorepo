@@ -27,7 +27,7 @@ var (
 )
 
 // KlayOracleInterfaceABI is the input ABI used to generate the binding from.
-const KlayOracleInterfaceABI = "[{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"callbackFunctionId\",\"type\":\"bytes4\"},{\"internalType\":\"address\",\"name\":\"callBackContract\",\"type\":\"address\"}],\"name\":\"newOracleRequest\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"roundTime\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"data\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"dataHash\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"}],\"name\":\"newRoundData\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
+const KlayOracleInterfaceABI = "[{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"callbackFunctionId\",\"type\":\"bytes4\"},{\"internalType\":\"address\",\"name\":\"callBackContract\",\"type\":\"address\"}],\"name\":\"newOracleRequest\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"roundTime\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"roundAnswer\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"}],\"name\":\"newRoundData\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
 
 // KlayOracleInterfaceBinRuntime is the compiled bytecode used for adding genesis block without deploying code.
 const KlayOracleInterfaceBinRuntime = ``
@@ -195,23 +195,23 @@ func (_KlayOracleInterface *KlayOracleInterfaceTransactorSession) NewOracleReque
 	return _KlayOracleInterface.Contract.NewOracleRequest(&_KlayOracleInterface.TransactOpts, callbackFunctionId, callBackContract)
 }
 
-// NewRoundData is a paid mutator transaction binding the contract method 0x77f8632f.
+// NewRoundData is a paid mutator transaction binding the contract method 0x09c980c1.
 //
-// Solidity: function newRoundData(uint256 roundTime, bytes32 data, bytes32 dataHash, bytes signature) returns(bool)
-func (_KlayOracleInterface *KlayOracleInterfaceTransactor) NewRoundData(opts *bind.TransactOpts, roundTime *big.Int, data [32]byte, dataHash [32]byte, signature []byte) (*types.Transaction, error) {
-	return _KlayOracleInterface.contract.Transact(opts, "newRoundData", roundTime, data, dataHash, signature)
+// Solidity: function newRoundData(uint256 roundTime, bytes32 roundAnswer, bytes signature) returns(bool)
+func (_KlayOracleInterface *KlayOracleInterfaceTransactor) NewRoundData(opts *bind.TransactOpts, roundTime *big.Int, roundAnswer [32]byte, signature []byte) (*types.Transaction, error) {
+	return _KlayOracleInterface.contract.Transact(opts, "newRoundData", roundTime, roundAnswer, signature)
 }
 
-// NewRoundData is a paid mutator transaction binding the contract method 0x77f8632f.
+// NewRoundData is a paid mutator transaction binding the contract method 0x09c980c1.
 //
-// Solidity: function newRoundData(uint256 roundTime, bytes32 data, bytes32 dataHash, bytes signature) returns(bool)
-func (_KlayOracleInterface *KlayOracleInterfaceSession) NewRoundData(roundTime *big.Int, data [32]byte, dataHash [32]byte, signature []byte) (*types.Transaction, error) {
-	return _KlayOracleInterface.Contract.NewRoundData(&_KlayOracleInterface.TransactOpts, roundTime, data, dataHash, signature)
+// Solidity: function newRoundData(uint256 roundTime, bytes32 roundAnswer, bytes signature) returns(bool)
+func (_KlayOracleInterface *KlayOracleInterfaceSession) NewRoundData(roundTime *big.Int, roundAnswer [32]byte, signature []byte) (*types.Transaction, error) {
+	return _KlayOracleInterface.Contract.NewRoundData(&_KlayOracleInterface.TransactOpts, roundTime, roundAnswer, signature)
 }
 
-// NewRoundData is a paid mutator transaction binding the contract method 0x77f8632f.
+// NewRoundData is a paid mutator transaction binding the contract method 0x09c980c1.
 //
-// Solidity: function newRoundData(uint256 roundTime, bytes32 data, bytes32 dataHash, bytes signature) returns(bool)
-func (_KlayOracleInterface *KlayOracleInterfaceTransactorSession) NewRoundData(roundTime *big.Int, data [32]byte, dataHash [32]byte, signature []byte) (*types.Transaction, error) {
-	return _KlayOracleInterface.Contract.NewRoundData(&_KlayOracleInterface.TransactOpts, roundTime, data, dataHash, signature)
+// Solidity: function newRoundData(uint256 roundTime, bytes32 roundAnswer, bytes signature) returns(bool)
+func (_KlayOracleInterface *KlayOracleInterfaceTransactorSession) NewRoundData(roundTime *big.Int, roundAnswer [32]byte, signature []byte) (*types.Transaction, error) {
+	return _KlayOracleInterface.Contract.NewRoundData(&_KlayOracleInterface.TransactOpts, roundTime, roundAnswer, signature)
 }

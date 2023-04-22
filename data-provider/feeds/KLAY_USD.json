@@ -1,8 +1,8 @@
 {
   "active":true,
   "name":"KLAY_USD",
-  "adapterId":"8b7460cccfa0aca303ee85c3fb81c344faad2fbab415adc32b2984008b7efd76",
-  "oracleAddress":"0x722222452eA9bE8dDF62118835394e8C079d2971",
+  "adapterId":"0x8b7460cccfa0aca303ee85c3fb81c344faad2fbab415adc32b2984008b7efd76",
+  "oracleAddress":"0x6e776d60fcb8c744748402a47de34295ced8f393",
   "category": 2,
   "frequency": 30000000000,
   "feeds":[
