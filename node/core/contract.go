@@ -1,4 +1,4 @@
-package job
+package core
 
 import (
 	"crypto/ecdsa"
@@ -11,7 +11,6 @@ import (
 
 	"github.com/klayoracle/klayoracle-monorepo/node/config"
 	"github.com/klayoracle/klayoracle-monorepo/node/contracts/oracle"
-	"github.com/klayoracle/klayoracle-monorepo/node/core"
 	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
 	"github.com/klaytn/klaytn"
 	"github.com/klaytn/klaytn/accounts/abi"
@@ -32,7 +31,7 @@ func nodeSigningKey() *ecdsa.PrivateKey {
 }
 
 func getNonce(address common.Address) uint64 {
-	nonce, err := core.KlaytnClient.NonceAt(core.KlaytnClientCtx, address, nil)
+	nonce, err := KlaytnClient.NonceAt(KlaytnClientCtx, address, nil)
 	if err != nil {
 		config.Loaded.Logger.Warnw("cannot determine nonce", "address", address.String())
 	}
@@ -54,16 +53,16 @@ func getAddress(privateKey *ecdsa.PrivateKey) common.Address {
 func UpdateRoundAnswer(adapter *protonode.Adapter, roundAnswer int64) {
 	oracleAddress := common.HexToAddress(adapter.OracleAddress)
 
-	oracleDP, err := oracle.NewOracleProviderSample(oracleAddress, core.KlaytnClient)
+	oracleDP, err := oracle.NewOracleProviderSample(oracleAddress, KlaytnClient)
 	if err != nil {
 		config.Loaded.Logger.Warnw("cannot instantiate oracle", "error", err)
 	} else {
-		gasPrice, _ := core.KlaytnClient.SuggestGasPrice(core.KlaytnClientCtx)
+		gasPrice, _ := KlaytnClient.SuggestGasPrice(KlaytnClientCtx)
 		nodePrivateKey := nodeSigningKey()
 		nodeAddr := getAddress(nodePrivateKey)
 		transactor := bind.NewKeyedTransactor(nodePrivateKey)
 
-		transactor.Nonce = big.NewInt(int64(getNonce(nodeAddr)))
+		//transactor.Nonce = big.NewInt(int64(getNonce(nodeAddr)))
 		transactor.Value = big.NewInt(0)
 		transactor.GasPrice = gasPrice
 
@@ -94,7 +93,7 @@ func UpdateRoundAnswer(adapter *protonode.Adapter, roundAnswer int64) {
 				config.Loaded.Logger.Warnw("unable to pack round data", "error", err)
 			} else {
 
-				gasEstimate, err := core.KlaytnClient.EstimateGas(core.KlaytnClientCtx, klaytn.CallMsg{
+				gasEstimate, err := KlaytnClient.EstimateGas(KlaytnClientCtx, klaytn.CallMsg{
 					From:     nodeAddr,
 					To:       &oracleAddress,
 					Data:     payload,
@@ -105,9 +104,9 @@ func UpdateRoundAnswer(adapter *protonode.Adapter, roundAnswer int64) {
 				} else {
 
 					auth := bind.NewKeyedTransactor(nodePrivateKey)
-					auth.Nonce = big.NewInt(int64(getNonce(nodeAddr)))
+					//auth.Nonce = big.NewInt(int64(getNonce(nodeAddr)))
 					auth.GasLimit = gasEstimate
-					auth.Context = core.KlaytnClientCtx
+					auth.Context = KlaytnClientCtx
 					auth.GasPrice = gasPrice
 
 					trx, err := oracleDP.NewRoundData(auth, big.NewInt(roundTime), roundAnswerByte32, signature)
@@ -127,19 +126,19 @@ func UpdateRoundAnswer(adapter *protonode.Adapter, roundAnswer int64) {
 func DeployNewOracleProviderSample(nodeAddress, adapterId string) {
 	nodePrivateKey := nodeSigningKey()
 	nodeAddr := getAddress(nodePrivateKey)
-	gasPrice, _ := core.KlaytnClient.SuggestGasPrice(core.KlaytnClientCtx)
+	gasPrice, _ := KlaytnClient.SuggestGasPrice(KlaytnClientCtx)
 
 	auth := bind.NewKeyedTransactor(nodePrivateKey)
 	auth.Nonce = big.NewInt(int64(getNonce(nodeAddr)))
 	auth.GasLimit = uint64(3800000)
-	auth.Context = core.KlaytnClientCtx
+	auth.Context = KlaytnClientCtx
 	auth.GasPrice = gasPrice
 
 	var adapter32 [32]byte
 
 	copy(adapter32[:], adapterId)
 
-	addr, tx, _, err := oracle.DeployOracleProviderSample(auth, core.KlaytnClient, common.HexToAddress(nodeAddress), adapter32)
+	addr, tx, _, err := oracle.DeployOracleProviderSample(auth, KlaytnClient, common.HexToAddress(nodeAddress), adapter32)
 	if err != nil {
 		log.Fatal(err)
 	}

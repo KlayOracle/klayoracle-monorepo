@@ -1,12 +1,12 @@
 package main
 
 import (
+	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
 	"log"
 	"net"
 	"os"
 	"path"
 
-	"github.com/klayoracle/klayoracle-monorepo/node/storage"
 	"google.golang.org/grpc"
 
 	"github.com/klayoracle/klayoracle-monorepo/node/config"
@@ -26,12 +26,27 @@ func main() {
 	}
 
 	boot.Boot(wd, path.Join(wd, "config.yaml"), path.Join(wd, ".env"))
-	defer storage.Conn.Close(storage.ConnCtx)
+
+	//@Todo refactor
+	//storage.CreateDBConn()
+	//defer func() {
+	//	err = storage.Conn.Close(storage.ConnCtx)
+	//	if err != nil {
+	//		log.Fatal("cannot close klaytn client conn: ", err)
+	//	}
+	//}()
+
+	//@Todo refactor
+	core.NewClient()
+	defer func() {
+		core.KlaytnClient.Close()
+	}()
 
 	config.Loaded.Logger.Info("Working directory: ", wd)
 
 	//Start Node service
 	n := &core.Node{}
+	n.Jobs = make(map[string]*protonode.Adapter) //Fix nil map issue
 	s, err := core.NewNodeServiceServer(n)
 	if err != nil {
 		config.Loaded.Logger.Fatal(err)

@@ -3,13 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/klayoracle/klayoracle-monorepo/node/core"
 	"io"
 	"os"
 	"path"
 
 	"github.com/klayoracle/klayoracle-monorepo/node/boot"
 	"github.com/klayoracle/klayoracle-monorepo/node/config"
-	"github.com/klayoracle/klayoracle-monorepo/node/job"
 	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
 	"google.golang.org/protobuf/encoding/protojson"
 )
@@ -48,7 +48,7 @@ func main() {
 		stream := []byte(os.ExpandEnv(string(fileStream)))
 		protojson.Unmarshal(stream, &newAdapter)
 
-		result, err := job.DryRun(newAdapter)
+		result, err := core.DryRun(newAdapter)
 		if err != nil {
 			panic(err)
 		}

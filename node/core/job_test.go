@@ -1,4 +1,4 @@
-package job
+package core
 
 import (
 	"os"
@@ -54,11 +54,13 @@ func TestUpdateRoundAnswer(t *testing.T) {
 	wd, _ := os.Getwd()
 	boot.Boot(path.Join(wd, ".."), path.Join(wd, "..", "config.yaml"), path.Join(wd, "..", ".env"))
 
+	NewClient()
+
 	newAdapter := protonode.Adapter{}
 
 	stream := []byte(os.ExpandEnv(string(byt)))
 	protojson.Unmarshal(stream, &newAdapter)
 
-	//DeployNewOracleProviderSample(os.Getenv("PUBLIC_ADDRESS"), "0x2a465136f2276513295f8eb454f01b6b472d1b70e38f5e6c9c538299aa1d4ea5")
+	//DeployNewOracleProviderSample(os.Getenv("PUBLIC_ADDRESS"), "0x8b7460cccfa0aca303ee85c3fb81c344faad2fbab415adc32b2984008b7efd76")
 	UpdateRoundAnswer(&newAdapter, 10)
 }
