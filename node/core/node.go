@@ -11,8 +11,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pborman/uuid"
-
 	"github.com/klayoracle/klayoracle-monorepo/node/storage"
 
 	"golang.org/x/exp/slices"
@@ -42,7 +40,7 @@ type Node struct {
 	Sever         *grpc.Server
 	dataProviders map[string]*protonode.DPInfo
 	mu            sync.Mutex
-	Jobs          map[string]*protonode.Adapter //Using multiple routines to R&W to channel is safe without mutex.
+	Jobs          []*protonode.Adapter //Using multiple routines to R&W to channel is safe without mutex.
 }
 
 func (n *Node) HandShake(ctx context.Context, provider *protonode.DPInfo) (*protonode.HandShakeStatus, error) {
@@ -86,22 +84,14 @@ func (n *Node) QueueJob(ctx context.Context, adapter *protonode.Adapter) (*proto
 		config.Loaded.Logger.Infow("new queue request", "data provider", provider, "request", adapter)
 		n.mu.Lock()
 		defer n.mu.Unlock()
-
-		jobId := uuid.New()
-
-		n.Jobs[jobId] = adapter
+		n.Jobs = append(n.Jobs, adapter)
 
 		err := storage.StoreJob(adapter)
 		if err != nil {
 			config.Loaded.Logger.Warnw("error storing job", "err", err)
 		}
 
-		config.Loaded.Logger.Infow("job in queue: ", "jobId", jobId)
-		config.Loaded.Logger.Infow("total job in queue: ", "size", len(n.Jobs))
-
-		go func() {
-			n.execJob(adapter, jobId)
-		}()
+		config.Loaded.Logger.Info("job in queue: ", len(n.Jobs))
 	} else {
 		config.Loaded.Logger.Warnw("adapter has not registered an handshake", "service node",
 			os.Getenv("HOST_IP"), "data provider", provider)
@@ -116,30 +106,8 @@ func (n *Node) QueueJob(ctx context.Context, adapter *protonode.Adapter) (*proto
 	}, nil
 }
 
-func (n *Node) execJob(adapter *protonode.Adapter, jobId string) {
-	defer func() {
-		delete(n.Jobs, jobId)
-	}()
-
-	dp := &protonode.Adapter{}
-
-	err := castBtwDPInfo(adapter, dp)
-	if err != nil {
-		config.Loaded.Logger.Warnw("conversion between protoadapter.Adapter{} and protonode.Adapter{}  gone wrong: ", err)
-	}
-
-	roundAnswer, err := Run(*dp)
-
-	if err != nil {
-		config.Loaded.Logger.Warnw("dropping job, an error occurred", "error", err)
-	} else if roundAnswer == 0 {
-		config.Loaded.Logger.Warnw("cannot update oracle with 0 dropping", "oracle", adapter.OracleAddress)
-	} else {
-		config.Loaded.Logger.Infow("updating oracle with round answer", "oracle", adapter.OracleAddress, "answer", roundAnswer)
-
-		UpdateRoundAnswer(adapter, roundAnswer)
-	}
-
+func execJob(job *protonode.Adapter, position int64) {
+	//
 }
 
 func addPeer(p *protonode.DPInfo) error {
@@ -193,44 +161,41 @@ func addPeer(p *protonode.DPInfo) error {
 	err = castBtwDPInfo(p, dp)
 
 	if err != nil {
-		config.Loaded.Logger.Warn("conversion between DPInfo gone wrong: ", err)
+		config.Loaded.Logger.Fatal("conversion between DPInfo gone wrong: ", err)
+	}
 
-		return err
-	} else {
+	list := append(peerList[longestChainDP].List, dp)
 
-		list := append(peerList[longestChainDP].List, dp)
+	for _, bt := range bootstraps {
 
-		for _, bt := range bootstraps {
+		//Due to defer behaviour in loop, we do this instead
+		err := func() error {
 
-			//Due to defer behaviour in loop, we do this instead
-			err := func() error {
-
-				//Bootstrap node can't add self as peer
-				client, err := newDPClient(bt)
-				if err != nil {
-					return fmt.Errorf("failed connecting to client: %v", err)
-				}
-
-				ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second) //Enough time to authenticate and add DP to known peers
-				defer cancel()
-
-				//Add all DP services in list as this bootstrap DP know peer
-				for _, newDp := range list {
-					_, err = client.AddToKnownPeers(ctx, newDp)
-
-					if err != nil {
-						config.Loaded.Logger.Warnw("dp.AddToKnownPeers(_) failed", "reason", "unresponsive bootstrap dp", "skipping", bt)
-					} else {
-						config.Loaded.Logger.Infow("Added dp to bootstrap dp known peer ", "boostrap dp", bt, "added peer", newDp.ListenAddress)
-					}
-				}
-
-				return nil
-			}()
-
+			//Bootstrap node can't add self as peer
+			client, err := newDPClient(bt)
 			if err != nil {
-				return err
+				return fmt.Errorf("failed connecting to client: %v", err)
 			}
+
+			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second) //Enough time to authenticate and add DP to known peers
+			defer cancel()
+
+			//Add all DP services in list as this bootstrap DP know peer
+			for _, newDp := range list {
+				_, err = client.AddToKnownPeers(ctx, newDp)
+
+				if err != nil {
+					config.Loaded.Logger.Warnw("dp.AddToKnownPeers(_) failed", "reason", "unresponsive bootstrap dp", "skipping", bt)
+				} else {
+					config.Loaded.Logger.Infow("Added dp to bootstrap dp known peer ", "boostrap dp", bt, "added peer", newDp.ListenAddress)
+				}
+			}
+
+			return nil
+		}()
+
+		if err != nil {
+			return err
 		}
 	}
 

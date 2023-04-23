@@ -14,51 +14,22 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
-//var Conn *pgx.Conn
+var Conn *pgx.Conn
 
-//var ConnCtx context.Context
+var ConnCtx context.Context
 
-//func CreateDBConn() *pgx.Conn {
-//	dns := os.Getenv("COCKROACH_DNS_URL")
-//	ConnCtx = context.Background()
-//	conn, err := pgx.Connect(ConnCtx, dns)
-//	if err != nil {
-//		config.Loaded.Logger.Fatalw("failed to connect database", err)
-//	}
-//
-//	return conn
-//}
-
-//func dns() string {
-//	dns := os.Getenv("COCKROACH_DNS_URL")
-//}
-
-//func conn() *pgx.Conn {
-//	connCtx := context.Background()
-//	conn, err := pgx.Connect(connCtx, os.Getenv("COCKROACH_DNS_URL"))
-//	defer conn.Close(connCtx)
-//	if err != nil {
-//		config.Loaded.Logger.Fatalw("failed to connect database", err)
-//	}
-//
-//	defer func() {
-//		err := conn.Close(connCtx)
-//		if err != nil {
-//			log.Fatal("cannot close klaytn client conn: ", err)
-//		}
-//	}()
-//
-//	return conn
-//}
-
-func StoreJob(adapter *protonode.Adapter) error {
-	connCtx := context.Background()
-	conn, err := pgx.Connect(connCtx, os.Getenv("COCKROACH_DNS_URL"))
-	defer conn.Close(connCtx)
+func CreateDBConn() {
+	dns := os.Getenv("COCKROACH_DNS_URL")
+	ConnCtx = context.Background()
+	conn, err := pgx.Connect(ConnCtx, dns)
 	if err != nil {
 		config.Loaded.Logger.Fatalw("failed to connect database", err)
 	}
 
+	Conn = conn
+}
+
+func StoreJob(adapter *protonode.Adapter) error {
 	jsonData, err := protojson.Marshal(adapter)
 	if err != nil {
 		config.Loaded.Logger.Warnw("cannot store job info", "reason", err)
@@ -66,8 +37,8 @@ func StoreJob(adapter *protonode.Adapter) error {
 
 	id := uuid.New()
 
-	err = crdbpgx.ExecuteTx(connCtx, conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
-		if _, err := tx.Exec(connCtx,
+	err = crdbpgx.ExecuteTx(context.Background(), Conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
+		if _, err := tx.Exec(ConnCtx,
 			"INSERT INTO node_jobs (id, adapter_id, request, period) VALUES ($1, $2, $3, $4)", id, adapter.AdapterId, string(jsonData), time.Now()); err != nil {
 			return err
 		}
@@ -82,17 +53,10 @@ func StoreJob(adapter *protonode.Adapter) error {
 }
 
 func StoreResponses(adapter *protonode.Adapter, responses []int64, roundAnswer int64) error {
-	connCtx := context.Background()
-	conn, err := pgx.Connect(connCtx, os.Getenv("COCKROACH_DNS_URL"))
-	defer conn.Close(connCtx)
-	if err != nil {
-		config.Loaded.Logger.Fatalw("failed to connect database", err)
-	}
-
 	id := uuid.New()
 
-	err = crdbpgx.ExecuteTx(connCtx, conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
-		if _, err := tx.Exec(connCtx,
+	err := crdbpgx.ExecuteTx(context.Background(), Conn, pgx.TxOptions{}, func(tx pgx.Tx) error {
+		if _, err := tx.Exec(ConnCtx,
 			"INSERT INTO node_responses (id, responses, round_answer, adapter_id, period) VALUES ($1, $2, $3, $4, $5)", id, responses, roundAnswer, adapter.AdapterId, time.Now()); err != nil {
 			return err
 		}
@@ -107,36 +71,22 @@ func StoreResponses(adapter *protonode.Adapter, responses []int64, roundAnswer i
 }
 
 func FetchResponsesFromT0(adapter *protonode.Adapter, t0 time.Time) (pgx.Rows, error) {
-	connCtx := context.Background()
-	conn, err := pgx.Connect(connCtx, os.Getenv("COCKROACH_DNS_URL"))
-	defer conn.Close(connCtx)
-	if err != nil {
-		config.Loaded.Logger.Fatalw("failed to connect database", err)
-	}
 
 	query := fmt.Sprintf("SELECT responses from node_responses WHERE adapter_id='%s' AND CAST(period as TIMESTAMP) >= '%s'", adapter.AdapterId, t0.Format("2006-01-02 15:04:05.840"))
 
-	rows, err := conn.Query(connCtx, query)
+	rows, err := Conn.Query(ConnCtx, query)
 	if err != nil {
 		config.Loaded.Logger.Warnw("error fetching TWAP", "feed", adapter.Name, "err", err)
-
-		return nil, err
 	}
 
 	return rows, nil
 }
 
 func FetchRoundSize(adapter *protonode.Adapter) (pgx.Rows, error) {
-	connCtx := context.Background()
-	conn, err := pgx.Connect(connCtx, os.Getenv("COCKROACH_DNS_URL"))
-	defer conn.Close(connCtx)
-	if err != nil {
-		config.Loaded.Logger.Fatalw("failed to connect database", err)
-	}
 
 	query := fmt.Sprintf("SELECT COUNT(*) as count from node_responses WHERE adapter_id='%s'", adapter.AdapterId)
 
-	rows, err := conn.Query(connCtx, query)
+	rows, err := Conn.Query(ConnCtx, query)
 	if err != nil {
 		config.Loaded.Logger.Warnw("error fetching round size", "feed", adapter.Name, "err", err)
 	}
