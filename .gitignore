@@ -15,13 +15,13 @@ node/.log
 # Oracle Contract
 oracle-contract/node_modules
 oracle-contract/.env
-#oracle-contract/coverage
-#oracle-contract/coverage.json
+oracle-contract/coverage
+oracle-contract/coverage.json
 oracle-contract/typechain
 oracle-contract/typechain-types
 
 # Hardhat files
-#oracle-contract/cache
+oracle-contract/cache
 
 Note.txt
 .log

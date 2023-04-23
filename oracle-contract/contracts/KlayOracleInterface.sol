@@ -16,14 +16,12 @@ interface KlayOracleInterface {
     /**
      * @dev This function is called by the node to fulfill a request
      * @param roundTime Time to aggregate the data
-     * @param data The data to be returned
-     * @param dataHash UTF-8 bytes, prefixed with \x19Ethereum Signed Message\n32
+     * @param roundAnswer The data to be returned
      * @param signature The signature of the signed data
      */
     function newRoundData(
         uint256 roundTime,
-        bytes32 data,
-        bytes32 dataHash,
+        bytes32 roundAnswer,
         bytes memory signature
     ) external returns (bool);
 

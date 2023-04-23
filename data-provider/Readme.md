@@ -98,6 +98,8 @@ ADAPTERS=KLAY_USD.json WEMIX_USD.json make adapter-dry-run
 
 This will dry run data aggregation for one round to see if everythign will run fine. Saves you time from sending adapter configuration that won't run on the Node.
 
+> Use https://jsonformatter.org/ to beautify the adapter feeds content, if you want.
+
 ## Step 3 : Start Node
 
 ```shell

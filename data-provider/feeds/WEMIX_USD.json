@@ -1,57 +1,58 @@
 {
-  "active":true,
-  "name":"WEMIX_USD",
-  "adapterId":"8b7460cccfa0aca303ee85c3fb81c344faad2fbab415adc32b2984008b7efd76",
-  "oracleAddress":"0xCC4377b912c4517Fe895817c6a7c6937D92A70B3",
-  "category": 2,
-  "frequency": 30000000000,
-  "feeds":[
+  "active": true,
+  "name": "WEMIX_USD",
+  "adapterId": "0x2a465136f2276513295f8eb454f01b6b472d1b70e38f5e6c9c538299aa1d4ea5",
+  "oracleAddress": "0x251b2c534fa7d696b356a96b17bf87a2ad38f394",
+  "feeds": [
     {
-      "url":"https://min-api.cryptocompare.com/data/pricemultifull?fsyms=WEMIX&tsyms=USD",
-      "request_type":0,
-      "headers":[
+      "url": "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=WEMIX&tsyms=USD",
+      "headers": [
         {
-          "field":{
-            "Content-Type":"application/json"
+          "field": {
+            "Content-Type": "application/json"
           }
         }
       ],
-      "reducers":[
+      "reducers": [
         {
-          "function":"PARSE",
-          "args":["$.RAW.WEMIX.USD.PRICE"]
+          "function": "PARSE",
+          "args": [
+            "$.RAW.WEMIX.USD.PRICE"
+          ]
         },
         {
-          "function":"FLOAT64_MUL_UINT64",
-          "args":[
+          "function": "FLOAT64_MUL_UINT64",
+          "args": [
             "1000000000"
           ]
         }
-      ],
-      "payload": ""
+      ]
     },
     {
-      "url":"https://rest.coinapi.io/v1/exchangerate/WEMIX/USD",
-      "request_type": 0,
-      "headers":[
+      "url": "https://rest.coinapi.io/v1/exchangerate/WEMIX/USD",
+      "headers": [
         {
-          "field":{
-            "X-CoinAPI-Key":"${X_COIN_API_KEY}"
+          "field": {
+            "X-CoinAPI-Key": "209D7E0E-9330-4706-B693-6E2ED10279A5"
           }
         }
       ],
-      "reducers":[
+      "reducers": [
         {
-          "function":"PARSE",
-          "args":["$.rate"]
+          "function": "PARSE",
+          "args": [
+            "$.rate"
+          ]
         },
         {
-          "function":"FLOAT64_MUL_UINT64",
-          "args":[
+          "function": "FLOAT64_MUL_UINT64",
+          "args": [
             "1000000000"
           ]
         }
       ]
     }
-  ]
+  ],
+  "category": "PRICE_FEED",
+  "frequency": "30000000000"
 }

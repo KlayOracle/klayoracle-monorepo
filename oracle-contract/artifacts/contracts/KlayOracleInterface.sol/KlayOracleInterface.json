@@ -36,12 +36,7 @@
         },
         {
           "internalType": "bytes32",
-          "name": "data",
-          "type": "bytes32"
-        },
-        {
-          "internalType": "bytes32",
-          "name": "dataHash",
+          "name": "roundAnswer",
           "type": "bytes32"
         },
         {

@@ -1,4 +1,5 @@
 NETWORK=$(shell docker network list | grep "klayoracle")
+WD=$(shell pwd)
 
 .PHONY: proto-installed
 proto-installed:
@@ -97,3 +98,13 @@ net-cluster:
 .PHONY: node-tables
 node-tables:
 	@cockroach sql --url $(COCKROACH_DNS_URL) --file ./node/dbinit.sql
+
+.PHONY: solidity-bindings
+solidity-bindings:
+	@if ! which solc > /dev/null; then \
+    		echo "error: solc not installed" >&2; \
+    		exit 1; \
+     else \
+       solc --abi oracle-contract/contracts/*.sol -o node/contracts/build --bin --overwrite @openzeppelin=oracle-contract/node_modules/@openzeppelin ; \
+       cd node/utils && go run compile_contract/compile_contract.go ; \
+     fi
