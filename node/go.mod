@@ -10,6 +10,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/klayoracle/klayoracle-monorepo/data-provider v0.0.0-00010101000000-000000000000
 	github.com/klaytn/klaytn v1.10.2
+	github.com/pborman/uuid v0.0.0-20170612153648-e790cca94e6c
 	github.com/stretchr/testify v1.8.1
 	go.uber.org/zap v1.24.0
 	golang.org/x/exp v0.0.0-20230224173230-c95f2b4c22f2
@@ -67,7 +68,6 @@ require (
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/newrelic/go-agent/v3 v3.11.0 // indirect
 	github.com/pbnjay/memory v0.0.0-20190104145345-974d429e7ae4 // indirect
-	github.com/pborman/uuid v0.0.0-20170612153648-e790cca94e6c // indirect
 	github.com/philhofer/fwd v1.1.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
