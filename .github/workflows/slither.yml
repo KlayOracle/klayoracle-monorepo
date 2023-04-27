@@ -6,10 +6,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         name: View directory
-      - run: cd oracle-contract && npx hardhat compile --f && ls -la oracle-contract/artifacts
+      - run:  ls -la oracle-contract/artifacts
       - uses: crytic/slither-action@v0.3.0
         with:
           node-version: 18
           target: 'oracle-contract/'
+          ignore-compile: true
           fail-on: 'high'
           slither-args: '--exclude solc-version,low-level-calls,different-pragma-directives-are-used,divide-before-multiply,assembly-usage,incorrect-versions-of-solidity,block-timestamp,incorrect-versions-of-solidity,conformance-to-solidity-naming-conventions'
