@@ -5,11 +5,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        name: View directory
-      - run: ls -la oracle-contract/artifacts
+      - name: Set up Node
+        uses: actions/setup-node@v3
+      - name: Install Yarn
+        run: npm install --global yarn
+      - name: Install Dependencies
+        run: cd oracle-contract && yarn
       - uses: crytic/slither-action@v0.3.0
         with:
           node-version: 18
+          ignore-compile: true
           target: 'oracle-contract/'
           fail-on: 'high'
           slither-args: '--exclude solc-version,low-level-calls,different-pragma-directives-are-used,divide-before-multiply,assembly-usage,incorrect-versions-of-solidity,block-timestamp,incorrect-versions-of-solidity,conformance-to-solidity-naming-conventions'

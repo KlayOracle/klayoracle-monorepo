@@ -21,9 +21,9 @@ proto-node: proto-installed
         node/protonode/*.proto
 
 
-.PHONY: gomodtidy-dp
-gomodtidy-dp: ## Run go mod tidy on all modules.
-	cd ./data-provider && go mod tidy
+.PHONY: gomodtidy
+gomodtidy: ## Run go mod tidy on all modules.
+	@cd data-provider && go mod tidy && cd - && cd node && go mod tidy
 
 .PHONY: test-dp
 test-dp:

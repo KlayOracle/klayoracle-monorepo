@@ -21,7 +21,7 @@ oracle-contract/typechain
 oracle-contract/typechain-types
 
 # Hardhat files
-oracle-contract/cache
+#oracle-contract/cache
 
 Note.txt
 .log
