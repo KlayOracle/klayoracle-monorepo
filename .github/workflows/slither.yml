@@ -6,7 +6,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         name: View directory
-      - run: ls -la oracle-contract/artifacts
+      - run: cd oracle-contract && npx hardhat compile --f && ls -la oracle-contract/artifacts
       - uses: crytic/slither-action@v0.3.0
         with:
           node-version: 18
