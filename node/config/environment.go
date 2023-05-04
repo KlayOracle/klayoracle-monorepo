@@ -10,6 +10,12 @@ import (
 
 var Loaded Config
 
+type Organization struct {
+	ID      string `yaml:"k_org_id"`
+	Name    string `yaml:"name"`
+	Website string `yaml:"website"`
+}
+
 type Config struct {
 	Env         string `yaml:"env"`
 	RootWD      string
@@ -19,12 +25,8 @@ type Config struct {
 		Path     string   `yaml:"path"`
 		Adapters []string `yaml:"adapters"`
 	} `yaml:"feed"`
-	Organization struct {
-		ID      string `yaml:"k_org_id"`
-		Name    string `yaml:"name"`
-		Website string `yaml:"website"`
-	} `yaml:"organization"`
-	SSL struct {
+	Organization `yaml:"organization"`
+	SSL          struct {
 		Key         string `yaml:"key"`
 		Certificate string `yaml:"certificate"`
 	}

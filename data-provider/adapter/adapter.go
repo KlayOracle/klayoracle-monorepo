@@ -107,12 +107,14 @@ func (dp *DataProvider) HandShake() (*grpc.ClientConn, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second) //Enough time to authenticate and add DP to known peers
 	defer cancel()
+
 	res, err := client.HandShake(ctx, &protonode.DPInfo{
 		Name:          config.Loaded.Organization.Name,
 		ListenAddress: dp.listenAddress,
 		KOrgId:        config.Loaded.Organization.ID,
 		Bootstraps:    dp.bootstraps,
 		KnownPeers:    map[string]*protonode.DPInfo{},
+		Website:       config.Loaded.Organization.Website,
 	})
 
 	if err != nil {
@@ -145,7 +147,7 @@ func NewNodeServiceClient() (interface{}, *grpc.ClientConn, error) {
 
 	nodeCertFilePath := path.Join(config.Loaded.RootWD, "certs/node", config.Loaded.SSL.Certificate)
 
-	credentials, err := credentials.NewClientTLSFromFile(nodeCertFilePath, config.Loaded.Organization.Website)
+	credentials, err := credentials.NewClientTLSFromFile(nodeCertFilePath, os.Getenv("HOST_AUTHORITY"))
 	if err != nil {
 		return nil, &grpc.ClientConn{}, fmt.Errorf("failed to load credentials: %v", err)
 	}
@@ -176,6 +178,7 @@ func (dp *DataProvider) ListKnownPeers(ctx context.Context, null *protoadapter.N
 			ListenAddress: dp.ListenAddress,
 			Name:          dp.Name,
 			KOrgId:        dp.KOrgId,
+			Website:       dp.Website,
 		})
 	}
 

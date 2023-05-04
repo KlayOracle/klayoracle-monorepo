@@ -1,5 +1,6 @@
 NETWORK=$(shell docker network list | grep "klayoracle")
 WD=$(shell pwd)
+HOST_IP := "0.0.0.0:50051"
 
 .PHONY: proto-installed
 proto-installed:
@@ -51,19 +52,19 @@ adapter-dry-run:
 
 .PHONY: node-server
 node-server:
-	@cd ./node && GRPC_GO_LOG_VERBOSITY_LEVEL=99 GRPC_GO_LOG_SEVERITY_LEVEL=info HOST_IP=0.0.0.0:50051 environment=local go run main.go
+	@cd ./node && GRPC_GO_LOG_VERBOSITY_LEVEL=99 GRPC_GO_LOG_SEVERITY_LEVEL=info HOST_IP=$(HOST_IP) environment=local go run main.go
 
 .PHONY: dp-client
 dp-client:
-	@cd ./data-provider && GRPC_GO_LOG_VERBOSITY_LEVEL=99 GRPC_GO_LOG_SEVERITY_LEVEL=info HOST_IP=0.0.0.0:50002 go run main.go
+	@cd ./data-provider && GRPC_GO_LOG_VERBOSITY_LEVEL=99 GRPC_GO_LOG_SEVERITY_LEVEL=info HOST_IP=$(HOST_IP) go run main.go
 
 .PHONY: node-server-nolog
 node-server-nolog:
-	@cd ./node && HOST_IP=0.0.0.0:50051 environment=local go run main.go
+	@cd ./node && HOST_IP=$(HOST_IP) environment=local go run main.go
 
 .PHONY: dp-client-nolog
 dp-client-nolog:
-	@cd ./data-provider && HOST_IP=0.0.0.0:50002 go run main.go
+	@cd ./data-provider && HOST_IP=$(HOST_IP) go run main.go
 
 .PHONY: build-node
 build-node:

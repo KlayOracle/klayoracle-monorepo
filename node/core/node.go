@@ -11,6 +11,10 @@ import (
 	"sync"
 	"time"
 
+	"github.com/klayoracle/klayoracle-monorepo/data-provider/adapter"
+	bootstrap2 "github.com/klayoracle/klayoracle-monorepo/node/bootstrap"
+	"google.golang.org/grpc/credentials/oauth"
+
 	"github.com/pborman/uuid"
 
 	"github.com/klayoracle/klayoracle-monorepo/node/storage"
@@ -40,15 +44,19 @@ var (
 type Node struct {
 	protonode.UnimplementedNodeServiceServer
 	Sever         *grpc.Server
+	Organization  config.Organization
 	dataProviders map[string]*protonode.DPInfo
 	mu            sync.Mutex
-	Jobs          map[string]*protonode.Adapter //Using multiple routines to R&W to channel is safe without mutex.
+	Jobs          map[string]*protonode.Adapter  //Using multiple routines to R&W to channel is safe without mutex.
+	bootstraps    map[string]*protonode.NodeInfo // A list of 3 default bootstrap node nodes
+	knownPeers    map[string]*protonode.NodeInfo
+	listenAddress string
 }
 
 func (n *Node) HandShake(ctx context.Context, provider *protonode.DPInfo) (*protonode.HandShakeStatus, error) {
 
 	//@Todo confirm organization is whitelisted in DB
-	//Node runner uses cmd to add and remove from supported organization
+	//Node runner uses binary/make command to add and remove dp from serving organization
 	if isDPWhitelist(provider) != true {
 		return nil, errDataProviderNotWhitelisted
 	}
@@ -61,7 +69,7 @@ func (n *Node) HandShake(ctx context.Context, provider *protonode.DPInfo) (*prot
 	if slices.Contains(bootstrap.Nodes(), provider.ListenAddress) {
 		config.Loaded.Logger.Warnw("ignoring adding to known peer", "reason", "bootstrap dp", "listen address", provider.ListenAddress)
 	} else {
-		err := addPeer(provider)
+		err := addDataProviderPeer(provider)
 		if err != nil {
 			config.Loaded.Logger.Fatal("error adding to known peer: ", err)
 			return nil, errAddingToKnownPeer
@@ -74,6 +82,53 @@ func (n *Node) HandShake(ctx context.Context, provider *protonode.DPInfo) (*prot
 
 	//Check DP Peers to find out Org is not yet registered
 	return &protonode.HandShakeStatus{Status: true, ErrorMsg: ""}, nil
+}
+
+func (n *Node) AddToKnownPeers(ctx context.Context, info *protonode.NodeInfo) (*protonode.Null, error) {
+
+	config.Loaded.Logger.Info("adding ", info.ListenAddress, " to known peers of bootstrap DP ", n.listenAddress)
+
+	n.mu.Lock()
+	defer n.mu.Unlock()
+
+	n.knownPeers[info.ListenAddress] = info
+
+	return new(protonode.Null), nil
+}
+
+func (n *Node) ListKnownPeers(context.Context, *protonode.Null) (*protonode.NodeInfos, error) {
+
+	nds := &protonode.NodeInfos{}
+
+	for _, nd := range n.knownPeers {
+		nds.List = append(nds.List, &protonode.NodeInfo{
+			ListenAddress: nd.ListenAddress,
+			Name:          nd.Name,
+			KOrgId:        nd.KOrgId,
+		})
+	}
+
+	return nds, nil
+}
+
+func (n *Node) Peer() {
+	p := &protonode.NodeInfo{
+		ListenAddress: n.listenAddress,
+		Name:          n.Organization.Name,
+		KOrgId:        n.Organization.ID,
+		Website:       n.Organization.Website,
+		KnownPeers:    map[string]*protonode.NodeInfo{},
+		Bootstraps:    map[string]*protonode.NodeInfo{},
+	}
+
+	if slices.Contains(bootstrap2.Nodes(), bootstrap2.BT{Addr: p.ListenAddress, OrgID: p.KOrgId, Domain: p.Website}) {
+		config.Loaded.Logger.Warnw("ignoring adding to known peer", "reason", "bootstrap node", "listen address", p.ListenAddress)
+	} else {
+		err := addNodePeer(p)
+		if err != nil {
+			config.Loaded.Logger.Warnw("node peering failed", "error", err)
+		}
+	}
 }
 
 func (n *Node) QueueJob(ctx context.Context, adapter *protonode.Adapter) (*protonode.RequestStatus, error) {
@@ -125,7 +180,7 @@ func (n *Node) execJob(adapter *protonode.Adapter, jobId string) {
 
 	err := castBtwDPInfo(adapter, dp)
 	if err != nil {
-		config.Loaded.Logger.Warnw("conversion between protoadapter.Adapter{} and protonode.Adapter{}  gone wrong: ", err)
+		config.Loaded.Logger.Warnw("conversion between protoadapter.Adapter{} and protonode.Adapter{}  gone wrong", "error", err)
 	}
 
 	roundAnswer, err := Run(*dp)
@@ -142,7 +197,92 @@ func (n *Node) execJob(adapter *protonode.Adapter, jobId string) {
 
 }
 
-func addPeer(p *protonode.DPInfo) error {
+func addNodePeer(p *protonode.NodeInfo) error {
+
+	//Refer to addDataProviderPeer(p *protonode.DPInfo) function comment for better understanding
+	var (
+		longestChain     = 0                                 //Count of the longest chain
+		longestChainNode = ""                                //Listen Ip of the longest Node's peer-chain
+		peerList         = map[string]*protonode.NodeInfos{} //Mapping of bootstrap node listen address to their node peers
+		peers            = &protonode.NodeInfos{}            //
+		err              error
+	)
+
+	bootstraps := bootstrap2.Nodes()
+
+	for _, bt := range bootstraps {
+		config.Loaded.Logger.Info("fetching known peers for bootstrap node: ", bt.Addr)
+		peers, err = getPeerListNode(bt)
+		if err != nil {
+			config.Loaded.Logger.Warnw("bootstrap node is unresponsive on ", "node", bt.Addr, "error", err)
+		} else {
+			peerList[bt.Addr] = peers
+
+			if len(peers.List) >= longestChain {
+				longestChain = len(peers.List)
+				longestChainNode = bt.Addr
+			}
+
+			config.Loaded.Logger.Info("peers found for ", bt.Addr)
+			if len(peers.List) > 0 {
+				config.Loaded.Logger.Info(peers)
+			} else {
+				config.Loaded.Logger.Warn("no known peers discovered")
+			}
+		}
+	}
+
+	if err != nil {
+		config.Loaded.Logger.Warn("conversion between node gone wrong: ", err)
+
+		return err
+	} else {
+
+		//fmt.Printf("Longest: %v\n", longestChainNode)
+		//fmt.Printf("PeerList: %v\n", peerList)
+		//return nil
+
+		list := append(peerList[longestChainNode].List, p)
+
+		for _, bt := range bootstraps {
+
+			//Due to defer behaviour in loop, we do this instead
+			err := func() error {
+
+				//Bootstrap node can't add self as peer
+				client, conn, err := NewNodeServiceClient(bt)
+				if err != nil {
+					return fmt.Errorf("failed connecting to client: %v", err)
+				}
+
+				ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second) //Enough time to authenticate and add node to known peers
+				defer cancel()
+				defer conn.Close()
+
+				//Add all node services in list as this bootstrap node know peer
+				for _, newNd := range list {
+					_, err = client.AddToKnownPeers(ctx, newNd)
+
+					if err != nil {
+						config.Loaded.Logger.Warnw("dp.AddToKnownPeers(_) failed", "reason", "unresponsive bootstrap node", "skipping", bt.Addr)
+					} else {
+						config.Loaded.Logger.Infow("node registered to bootstrap node known peer ", "boostrap node", bt.Addr, "added peer", newNd.ListenAddress)
+					}
+				}
+
+				return nil
+			}()
+
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+func addDataProviderPeer(p *protonode.DPInfo) error {
 
 	//Send a grpc request to all bootstrap nodes for Known peers
 	//Identify the bootstrap dp node with the longest known peers chain
@@ -160,14 +300,12 @@ func addPeer(p *protonode.DPInfo) error {
 
 	bootstraps := bootstrap.Nodes()
 
-	//@Todo If a bootstrap node does not respond, it should not stop a new peer from responding
+	//@Todo If a bootstrap node does not respond, it should not stop the service, just warn and move on
 	for _, listenAddr := range bootstraps {
 		config.Loaded.Logger.Info("fetching known peers for bootstrap DP: ", listenAddr)
-		peers, err = getPeerList(listenAddr)
+		peers, err = getPeerListDP(listenAddr)
 		if err != nil {
 			config.Loaded.Logger.Warn("bootstrap DP is unresponsive on ", listenAddr)
-
-			//return err
 		} else {
 
 			peerList[listenAddr] = peers
@@ -181,7 +319,7 @@ func addPeer(p *protonode.DPInfo) error {
 			if len(peers.List) > 0 {
 				config.Loaded.Logger.Info(peers)
 			} else {
-				config.Loaded.Logger.Warn("No known peers discovered")
+				config.Loaded.Logger.Warn("no known peers discovered")
 			}
 		}
 	}
@@ -206,13 +344,17 @@ func addPeer(p *protonode.DPInfo) error {
 			err := func() error {
 
 				//Bootstrap node can't add self as peer
-				client, err := newDPClient(bt)
+				client, conn, err := newDPServiceClient(bt)
 				if err != nil {
 					return fmt.Errorf("failed connecting to client: %v", err)
 				}
 
 				ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second) //Enough time to authenticate and add DP to known peers
 				defer cancel()
+				//defer conn.Close()
+				defer func() {
+					fmt.Println("State", conn.GetState())
+				}()
 
 				//Add all DP services in list as this bootstrap DP know peer
 				for _, newDp := range list {
@@ -237,15 +379,19 @@ func addPeer(p *protonode.DPInfo) error {
 	return nil
 }
 
-func getPeerList(listenAddr string) (*protoadapter.DPInfos, error) {
+func getPeerListDP(listenAddr string) (*protoadapter.DPInfos, error) {
 
-	client, err := newDPClient(listenAddr)
+	client, conn, err := newDPServiceClient(listenAddr)
 	if err != nil {
 		return nil, fmt.Errorf("failed connecting to client: %v", err)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second) //Enough time to authenticate and add DP to known peers
 	defer cancel()
+	//defer conn.Close()
+	defer func() {
+		fmt.Println("State", conn.GetState())
+	}()
 
 	res, err := client.ListKnownPeers(ctx, &protoadapter.Null{})
 
@@ -256,13 +402,70 @@ func getPeerList(listenAddr string) (*protoadapter.DPInfos, error) {
 	return res, nil
 }
 
-func newDPClient(listenAddr string) (protoadapter.DataProviderServiceClient, error) {
-	conn, err := grpc.Dial(listenAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+func getPeerListNode(bt bootstrap2.BT) (*protonode.NodeInfos, error) {
+	client, conn, err := NewNodeServiceClient(bt)
 	if err != nil {
-		return nil, fmt.Errorf("dial failed: %v", err)
+		return nil, fmt.Errorf("failed connecting to client: %v", err)
 	}
 
-	return protoadapter.NewDataProviderServiceClient(conn), nil
+	sbt, _ := json.Marshal(bt)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second) //Enough time to authenticate and add DP to known peers
+	md := metadata.Pairs("node", string(sbt))
+	ctx = metadata.NewOutgoingContext(ctx, md)
+
+	defer cancel()
+	defer func() {
+		defer conn.Close()
+	}()
+
+	res, err := client.ListKnownPeers(ctx, &protonode.Null{})
+
+	if err != nil {
+		return nil, fmt.Errorf("node.ListKnowPeers(_) failed: %v", err)
+	}
+
+	return res, nil
+}
+
+// NewNodeServiceClient
+// @Todo this can only be used by bootstrap node to create client conn. other node will fail with auth err
+func NewNodeServiceClient(bt bootstrap2.BT) (protonode.NodeServiceClient, *grpc.ClientConn, error) {
+	oauthKey := os.Getenv("OAUTH_TOKEN")
+
+	//@Todo, use boostrap oAuth
+	rpcCredentials := oauth.TokenSource{TokenSource: adapter.OauthTokenSource{
+		AuthKey: oauthKey,
+	}}
+
+	nodeCertFilePath := path.Join(config.Loaded.RootWD, "certs/bootstraps/x509", fmt.Sprintf("%s.pem", bt.OrgID))
+
+	credentials, err := credentials.NewClientTLSFromFile(nodeCertFilePath, bt.Domain)
+	if err != nil {
+		return nil, &grpc.ClientConn{}, fmt.Errorf("failed to load credentials: %v", err)
+	}
+	var opts []grpc.DialOption
+
+	opts = []grpc.DialOption{
+		grpc.WithPerRPCCredentials(rpcCredentials),
+		grpc.WithTransportCredentials(credentials),
+	}
+
+	conn, err := grpc.Dial(bt.Addr, opts...)
+
+	if err != nil {
+		return nil, &grpc.ClientConn{}, fmt.Errorf("did not connect: %v", err)
+	}
+
+	return protonode.NewNodeServiceClient(conn), conn, nil
+}
+
+func newDPServiceClient(listenAddr string) (protoadapter.DataProviderServiceClient, *grpc.ClientConn, error) {
+	conn, err := grpc.Dial(listenAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		return nil, nil, fmt.Errorf("dial failed: %v", err)
+	}
+
+	return protoadapter.NewDataProviderServiceClient(conn), conn, nil
 }
 
 func NewNodeServiceServer(n *Node) (*grpc.Server, error) {
@@ -282,6 +485,21 @@ func NewNodeServiceServer(n *Node) (*grpc.Server, error) {
 
 	n.dataProviders = make(map[string]*protonode.DPInfo)
 	n.Sever = s
+	n.Organization = config.Loaded.Organization
+	n.listenAddress = os.Getenv("HOST_IP")
+	n.knownPeers = make(map[string]*protonode.NodeInfo)
+	n.bootstraps = make(map[string]*protonode.NodeInfo)
+
+	for _, bt := range bootstrap2.Nodes() {
+		p := &protonode.NodeInfo{
+			ListenAddress: bt.Addr,
+			KOrgId:        bt.OrgID,
+			Website:       bt.Domain,
+			KnownPeers:    map[string]*protonode.NodeInfo{},
+			Bootstraps:    map[string]*protonode.NodeInfo{},
+		}
+		n.bootstraps[p.ListenAddress] = p
+	}
 
 	protonode.RegisterNodeServiceServer(s, n)
 
@@ -292,6 +510,7 @@ func NewNodeServiceServer(n *Node) (*grpc.Server, error) {
 
 // valid validates the authorization.
 func valid(authorization []string) bool {
+
 	if len(authorization) < 1 {
 		return false
 	}
@@ -309,6 +528,21 @@ func ensureValidToken(ctx context.Context, req interface{}, info *grpc.UnaryServ
 	if !ok {
 		return nil, errMissingMetadata
 	}
+
+	if md["node"] != nil {
+		sbt := md["node"][0]
+
+		if sbt != "" {
+			var bt bootstrap2.BT
+
+			json.Unmarshal([]byte(sbt), &bt)
+
+			if slices.Contains(bootstrap2.Nodes(), bt) {
+				return handler(ctx, req)
+			}
+		}
+	}
+
 	// The keys within metadata.MD are normalized to lowercase.
 	// See: https://godoc.org/google.golang.org/grpc/metadata#New
 	if !valid(md["authorization"]) {

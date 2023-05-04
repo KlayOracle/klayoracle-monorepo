@@ -8,7 +8,7 @@ feed:
 organization:
   k_org_id: 535797165684
   name: "KlayOracle Inc."
-  website: "dp-1.origineum.com"
+  website: "dp-1.klayoracle.com"
 ssl:
   key: ""
   certificate: "x509/535797165684.pem"
