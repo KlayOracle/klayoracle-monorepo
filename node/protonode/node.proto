@@ -5,9 +5,26 @@ option go_package = "github.com/klayoracle/klayoracle-monorepo/node/protonode";
 package protonode;
 
 service NodeService {
+  rpc Hello(Null) returns (NodeInfos);
   rpc HandShake(DPInfo) returns (HandShakeStatus);
-
   rpc QueueJob(Adapter) returns(RequestStatus);
+  rpc AddToKnownPeers(NodeInfo) returns(Null);
+  rpc ListKnownPeers(Null) returns(NodeInfos);
+}
+
+message Null{}
+
+message NodeInfo {
+  string listen_address = 1;
+  string name = 2;
+  string k_org_id = 3;
+  map<string, NodeInfo> knownPeers = 4;
+  map<string, NodeInfo> bootstraps = 5;
+  string  website = 6;
+}
+
+message NodeInfos {
+  repeated NodeInfo list = 1;
 }
 
 enum Status {
@@ -35,6 +52,7 @@ message DPInfo {
   string k_org_id = 3;
   map<string, DPInfo> knownPeers = 4;
   map<string, DPInfo> bootstraps = 5;
+  string  website = 6;
 }
 
 message DPInfos {

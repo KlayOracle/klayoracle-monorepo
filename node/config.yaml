@@ -2,7 +2,7 @@ env: stage #options: dev, stage, production
 organization:
   k_org_id: 535797165684
   name: "KlayOracle Inc."
-  website: "https://node-1.klayoracle.com"
+  website: "node-1.origineum.com"
 ssl:
   key: "x509/origineum_node_key.pem"
   certificate: "x509/origineum_node_cert.pem"

@@ -29,15 +29,6 @@ func main() {
 	boot.Boot(wd, path.Join(wd, "config.yaml"), path.Join(wd, ".env"))
 
 	//@Todo refactor
-	//storage.CreateDBConn()
-	//defer func() {
-	//	err = storage.Conn.Close(storage.ConnCtx)
-	//	if err != nil {
-	//		log.Fatal("cannot close klaytn client conn: ", err)
-	//	}
-	//}()
-
-	//@Todo refactor
 	core.NewClient()
 	defer func() {
 		core.KlaytnClient.Close()
@@ -54,7 +45,6 @@ func main() {
 	}
 
 	lis, err := net.Listen("tcp", os.Getenv("HOST_IP"))
-
 	if err != nil {
 		config.Loaded.Logger.Fatal("failed to listen: %v", err)
 	}
@@ -66,6 +56,8 @@ func main() {
 			shutServer <- s
 		}
 	}()
+
+	n.Peer()
 
 	for range shutServer {
 		s.Stop()
