@@ -41,6 +41,10 @@ Feel free to email engineering@klayoracle.com
 
 ## Checklist
 
+- Install go version >= 18
+- Docker desktop
+- Mac/Linux machine
+
 ### Node Runner
 
 - Generate a selfsigned certificate for each node. [see guide using open ssl](setup-guide/openssl).
@@ -54,7 +58,21 @@ Feel free to email engineering@klayoracle.com
 - In `.env` `OAUTH_TOKEN` is the Oauth token given to data providers using your Node.
 - Run `make gomodtidy`, `make node-tables`, `make node-server-nolog HOST_IP=0.0.0.0:50054` or `make node-server HOST_IP=0.0.0.0:50054` on your local machine to test it locally
 
+### DP Runner
+
+- Using sample [KLAY_USD](data-provider/feeds/KLAY_USD.json) and [WEMIX_USD](data-provider/feeds/WEMIX_USD.json), add all the feeds your data provider will serving to consumer contract.
+- Use the setup guide to understand and add a compatible feed. [Guide here](https://klayoracle.gitbook.io/v1.0.0/data-providers/)
+- Using the `make` command, generate unique 32 bytes string identifier for each adapter feed. example ` ADAPTERS="KLAY_USD.json WEMIX_USD.json make adapter-id-gen"` will generate `adapterId` for each feed.
+- Optionally if you prefer to prettifier your feed after generating `adapterId`, use https://jsonformatter.curiousconcept.com/.
+- Deploy [OracleProvider](https://github.com/KlayOracle/klayoracle-monorepo/blob/development/oracle-contract/contracts/OracleProviderSample.sol) contract for each feed and replace the `oracleAddress` key.
+- Add the certificate of the Node your data provider will be using to `data-provider/certs/node`. Update the path in `data-provider/config.yml`.
+- Update your organization details in `data-provider/config.yml`.
+- In `.env`, `HOST_IP` is the dns for reaching your data provider. As a rule of thumb if you are running multiple data provider don't run on same host,
+- Add the list of feeds to be loaded to `data-provider/config.yml`. Any `feed` name not listed will not be sent to the node for aggregation.
+
 Refer to the KlayOracle full [documentation](https://klayoracle.gitbook.io/v1.0.0/) for detailed instruction.
 
-### DP Runner
+### Using Docker
+
+
 
