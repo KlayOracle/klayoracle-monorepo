@@ -56,7 +56,7 @@ Feel free to email engineering@klayoracle.com
 - In `.env` `PRIVATE_KEY` is your Node signer with enough Klay tokens to pay for request.
 - In `.env` `COCKROACH_DNS_URL` is your full connection string to [https://cockroachlabs.cloud/](https://cockroachlabs.cloud/) cluster. A free account will suffice for a considerable period.
 - In `.env` `OAUTH_TOKEN` is the Oauth token given to data providers using your Node.
-- Run `make gomodtidy`, `make node-tables`, `make node-server-nolog HOST_IP=0.0.0.0:50054` or `make node-server HOST_IP=0.0.0.0:50054` on your local machine to test it locally
+- Run `make gomodtidy`, `make node-tables`, `make node-server-nolog HOST_IP=0.0.0.0:50054` or `make node-server HOST_IP=0.0.0.0:50054` on your local machine to test it locally.
 
 ### DP Runner
 
@@ -69,6 +69,7 @@ Feel free to email engineering@klayoracle.com
 - Update your organization details in `data-provider/config.yml`.
 - In `.env`, `HOST_IP` is the dns for reaching your data provider. As a rule of thumb if you are running multiple data provider don't run on same host,
 - Add the list of feeds to be loaded to `data-provider/config.yml`. Any `feed` name not listed will not be sent to the node for aggregation.
+- Run `make gomodtidy`, `make dp-client-nolog HOST_IP=0.0.0.0:50002` or `make dp-client HOST_IP=0.0.0.0:50002` on your local machine to test it locally.
 
 Refer to the KlayOracle full [documentation](https://klayoracle.gitbook.io/v1.0.0/) for detailed instruction.
 
