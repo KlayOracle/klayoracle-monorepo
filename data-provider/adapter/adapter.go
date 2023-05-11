@@ -11,6 +11,8 @@ import (
 	"sync"
 	"time"
 
+	"google.golang.org/grpc/credentials/insecure"
+
 	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
 	"golang.org/x/oauth2"
 	"google.golang.org/grpc/credentials"
@@ -54,7 +56,7 @@ func NewAdapter() *protoadapter.Adapter {
 	return &protoadapter.Adapter{}
 }
 
-func ListAdapters() []*protoadapter.Adapter {
+func ListAdapters(expand bool) []*protoadapter.Adapter {
 	var adapters []*protoadapter.Adapter
 
 	for _, adp := range config.Loaded.Feed.Adapters {
@@ -72,7 +74,7 @@ func ListAdapters() []*protoadapter.Adapter {
 
 		feed := NewAdapter()
 
-		Import(fileStream, feed)
+		Import(fileStream, feed, expand)
 
 		adapters = append(adapters, feed)
 	}
@@ -80,8 +82,11 @@ func ListAdapters() []*protoadapter.Adapter {
 	return adapters
 }
 
-func Import(stream []byte, p *protoadapter.Adapter) {
-	stream = []byte(os.ExpandEnv(string(stream)))
+func Import(stream []byte, p *protoadapter.Adapter, expand bool) {
+
+	if expand {
+		stream = []byte(os.ExpandEnv(string(stream)))
+	}
 
 	if err := protojson.Unmarshal(stream, p); err != nil {
 		config.Loaded.Logger.Fatal(err)
@@ -179,6 +184,7 @@ func (dp *DataProvider) ListKnownPeers(ctx context.Context, null *protoadapter.N
 			Name:          dp.Name,
 			KOrgId:        dp.KOrgId,
 			Website:       dp.Website,
+			Uptime:        time.Now().UnixNano(),
 		})
 	}
 
@@ -199,6 +205,44 @@ func (dp *DataProvider) AddToKnownPeers(ctx context.Context, info *protoadapter.
 	dp.knownPeers[info.ListenAddress] = dpInfo
 
 	return new(protoadapter.Null), nil
+}
+
+func (dp *DataProvider) ListFeeds(ctx context.Context, null *protoadapter.Null) (*protoadapter.Adapters, error) {
+
+	feeds := &protoadapter.Adapters{}
+
+	for _, feed := range ListAdapters(false) {
+		feeds.Adapters = append(feeds.Adapters, feed)
+	}
+
+	return feeds, nil
+}
+
+func (dp *DataProvider) ListFeedsFromAll(ctx context.Context, null *protoadapter.Null) (*protoadapter.Adapters, error) {
+	sumFeeds := &protoadapter.Adapters{}
+
+	for _, peer := range dp.knownPeers {
+		client, conn, err := NewDPServiceClient(peer.ListenAddress)
+		if err != nil {
+			return nil, err
+		}
+
+		feeds, err := client.ListFeeds(ctx, null)
+		sumFeeds.Adapters = append(sumFeeds.Adapters, feeds.Adapters...)
+
+		conn.Close()
+	}
+
+	return sumFeeds, nil
+}
+
+func NewDPServiceClient(listenAddr string) (protoadapter.DataProviderServiceClient, *grpc.ClientConn, error) {
+	conn, err := grpc.Dial(listenAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		return nil, nil, fmt.Errorf("dial failed: %v", err)
+	}
+
+	return protoadapter.NewDataProviderServiceClient(conn), conn, nil
 }
 
 func CastBtwDPInfo(from, to interface{}) error {

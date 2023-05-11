@@ -5,14 +5,44 @@ option go_package = "github.com/klayoracle/klayoracle-monorepo/node/protonode";
 package protonode;
 
 service NodeService {
-  rpc Hello(Null) returns (NodeInfos);
   rpc HandShake(DPInfo) returns (HandShakeStatus);
   rpc QueueJob(Adapter) returns(RequestStatus);
   rpc AddToKnownPeers(NodeInfo) returns(Null);
   rpc ListKnownPeers(Null) returns(NodeInfos);
+  rpc NodeJobsCount(Null) returns(JobLength);
+  rpc TotalNetworkRequests(Null) returns(JobLength);
+  rpc FeedHistory(FeedHistoryRequest) returns(FeedHistories);
+}
+
+message FeedHistoryRequest{
+    uint64 from_timestamp = 1;
+    uint64 to_timestamp = 2;
+    string adapter_id = 3;
+}
+
+message FeedHistories {
+  repeated FeedHistory feed = 1;
+}
+
+message FeedHistory {
+  uint64  round_answer  = 1;
+  uint64 period = 2;
+  string adapter_id = 3;
+  repeated int64 responses = 4;
+}
+
+message JobLength {
+  int64 value = 1;
 }
 
 message Null{}
+
+message NetworkStat {
+    uint64 nodes = 1;
+    uint64 data_providers = 2;
+    uint64 feeds = 3;
+    uint64 network_requests = 4;
+}
 
 message NodeInfo {
   string listen_address = 1;
@@ -21,6 +51,7 @@ message NodeInfo {
   map<string, NodeInfo> knownPeers = 4;
   map<string, NodeInfo> bootstraps = 5;
   string  website = 6;
+  int64 uptime = 7;
 }
 
 message NodeInfos {

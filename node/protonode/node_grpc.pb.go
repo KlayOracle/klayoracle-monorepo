@@ -23,11 +23,13 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NodeServiceClient interface {
-	Hello(ctx context.Context, in *Null, opts ...grpc.CallOption) (*NodeInfos, error)
 	HandShake(ctx context.Context, in *DPInfo, opts ...grpc.CallOption) (*HandShakeStatus, error)
 	QueueJob(ctx context.Context, in *Adapter, opts ...grpc.CallOption) (*RequestStatus, error)
 	AddToKnownPeers(ctx context.Context, in *NodeInfo, opts ...grpc.CallOption) (*Null, error)
 	ListKnownPeers(ctx context.Context, in *Null, opts ...grpc.CallOption) (*NodeInfos, error)
+	NodeJobsCount(ctx context.Context, in *Null, opts ...grpc.CallOption) (*JobLength, error)
+	TotalNetworkRequests(ctx context.Context, in *Null, opts ...grpc.CallOption) (*JobLength, error)
+	FeedHistory(ctx context.Context, in *FeedHistoryRequest, opts ...grpc.CallOption) (*FeedHistories, error)
 }
 
 type nodeServiceClient struct {
@@ -36,15 +38,6 @@ type nodeServiceClient struct {
 
 func NewNodeServiceClient(cc grpc.ClientConnInterface) NodeServiceClient {
 	return &nodeServiceClient{cc}
-}
-
-func (c *nodeServiceClient) Hello(ctx context.Context, in *Null, opts ...grpc.CallOption) (*NodeInfos, error) {
-	out := new(NodeInfos)
-	err := c.cc.Invoke(ctx, "/protonode.NodeService/Hello", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *nodeServiceClient) HandShake(ctx context.Context, in *DPInfo, opts ...grpc.CallOption) (*HandShakeStatus, error) {
@@ -83,15 +76,44 @@ func (c *nodeServiceClient) ListKnownPeers(ctx context.Context, in *Null, opts .
 	return out, nil
 }
 
+func (c *nodeServiceClient) NodeJobsCount(ctx context.Context, in *Null, opts ...grpc.CallOption) (*JobLength, error) {
+	out := new(JobLength)
+	err := c.cc.Invoke(ctx, "/protonode.NodeService/NodeJobsCount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nodeServiceClient) TotalNetworkRequests(ctx context.Context, in *Null, opts ...grpc.CallOption) (*JobLength, error) {
+	out := new(JobLength)
+	err := c.cc.Invoke(ctx, "/protonode.NodeService/TotalNetworkRequests", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nodeServiceClient) FeedHistory(ctx context.Context, in *FeedHistoryRequest, opts ...grpc.CallOption) (*FeedHistories, error) {
+	out := new(FeedHistories)
+	err := c.cc.Invoke(ctx, "/protonode.NodeService/FeedHistory", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NodeServiceServer is the server API for NodeService service.
 // All implementations must embed UnimplementedNodeServiceServer
 // for forward compatibility
 type NodeServiceServer interface {
-	Hello(context.Context, *Null) (*NodeInfos, error)
 	HandShake(context.Context, *DPInfo) (*HandShakeStatus, error)
 	QueueJob(context.Context, *Adapter) (*RequestStatus, error)
 	AddToKnownPeers(context.Context, *NodeInfo) (*Null, error)
 	ListKnownPeers(context.Context, *Null) (*NodeInfos, error)
+	NodeJobsCount(context.Context, *Null) (*JobLength, error)
+	TotalNetworkRequests(context.Context, *Null) (*JobLength, error)
+	FeedHistory(context.Context, *FeedHistoryRequest) (*FeedHistories, error)
 	mustEmbedUnimplementedNodeServiceServer()
 }
 
@@ -99,9 +121,6 @@ type NodeServiceServer interface {
 type UnimplementedNodeServiceServer struct {
 }
 
-func (UnimplementedNodeServiceServer) Hello(context.Context, *Null) (*NodeInfos, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Hello not implemented")
-}
 func (UnimplementedNodeServiceServer) HandShake(context.Context, *DPInfo) (*HandShakeStatus, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HandShake not implemented")
 }
@@ -114,6 +133,15 @@ func (UnimplementedNodeServiceServer) AddToKnownPeers(context.Context, *NodeInfo
 func (UnimplementedNodeServiceServer) ListKnownPeers(context.Context, *Null) (*NodeInfos, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListKnownPeers not implemented")
 }
+func (UnimplementedNodeServiceServer) NodeJobsCount(context.Context, *Null) (*JobLength, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NodeJobsCount not implemented")
+}
+func (UnimplementedNodeServiceServer) TotalNetworkRequests(context.Context, *Null) (*JobLength, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TotalNetworkRequests not implemented")
+}
+func (UnimplementedNodeServiceServer) FeedHistory(context.Context, *FeedHistoryRequest) (*FeedHistories, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FeedHistory not implemented")
+}
 func (UnimplementedNodeServiceServer) mustEmbedUnimplementedNodeServiceServer() {}
 
 // UnsafeNodeServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -125,24 +153,6 @@ type UnsafeNodeServiceServer interface {
 
 func RegisterNodeServiceServer(s grpc.ServiceRegistrar, srv NodeServiceServer) {
 	s.RegisterService(&NodeService_ServiceDesc, srv)
-}
-
-func _NodeService_Hello_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Null)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(NodeServiceServer).Hello(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/protonode.NodeService/Hello",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NodeServiceServer).Hello(ctx, req.(*Null))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _NodeService_HandShake_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -217,6 +227,60 @@ func _NodeService_ListKnownPeers_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NodeService_NodeJobsCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Null)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NodeServiceServer).NodeJobsCount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protonode.NodeService/NodeJobsCount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NodeServiceServer).NodeJobsCount(ctx, req.(*Null))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NodeService_TotalNetworkRequests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Null)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NodeServiceServer).TotalNetworkRequests(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protonode.NodeService/TotalNetworkRequests",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NodeServiceServer).TotalNetworkRequests(ctx, req.(*Null))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NodeService_FeedHistory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FeedHistoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NodeServiceServer).FeedHistory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protonode.NodeService/FeedHistory",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NodeServiceServer).FeedHistory(ctx, req.(*FeedHistoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // NodeService_ServiceDesc is the grpc.ServiceDesc for NodeService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -224,10 +288,6 @@ var NodeService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "protonode.NodeService",
 	HandlerType: (*NodeServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "Hello",
-			Handler:    _NodeService_Hello_Handler,
-		},
 		{
 			MethodName: "HandShake",
 			Handler:    _NodeService_HandShake_Handler,
@@ -243,6 +303,18 @@ var NodeService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListKnownPeers",
 			Handler:    _NodeService_ListKnownPeers_Handler,
+		},
+		{
+			MethodName: "NodeJobsCount",
+			Handler:    _NodeService_NodeJobsCount_Handler,
+		},
+		{
+			MethodName: "TotalNetworkRequests",
+			Handler:    _NodeService_TotalNetworkRequests_Handler,
+		},
+		{
+			MethodName: "FeedHistory",
+			Handler:    _NodeService_FeedHistory_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
