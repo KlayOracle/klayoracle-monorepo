@@ -45,7 +45,7 @@ func main() {
 		}
 
 		feed := adapter.NewAdapter()
-		adapter.Import(fileStream, feed)
+		adapter.Import(fileStream, feed, false)
 
 		feed.AdapterId = generateRandomHex()
 
