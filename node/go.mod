@@ -10,6 +10,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/klayoracle/klayoracle-monorepo/data-provider v0.0.0-00010101000000-000000000000
 	github.com/klaytn/klaytn v1.10.2
+	github.com/lib/pq v1.10.6
 	github.com/pborman/uuid v0.0.0-20170612153648-e790cca94e6c
 	github.com/stretchr/testify v1.8.1
 	go.uber.org/zap v1.24.0

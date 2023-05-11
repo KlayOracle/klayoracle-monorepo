@@ -71,7 +71,7 @@ func main() {
 			config.Loaded.Logger.Fatal("DP Handshake: ", err)
 		}
 
-		adapters := adapter.ListAdapters()
+		adapters := adapter.ListAdapters(true)
 
 		config.Loaded.Logger.Infow("send feeds to node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "total", len(adapters))
 

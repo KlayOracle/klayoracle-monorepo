@@ -14,6 +14,10 @@ service DataProviderService {
 
   rpc ListKnownPeers(Null) returns(DPInfos);
 
+  rpc ListFeeds(Null) returns(Adapters);
+
+  rpc ListFeedsFromAll(Null) returns(Adapters);
+
   // Unary RPC
   // Node as client sends request to retrieve details of an Adapter
   // Waits and gets a one time response and connection is closed
@@ -32,6 +36,7 @@ message DPInfo {
   map<string, DPInfo> knownPeers = 4;
   map<string, DPInfo> bootstraps = 5;
   string  website = 6;
+  int64 uptime = 8;
 }
 
 message DPInfos {

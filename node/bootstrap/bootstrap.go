@@ -6,6 +6,7 @@ type BT struct {
 	OrgID  string
 	Addr   string
 	Domain string
+	Name   string
 }
 
 // Nodes Bootstrap nodes for coordinating Node providers
@@ -15,19 +16,23 @@ func Nodes() []BT {
 	if env == "docker" {
 		return []BT{
 			BT{
+
 				"535797165684",
 				"bootstrap_node1:50052",
 				"node-1.origineum.com",
+				"KlayOracle Inc. bt-node-1",
 			},
 			BT{
 				"535797165685",
 				"bootstrap_node2:50052",
 				"node-2.origineum.com",
+				"KlayOracle Inc. bt-node-2",
 			},
 			BT{
 				"535797165686",
 				"bootstrap_node3:50052",
 				"node-3.origineum.com",
+				"KlayOracle Inc. bt-node-3",
 			},
 		}
 	}
@@ -37,16 +42,19 @@ func Nodes() []BT {
 			"535797165684",
 			"0.0.0.0:50051",
 			"node-1.origineum.com",
+			"KlayOracle Inc. bt-node-1",
 		},
-		//BT{
-		//	"535797165685",
-		//	"0.0.0.0:50052",
-		//	"node-2.origineum.com",
-		//},
-		//BT{
-		//	"535797165686",
-		//	"0.0.0.0:50053",
-		//	"node-3.origineum.com",
-		//},
+		BT{
+			"535797165685",
+			"0.0.0.0:50052",
+			"node-2.origineum.com",
+			"KlayOracle Inc. bt-node-2",
+		},
+		BT{
+			"535797165686",
+			"0.0.0.0:50053",
+			"node-3.origineum.com",
+			"KlayOracle Inc. bt-node-3",
+		},
 	}
 }

@@ -25,6 +25,8 @@ const _ = grpc.SupportPackageIsVersion7
 type DataProviderServiceClient interface {
 	AddToKnownPeers(ctx context.Context, in *DPInfo, opts ...grpc.CallOption) (*Null, error)
 	ListKnownPeers(ctx context.Context, in *Null, opts ...grpc.CallOption) (*DPInfos, error)
+	ListFeeds(ctx context.Context, in *Null, opts ...grpc.CallOption) (*Adapters, error)
+	ListFeedsFromAll(ctx context.Context, in *Null, opts ...grpc.CallOption) (*Adapters, error)
 }
 
 type dataProviderServiceClient struct {
@@ -53,12 +55,32 @@ func (c *dataProviderServiceClient) ListKnownPeers(ctx context.Context, in *Null
 	return out, nil
 }
 
+func (c *dataProviderServiceClient) ListFeeds(ctx context.Context, in *Null, opts ...grpc.CallOption) (*Adapters, error) {
+	out := new(Adapters)
+	err := c.cc.Invoke(ctx, "/protoadapter.DataProviderService/ListFeeds", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dataProviderServiceClient) ListFeedsFromAll(ctx context.Context, in *Null, opts ...grpc.CallOption) (*Adapters, error) {
+	out := new(Adapters)
+	err := c.cc.Invoke(ctx, "/protoadapter.DataProviderService/ListFeedsFromAll", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DataProviderServiceServer is the server API for DataProviderService service.
 // All implementations must embed UnimplementedDataProviderServiceServer
 // for forward compatibility
 type DataProviderServiceServer interface {
 	AddToKnownPeers(context.Context, *DPInfo) (*Null, error)
 	ListKnownPeers(context.Context, *Null) (*DPInfos, error)
+	ListFeeds(context.Context, *Null) (*Adapters, error)
+	ListFeedsFromAll(context.Context, *Null) (*Adapters, error)
 	mustEmbedUnimplementedDataProviderServiceServer()
 }
 
@@ -71,6 +93,12 @@ func (UnimplementedDataProviderServiceServer) AddToKnownPeers(context.Context, *
 }
 func (UnimplementedDataProviderServiceServer) ListKnownPeers(context.Context, *Null) (*DPInfos, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListKnownPeers not implemented")
+}
+func (UnimplementedDataProviderServiceServer) ListFeeds(context.Context, *Null) (*Adapters, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListFeeds not implemented")
+}
+func (UnimplementedDataProviderServiceServer) ListFeedsFromAll(context.Context, *Null) (*Adapters, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListFeedsFromAll not implemented")
 }
 func (UnimplementedDataProviderServiceServer) mustEmbedUnimplementedDataProviderServiceServer() {}
 
@@ -121,6 +149,42 @@ func _DataProviderService_ListKnownPeers_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DataProviderService_ListFeeds_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Null)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DataProviderServiceServer).ListFeeds(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protoadapter.DataProviderService/ListFeeds",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DataProviderServiceServer).ListFeeds(ctx, req.(*Null))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DataProviderService_ListFeedsFromAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Null)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DataProviderServiceServer).ListFeedsFromAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protoadapter.DataProviderService/ListFeedsFromAll",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DataProviderServiceServer).ListFeedsFromAll(ctx, req.(*Null))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DataProviderService_ServiceDesc is the grpc.ServiceDesc for DataProviderService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -135,6 +199,14 @@ var DataProviderService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListKnownPeers",
 			Handler:    _DataProviderService_ListKnownPeers_Handler,
+		},
+		{
+			MethodName: "ListFeeds",
+			Handler:    _DataProviderService_ListFeeds_Handler,
+		},
+		{
+			MethodName: "ListFeedsFromAll",
+			Handler:    _DataProviderService_ListFeedsFromAll_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

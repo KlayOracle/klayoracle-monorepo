@@ -13,6 +13,7 @@ CREATE TABLE node_responses (
 CREATE TABLE node_jobs (
     id UUID PRIMARY KEY,
     adapter_id STRING(66),
+    oracle_address STRING(42),
     request JSONB,
     period TIMESTAMP
 );

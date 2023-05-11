@@ -11,6 +11,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/jackc/pgtype"
+
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/adapter"
 	bootstrap2 "github.com/klayoracle/klayoracle-monorepo/node/bootstrap"
 	"google.golang.org/grpc/credentials/oauth"
@@ -23,8 +25,6 @@ import (
 
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/bootstrap"
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/protoadapter"
-	"google.golang.org/grpc/credentials/insecure"
-
 	"github.com/klayoracle/klayoracle-monorepo/node/config"
 	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
 	"google.golang.org/grpc"
@@ -66,15 +66,15 @@ func (n *Node) HandShake(ctx context.Context, provider *protonode.DPInfo) (*prot
 
 	config.Loaded.Logger.Infow("attempting to add provider to all bootstrap dp known peers ", "listen address", provider.ListenAddress)
 
-	if slices.Contains(bootstrap.Nodes(), provider.ListenAddress) {
-		config.Loaded.Logger.Warnw("ignoring adding to known peer", "reason", "bootstrap dp", "listen address", provider.ListenAddress)
-	} else {
-		err := addDataProviderPeer(provider)
-		if err != nil {
-			config.Loaded.Logger.Fatal("error adding to known peer: ", err)
-			return nil, errAddingToKnownPeer
-		}
+	//if slices.Contains(bootstrap.Nodes(), provider.ListenAddress) {
+	//	config.Loaded.Logger.Warnw("ignoring adding to known peer", "reason", "bootstrap dp", "listen address", provider.ListenAddress)
+	//} else {
+	err := addDataProviderPeer(provider)
+	if err != nil {
+		config.Loaded.Logger.Fatal("error adding to known peer: ", err)
+		return nil, errAddingToKnownPeer
 	}
+	//}
 
 	config.Loaded.Logger.Infow("registering provider with service node ", "provider", provider.ListenAddress, "service node", os.Getenv("HOST_IP"))
 
@@ -105,6 +105,8 @@ func (n *Node) ListKnownPeers(context.Context, *protonode.Null) (*protonode.Node
 			ListenAddress: nd.ListenAddress,
 			Name:          nd.Name,
 			KOrgId:        nd.KOrgId,
+			Website:       nd.Website,
+			Uptime:        time.Now().UnixNano(),
 		})
 	}
 
@@ -121,14 +123,35 @@ func (n *Node) Peer() {
 		Bootstraps:    map[string]*protonode.NodeInfo{},
 	}
 
-	if slices.Contains(bootstrap2.Nodes(), bootstrap2.BT{Addr: p.ListenAddress, OrgID: p.KOrgId, Domain: p.Website}) {
-		config.Loaded.Logger.Warnw("ignoring adding to known peer", "reason", "bootstrap node", "listen address", p.ListenAddress)
-	} else {
-		err := addNodePeer(p)
-		if err != nil {
-			config.Loaded.Logger.Warnw("node peering failed", "error", err)
-		}
+	//bn := bootstrap2.BT{Addr: p.ListenAddress, OrgID: p.KOrgId, Domain: p.Website, Name: p.Name}
+
+	//if slices.Contains(bootstrap2.Nodes(), bn) {
+	//	config.Loaded.Logger.Warnw("ignoring adding to known peer", "reason", "bootstrap node", "listen address", p.ListenAddress)
+
+	//index := slices.Index(bootstrap2.Nodes(), bn)
+	//
+	//otherBts := slices.Delete(bootstrap2.Nodes(), index, index+1)
+	//
+	//for _, bt := range otherBts {
+	//	err := addNodePeer(&protonode.NodeInfo{
+	//		ListenAddress: bt.Addr,
+	//		Name:          bt.Name,
+	//		KOrgId:        bt.OrgID,
+	//		Website:       bt.Domain,
+	//		KnownPeers:    map[string]*protonode.NodeInfo{},
+	//		Bootstraps:    map[string]*protonode.NodeInfo{},
+	//	})
+	//	if err != nil {
+	//		config.Loaded.Logger.Warnw("node peering failed", "error", err)
+	//	}
+	//}
+	//} else {
+	err := addNodePeer(p)
+	if err != nil {
+		config.Loaded.Logger.Warnw("node peering failed", "error", err)
 	}
+
+	//}
 }
 
 func (n *Node) QueueJob(ctx context.Context, adapter *protonode.Adapter) (*protonode.RequestStatus, error) {
@@ -211,6 +234,7 @@ func addNodePeer(p *protonode.NodeInfo) error {
 	bootstraps := bootstrap2.Nodes()
 
 	for _, bt := range bootstraps {
+
 		config.Loaded.Logger.Info("fetching known peers for bootstrap node: ", bt.Addr)
 		peers, err = getPeerListNode(bt)
 		if err != nil {
@@ -232,50 +256,39 @@ func addNodePeer(p *protonode.NodeInfo) error {
 		}
 	}
 
-	if err != nil {
-		config.Loaded.Logger.Warn("conversion between node gone wrong: ", err)
+	list := append(peerList[longestChainNode].List, p)
 
-		return err
-	} else {
+	for _, bt := range bootstraps {
 
-		//fmt.Printf("Longest: %v\n", longestChainNode)
-		//fmt.Printf("PeerList: %v\n", peerList)
-		//return nil
+		//Due to defer behaviour in loop, we do this instead
+		err := func() error {
 
-		list := append(peerList[longestChainNode].List, p)
-
-		for _, bt := range bootstraps {
-
-			//Due to defer behaviour in loop, we do this instead
-			err := func() error {
-
-				//Bootstrap node can't add self as peer
-				client, conn, err := NewNodeServiceClient(bt)
-				if err != nil {
-					return fmt.Errorf("failed connecting to client: %v", err)
-				}
-
-				ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second) //Enough time to authenticate and add node to known peers
-				defer cancel()
-				defer conn.Close()
-
-				//Add all node services in list as this bootstrap node know peer
-				for _, newNd := range list {
-					_, err = client.AddToKnownPeers(ctx, newNd)
-
-					if err != nil {
-						config.Loaded.Logger.Warnw("dp.AddToKnownPeers(_) failed", "reason", "unresponsive bootstrap node", "skipping", bt.Addr)
-					} else {
-						config.Loaded.Logger.Infow("node registered to bootstrap node known peer ", "boostrap node", bt.Addr, "added peer", newNd.ListenAddress)
-					}
-				}
-
-				return nil
-			}()
-
+			//Bootstrap node can't add self as peer
+			client, conn, err := NewNodeServiceClient(bt)
 			if err != nil {
-				return err
+				return fmt.Errorf("failed connecting to client: %v", err)
 			}
+
+			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second) //Enough time to authenticate and add node to known peers
+			defer cancel()
+			defer conn.Close()
+
+			//Add all node services in list as this bootstrap node know peer
+			for _, newNd := range list {
+				_, err = client.AddToKnownPeers(ctx, newNd)
+
+				if err != nil {
+					config.Loaded.Logger.Warnw("node.AddToKnownPeers(_) failed", "reason", "unresponsive bootstrap node", "skipping", bt.Addr)
+				} else {
+					config.Loaded.Logger.Infow("node registered to bootstrap node known peer ", "boostrap node", bt.Addr, "added peer", newNd.ListenAddress)
+				}
+			}
+
+			return nil
+		}()
+
+		if err != nil {
+			return err
 		}
 	}
 
@@ -344,7 +357,7 @@ func addDataProviderPeer(p *protonode.DPInfo) error {
 			err := func() error {
 
 				//Bootstrap node can't add self as peer
-				client, conn, err := newDPServiceClient(bt)
+				client, conn, err := adapter.NewDPServiceClient(bt)
 				if err != nil {
 					return fmt.Errorf("failed connecting to client: %v", err)
 				}
@@ -381,7 +394,7 @@ func addDataProviderPeer(p *protonode.DPInfo) error {
 
 func getPeerListDP(listenAddr string) (*protoadapter.DPInfos, error) {
 
-	client, conn, err := newDPServiceClient(listenAddr)
+	client, conn, err := adapter.NewDPServiceClient(listenAddr)
 	if err != nil {
 		return nil, fmt.Errorf("failed connecting to client: %v", err)
 	}
@@ -459,15 +472,6 @@ func NewNodeServiceClient(bt bootstrap2.BT) (protonode.NodeServiceClient, *grpc.
 	return protonode.NewNodeServiceClient(conn), conn, nil
 }
 
-func newDPServiceClient(listenAddr string) (protoadapter.DataProviderServiceClient, *grpc.ClientConn, error) {
-	conn, err := grpc.Dial(listenAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		return nil, nil, fmt.Errorf("dial failed: %v", err)
-	}
-
-	return protoadapter.NewDataProviderServiceClient(conn), conn, nil
-}
-
 func NewNodeServiceServer(n *Node) (*grpc.Server, error) {
 	certFilePath := path.Join(config.Loaded.RootWD, "certs/host", config.Loaded.SSL.Certificate)
 	keyFilePath := path.Join(config.Loaded.RootWD, "certs/host", config.Loaded.SSL.Key)
@@ -489,6 +493,8 @@ func NewNodeServiceServer(n *Node) (*grpc.Server, error) {
 	n.listenAddress = os.Getenv("HOST_IP")
 	n.knownPeers = make(map[string]*protonode.NodeInfo)
 	n.bootstraps = make(map[string]*protonode.NodeInfo)
+
+	fmt.Printf("%v", n.Organization)
 
 	for _, bt := range bootstrap2.Nodes() {
 		p := &protonode.NodeInfo{
@@ -564,4 +570,118 @@ func castBtwDPInfo(from, to interface{}) error {
 	}
 
 	return json.Unmarshal(b, to)
+}
+
+func (n *Node) NodeJobsCount(ctx context.Context, null *protonode.Null) (*protonode.JobLength, error) {
+
+	var roundSize int
+
+	for _, dp := range n.dataProviders {
+		client, conn, err := adapter.NewDPServiceClient(dp.ListenAddress)
+		if err != nil {
+			config.Loaded.Logger.Warnw("error in NodeJobsCount", "error", err)
+			return nil, err
+		}
+
+		feeds, err := client.ListFeeds(ctx, &protoadapter.Null{})
+		if err != nil {
+			config.Loaded.Logger.Warnw("error in NodeJobsCount", "error", err)
+			return nil, err
+		}
+
+		var ids []string
+
+		for _, feed := range feeds.Adapters {
+			ids = append(ids, feed.AdapterId)
+		}
+
+		rows, err := storage.FetchRoundSizeAll(ids)
+		if err != nil {
+			config.Loaded.Logger.Warnw("error in NodeJobsCount", "error", err)
+			return nil, err
+		}
+
+		var len int
+
+		for rows.Next() {
+			rows.Scan(&len)
+		}
+
+		roundSize += len
+
+		conn.Close()
+	}
+
+	return &protonode.JobLength{Value: int64(roundSize)}, nil
+}
+
+func (n *Node) TotalNetworkRequests(ctx context.Context, null *protonode.Null) (*protonode.JobLength, error) {
+	sumJobs := &protonode.JobLength{}
+
+	for _, peer := range n.knownPeers {
+		bt := bootstrap2.BT{
+			Addr:   peer.ListenAddress,
+			Name:   peer.Name,
+			OrgID:  peer.KOrgId,
+			Domain: peer.Website,
+		}
+
+		client, conn, err := NewNodeServiceClient(bt)
+		if err != nil {
+			return nil, fmt.Errorf("failed connecting to client: %v", err)
+		}
+
+		sbt, _ := json.Marshal(bt)
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second) //Enough time to authenticate and add DP to known peers
+		md := metadata.Pairs("node", string(sbt))
+		ctx = metadata.NewOutgoingContext(ctx, md)
+
+		reqs, err := client.NodeJobsCount(ctx, &protonode.Null{})
+		if err != nil {
+			return nil, err
+		}
+
+		sumJobs.Value = sumJobs.Value + reqs.Value
+
+		cancel()
+		conn.Close()
+	}
+
+	return sumJobs, nil
+}
+
+func (n *Node) FeedHistory(ctx context.Context, req *protonode.FeedHistoryRequest) (*protonode.FeedHistories, error) {
+
+	histories := &protonode.FeedHistories{}
+
+	rows, err := storage.FeedHistory(req)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+
+		rowValues, err := rows.Values()
+		if err != nil {
+			config.Loaded.Logger.Warnw("error returning feed history", "error", err)
+			return nil, err
+		}
+
+		var rs []int64
+
+		for _, element := range rowValues[0].(pgtype.Int8Array).Elements {
+			rs = append(rs, element.Int)
+		}
+
+		history := &protonode.FeedHistory{
+			Responses:   rs,
+			RoundAnswer: uint64(rowValues[1].(int64)),
+			AdapterId:   rowValues[2].(string),
+			Period:      uint64(rowValues[3].(time.Time).Unix()),
+		}
+
+		histories.Feed = append(histories.Feed, history)
+	}
+
+	return histories, nil
 }
