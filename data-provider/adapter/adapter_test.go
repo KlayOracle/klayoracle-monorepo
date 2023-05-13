@@ -45,7 +45,7 @@ func TestAdapterMarshalOk(t *testing.T) {
 				}
 				`)
 
-	Import(byt, newAdapter, false)
+	Import(byt, newAdapter, true)
 
 	assert.True(t, newAdapter.Active)
 	assert.Equal(t, newAdapter.Category, protoadapter.FeedCategory_PRICE_FEED)
