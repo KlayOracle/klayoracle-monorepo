@@ -1,0 +1,15 @@
+version: "3.9"  # Try this compose file for local-dev setup
+services:
+  bt1-node:
+    build: .
+    image: klayoracle-node:v1.0.0-dev
+    container_name: bootstrap_node1
+    ports:
+      - "50051:50051"
+    volumes:
+      - ./setup-guide/volumes/nodes/nd1/host/x509:/var/klayoracle/node/certs/host/x509
+      - ./setup-guide/volumes/nodes/nd1/config.yaml:/var/klayoracle/node/config.yaml
+    env_file:
+    - setup-guide/volumes/nodes/bt1/.env
+networks:
+  klayoracle: {}

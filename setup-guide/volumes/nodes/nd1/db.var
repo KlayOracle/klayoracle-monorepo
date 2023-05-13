@@ -1,0 +1,1 @@
+COCKROACH_DNS_URL=postgresql://cockroachdb_user:NVCD-W5UA5aiu-Ebc6JYgA@bare-zebu-7471.8nj.cockroachlabs.cloud:26257/klayoracle_bootstrap_node_1?sslmode=verify-full

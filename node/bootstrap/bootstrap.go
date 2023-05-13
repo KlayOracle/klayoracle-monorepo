@@ -18,19 +18,19 @@ func Nodes() []BT {
 			BT{
 
 				"535797165684",
-				"bootstrap_node1:50052",
+				"bootstrap_node1:50051",
 				"node-1.origineum.com",
 				"KlayOracle Inc. bt-node-1",
 			},
 			BT{
 				"535797165685",
-				"bootstrap_node2:50052",
+				"bootstrap_node2:50051",
 				"node-2.origineum.com",
 				"KlayOracle Inc. bt-node-2",
 			},
 			BT{
 				"535797165686",
-				"bootstrap_node3:50052",
+				"bootstrap_node3:50051",
 				"node-3.origineum.com",
 				"KlayOracle Inc. bt-node-3",
 			},
