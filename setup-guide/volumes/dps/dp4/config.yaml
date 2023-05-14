@@ -1,0 +1,14 @@
+env: dev #options: dev, stage, production
+service_node: bootstrap_node4:50051
+feed:
+  path: "feeds"
+  adapters:
+    - LTC_USD.json
+    - MATIC_USD.json
+organization:
+  k_org_id: 535797165697
+  name: "KlayOracle Inc."
+  website: "dp-4.klayoracle.com"
+ssl:
+  key: ""
+  certificate: "x509/535797165687.pem"

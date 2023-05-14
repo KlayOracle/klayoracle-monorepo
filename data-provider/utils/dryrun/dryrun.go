@@ -26,7 +26,7 @@ func main() {
 	logger := cfg.Logger
 
 	if len(adapterList) < 1 {
-		logger.Infow("no args passed", "example command: ", "ADAPTERS=KLAY_USD.json WEMIX_USD.json make adapter-dry-run")
+		logger.Infow("no args passed", "example command: ", "make adapter-dry-run ADAPTERS=KLAY_USD.json WEMIX_USD.json")
 	}
 
 	for _, s := range adapterList {

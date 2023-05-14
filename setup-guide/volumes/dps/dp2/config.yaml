@@ -1,0 +1,14 @@
+env: dev #options: dev, stage, production
+service_node: bootstrap_node2:50051
+feed:
+  path: "feeds"
+  adapters:
+    - BTC_USD.json
+    - ETH_USD.json
+organization:
+  k_org_id: 535797165695
+  name: "KlayOracle Inc."
+  website: "dp-2.klayoracle.com"
+ssl:
+  key: ""
+  certificate: "x509/535797165685.pem"

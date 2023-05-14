@@ -78,7 +78,7 @@ node-image:
 
 .PHONY: dp-image
 dp-image:
-	@cat .env.images && docker build -t $(DP_IMAGE) -f dp.Dockerfile . --build-arg PORT=$(DP_PORT)
+	@docker build -t ${DP_IMAGE} -f dp.Dockerfile . --build-arg PORT=${DP_PORT}
 
 .PHONY: docker-network
 docker-network:
@@ -90,15 +90,15 @@ docker-network:
 
 .PHONEY: export-var
 export-var:
-	for var in $(shell cat ${TARGET}); do export "$${var}"; done;
+	@for var in $(shell cat ${TARGET}); do export "$${var}"; done;
 
 .PHONEY: devnet-tables
-migrate-dbs:
-	for var in $(shell cat setup-guide/volumes/nodes/nd{1,2,3,4}/db.var); do export "$${var}" && make node-tables ; done;
+devnet-tables:
+	@for var in $(shell cat setup-guide/volumes/nodes/nd{1,2,3,4}/db.var); do export "$${var}" && make node-tables ; done;
 
 .PHONY: devnet-cluster
 devnet-cluster:
-	@make docker-network; TARGET=images.var make export-var; make node-image
+	@make docker-network; TARGET=images.var make export-var; make node-image; make dp-image
 	@make devnet-tables
 	@docker compose up --detach
 

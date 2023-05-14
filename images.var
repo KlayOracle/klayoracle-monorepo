@@ -1,2 +1,2 @@
 NODE_IMAGE=klayoracle-node:v1.0.0-dev
-DP_IMAGE=klayoracle-node:v1.0.0-dev
+DP_IMAGE=klayoracle-dp:v1.0.0-dev

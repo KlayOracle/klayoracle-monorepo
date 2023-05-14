@@ -20,22 +20,17 @@ WORKDIR -
 WORKDIR /data-provider
 RUN go mod tidy
 RUN go build -o kloc-dp . && cp -r . /var/klayoracle
+RUN rm /var/klayoracle/.env /var/klayoracle/config.yaml /var/klayoracle/certs/node/x509 /var/klayoracle/feeds -r
 
 ##Final Image
 FROM ubuntu:20.04
 
-RUN apt-get update
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 
 COPY --from=build /var/klayoracle /var/klayoracle
 
 ARG PORT
 EXPOSE $PORT
 ENV WORK_DIR=/var/klayoracle
-
-#Install PGS Driver
-#Install cockroach cli
-#COPY over PGS certificate to CERT PATH
-#Env Variable: COCKROACH_CERTS_DIR
-#Default: ${HOME}/.cockroach-certs/
 
 CMD ./var/klayoracle/kloc-dp
