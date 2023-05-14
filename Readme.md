@@ -77,4 +77,4 @@ Refer to the KlayOracle full [documentation](https://klayoracle.gitbook.io/v1.0.
 
 ### Using Docker
 
-[![KlayOracle v1.0.0-dev Docker setup for local devnet](https://user-images.githubusercontent.com/7295729/238190885-6558ac60-cf0e-4ba7-898c-153584ae9866.png)](https://www.youtube.com/watch?v=MtGD_uL0v4w)
+[![KlayOracle v1.0.0-dev Docker setup for local devnet](https://user-images.githubusercontent.com/7295729/238190885-6558ac60-cf0e-4ba7-898c-153584ae9866.png)](https://www.youtube.com/watch?v=Tu1QkayeXYk)
