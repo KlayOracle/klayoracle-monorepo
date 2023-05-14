@@ -1,6 +1,6 @@
 #!/bin/sh
 
-WD="$HOME"/Development/GO/klayoracle-monorepo
+WD="$(pwd)"
 DP="$WD"/data-provider
 NODE="$WD"/node
 OC="$WD"/oracle-contract

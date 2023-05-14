@@ -1,14 +1,11 @@
 {
   "active":true,
-  "name":"KLAY_USD",
-  "adapterId":"0x8b7460cccfa0aca303ee85c3fb81c344faad2fbab415adc32b2984008b7efd76",
-  "oracleAddress":"0xbc884088e406422a3ef39aedd1c546de7ac4be7c",
-  "category": 2,
-  "frequency": 900000000000,
+  "name":"BNB_USD",
+  "adapterId":"0x0eecd1450f7aae52732ff1dcdcb7f5fc194249cc8c0665c82c65c8028bc64b75",
+  "oracleAddress":"0x1FdebbE196D2FeE7Ca98126a8b1f0f42a6E2833f",
   "feeds":[
     {
-      "url":"https://min-api.cryptocompare.com/data/pricemultifull?fsyms=KLAY&tsyms=USD",
-      "request_type":0,
+      "url":"https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BNB&tsyms=USD",
       "headers":[
         {
           "field":{
@@ -19,7 +16,9 @@
       "reducers":[
         {
           "function":"PARSE",
-          "args":["$.RAW.KLAY.USD.PRICE"]
+          "args":[
+            "$.RAW.BNB.USD.PRICE"
+          ]
         },
         {
           "function":"FLOAT64_MUL_UINT64",
@@ -27,12 +26,10 @@
             "1000000000"
           ]
         }
-      ],
-      "payload": ""
+      ]
     },
     {
-      "url":"https://rest.coinapi.io/v1/exchangerate/KLAY/USD",
-      "request_type": 0,
+      "url":"https://rest.coinapi.io/v1/exchangerate/BNB/USD",
       "headers":[
         {
           "field":{
@@ -43,7 +40,9 @@
       "reducers":[
         {
           "function":"PARSE",
-          "args":["$.rate"]
+          "args":[
+            "$.rate"
+          ]
         },
         {
           "function":"FLOAT64_MUL_UINT64",
@@ -53,5 +52,7 @@
         }
       ]
     }
-  ]
+  ],
+  "category":"PRICE_FEED",
+  "frequency":"700000000000"
 }

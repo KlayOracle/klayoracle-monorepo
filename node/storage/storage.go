@@ -56,7 +56,7 @@ func StoreJob(adapter *protonode.Adapter) error {
 	conn, err := pgx.Connect(connCtx, os.Getenv("COCKROACH_DNS_URL"))
 	defer conn.Close(connCtx)
 	if err != nil {
-		config.Loaded.Logger.Fatalw("failed to connect database", err)
+		config.Loaded.Logger.Warnw("failed to connect database", err)
 	}
 
 	jsonData, err := protojson.Marshal(adapter)
@@ -86,7 +86,7 @@ func StoreResponses(adapter *protonode.Adapter, responses []int64, roundAnswer i
 	conn, err := pgx.Connect(connCtx, os.Getenv("COCKROACH_DNS_URL"))
 	defer conn.Close(connCtx)
 	if err != nil {
-		config.Loaded.Logger.Fatalw("failed to connect database", err)
+		config.Loaded.Logger.Warnw("failed to connect database", err)
 	}
 
 	id := uuid.New()
@@ -111,7 +111,7 @@ func FetchResponsesFromT0(adapter *protonode.Adapter, t0 time.Time) (pgx.Rows, e
 	conn, err := pgx.Connect(connCtx, os.Getenv("COCKROACH_DNS_URL"))
 	defer conn.Close(connCtx)
 	if err != nil {
-		config.Loaded.Logger.Fatalw("failed to connect database", err)
+		config.Loaded.Logger.Warnw("failed to connect database", err)
 	}
 
 	query := fmt.Sprintf("SELECT responses from node_responses WHERE adapter_id='%s' AND CAST(period as TIMESTAMP) >= '%s'", adapter.AdapterId, t0.Format("2006-01-02 15:04:05.840"))
@@ -131,7 +131,7 @@ func FeedHistory(req *protonode.FeedHistoryRequest) (pgx.Rows, error) {
 	conn, err := pgx.Connect(connCtx, os.Getenv("COCKROACH_DNS_URL"))
 	defer conn.Close(connCtx)
 	if err != nil {
-		config.Loaded.Logger.Fatalw("failed to connect database", err)
+		config.Loaded.Logger.Warnw("failed to connect database", err)
 	}
 
 	t0 := time.Unix(int64(req.FromTimestamp), 0).Format("2006-01-02 15:04:05.840")
@@ -154,7 +154,7 @@ func FetchRoundSize(adapter *protonode.Adapter) (pgx.Rows, error) {
 	conn, err := pgx.Connect(connCtx, os.Getenv("COCKROACH_DNS_URL"))
 	defer conn.Close(connCtx)
 	if err != nil {
-		config.Loaded.Logger.Fatalw("failed to connect database", err)
+		config.Loaded.Logger.Warnw("failed to connect database", err)
 	}
 
 	query := fmt.Sprintf("SELECT COUNT(*) as count from node_responses WHERE adapter_id='%s'", adapter.AdapterId)
@@ -172,7 +172,7 @@ func FetchRoundSizeAll(adapters []string) (pgx.Rows, error) {
 	conn, err := pgx.Connect(connCtx, os.Getenv("COCKROACH_DNS_URL"))
 	defer conn.Close(connCtx)
 	if err != nil {
-		config.Loaded.Logger.Fatalw("failed to connect database", err)
+		config.Loaded.Logger.Warnw("failed to connect database", err)
 	}
 
 	var fetch string

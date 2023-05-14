@@ -1,0 +1,14 @@
+env: dev #options: dev, stage, production
+service_node: bootstrap_node1:50051
+feed:
+  path: "feeds"
+  adapters:
+    - KLAY_USD.json
+    - WEMIX_USD.json
+organization:
+  k_org_id: 535797165694
+  name: "KlayOracle Inc."
+  website: "dp-1.klayoracle.com"
+ssl:
+  key: ""
+  certificate: "x509/535797165684.pem"

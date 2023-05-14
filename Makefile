@@ -1,6 +1,8 @@
 NETWORK=$(shell docker network list | grep "klayoracle")
 WD=$(shell pwd)
 HOST_IP := "0.0.0.0:50051"
+NODE_PORT := "50051"
+DP_PORT := "50002"
 
 .PHONY: proto-installed
 proto-installed:
@@ -70,14 +72,13 @@ dp-client-nolog:
 build-node:
 	@cd ./node && go build -o bin/node
 
-
 .PHONY: node-image
 node-image:
-	@docker build -t klayoracle-node:dev -f node.Dockerfile . --build-arg PORT=${PORT}
+	@docker build -t ${NODE_IMAGE} -f node.Dockerfile . --build-arg PORT=${NODE_PORT}
 
 .PHONY: dp-image
 dp-image:
-	@docker build -t klayoracle-dp:dev -f dp.Dockerfile . --build-arg PORT=${PORT}
+	@docker build -t ${DP_IMAGE} -f dp.Dockerfile . --build-arg PORT=${DP_PORT}
 
 .PHONY: docker-network
 docker-network:
@@ -87,18 +88,23 @@ docker-network:
     	echo "$(NETWORK)";	\
     fi
 
-.PHONY: net-cluster
-net-cluster:
-	@make docker-network
-	docker run -d --net klayoracle --name bootstrap_node1 --env-file node/.env klayoracle-node:dev
-	docker run -d --net klayoracle --name bootstrap_dp1 --env-file data-provider/.env --env HOST_IP=bootstrap_dp1:50002 klayoracle-dp:dev
-	docker run -d --net klayoracle --name bootstrap_dp2 --env-file data-provider/.env --env HOST_IP=bootstrap_dp2:50002 klayoracle-dp:dev
-	docker run -d --net klayoracle --name bootstrap_dp3 --env-file data-provider/.env --env HOST_IP=bootstrap_dp3:50002 klayoracle-dp:dev
-	docker run -d --net klayoracle --name common_dp --env-file data-provider/.env --env HOST_IP=common_dp:50002 klayoracle-dp:dev
+.PHONEY: export-var
+export-var:
+	@for var in $(shell cat ${TARGET}); do export "$${var}"; done;
+
+.PHONEY: devnet-tables
+devnet-tables:
+	@for var in $(shell cat setup-guide/volumes/nodes/nd{1,2,3,4}/db.var); do export "$${var}" && make node-tables ; done;
+
+.PHONY: devnet-cluster
+devnet-cluster:
+	@make docker-network; TARGET=images.var make export-var; make node-image; make dp-image
+	@make devnet-tables
+	@docker compose up --detach
 
 .PHONY: node-tables
 node-tables:
-	@cockroach sql --url $(COCKROACH_DNS_URL) --file ./node/dbinit.sql
+	@cockroach sql --url $(COCKROACH_DNS_URL) --file ${WD}/node/dbinit.sql
 
 .PHONY: solidity-bindings
 solidity-bindings:

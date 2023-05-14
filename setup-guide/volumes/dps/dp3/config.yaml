@@ -1,0 +1,14 @@
+env: dev #options: dev, stage, production
+service_node: bootstrap_node3:50051
+feed:
+  path: "feeds"
+  adapters:
+    - BNB_USD.json
+    - SOL_USD.json
+organization:
+  k_org_id: 535797165696
+  name: "KlayOracle Inc."
+  website: "dp-3.klayoracle.com"
+ssl:
+  key: ""
+  certificate: "x509/535797165686.pem"

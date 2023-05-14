@@ -34,7 +34,7 @@ func main() {
 		core.KlaytnClient.Close()
 	}()
 
-	config.Loaded.Logger.Info("Working directory: ", wd)
+	config.Loaded.Logger.Info("Working directory: ", wd, "\n")
 
 	//Start Node service
 	n := &core.Node{}

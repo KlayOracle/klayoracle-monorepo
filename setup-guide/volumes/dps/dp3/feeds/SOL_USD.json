@@ -1,14 +1,11 @@
 {
   "active":true,
-  "name":"KLAY_USD",
-  "adapterId":"0x8b7460cccfa0aca303ee85c3fb81c344faad2fbab415adc32b2984008b7efd76",
-  "oracleAddress":"0xbc884088e406422a3ef39aedd1c546de7ac4be7c",
-  "category": 2,
-  "frequency": 900000000000,
+  "name":"SOL_USD",
+  "adapterId":"0xbc8ef9219e9952b80657ddd222efbecb4129da8fa570157f3be32e94356e4a49",
+  "oracleAddress":"0xc8D7Df132015f44FbB7D535Ca48677cC129566c8",
   "feeds":[
     {
-      "url":"https://min-api.cryptocompare.com/data/pricemultifull?fsyms=KLAY&tsyms=USD",
-      "request_type":0,
+      "url":"https://min-api.cryptocompare.com/data/pricemultifull?fsyms=SOL&tsyms=USD",
       "headers":[
         {
           "field":{
@@ -19,7 +16,9 @@
       "reducers":[
         {
           "function":"PARSE",
-          "args":["$.RAW.KLAY.USD.PRICE"]
+          "args":[
+            "$.RAW.SOL.USD.PRICE"
+          ]
         },
         {
           "function":"FLOAT64_MUL_UINT64",
@@ -27,23 +26,23 @@
             "1000000000"
           ]
         }
-      ],
-      "payload": ""
+      ]
     },
     {
-      "url":"https://rest.coinapi.io/v1/exchangerate/KLAY/USD",
-      "request_type": 0,
+      "url":"https://rest.coinapi.io/v1/exchangerate/SOL/USD",
       "headers":[
         {
           "field":{
-            "X-CoinAPI-Key":"${X_COIN_API_KEY}"
+            "X-CoinAPI-Key":"209D7E0E-9330-4706-B693-6E2ED10279A5"
           }
         }
       ],
       "reducers":[
         {
           "function":"PARSE",
-          "args":["$.rate"]
+          "args":[
+            "$.rate"
+          ]
         },
         {
           "function":"FLOAT64_MUL_UINT64",
@@ -53,5 +52,7 @@
         }
       ]
     }
-  ]
+  ],
+  "category":"PRICE_FEED",
+  "frequency":"700000000000"
 }

@@ -86,7 +86,7 @@ func (n *Node) HandShake(ctx context.Context, provider *protonode.DPInfo) (*prot
 
 func (n *Node) AddToKnownPeers(ctx context.Context, info *protonode.NodeInfo) (*protonode.Null, error) {
 
-	config.Loaded.Logger.Info("adding ", info.ListenAddress, " to known peers of bootstrap DP ", n.listenAddress)
+	config.Loaded.Logger.Info("adding ", info.ListenAddress, " to known peers of bootstrap node ", n.listenAddress)
 
 	n.mu.Lock()
 	defer n.mu.Unlock()
@@ -269,16 +269,22 @@ func addNodePeer(p *protonode.NodeInfo) error {
 				return fmt.Errorf("failed connecting to client: %v", err)
 			}
 
-			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second) //Enough time to authenticate and add node to known peers
+			sbt, _ := json.Marshal(bt)
+			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second) //Enough time to authenticate and add DP to known peers
+			md := metadata.Pairs("node", string(sbt))
+			ctx = metadata.NewOutgoingContext(ctx, md)
+
 			defer cancel()
-			defer conn.Close()
+			defer func() {
+				defer conn.Close()
+			}()
 
 			//Add all node services in list as this bootstrap node know peer
 			for _, newNd := range list {
 				_, err = client.AddToKnownPeers(ctx, newNd)
 
 				if err != nil {
-					config.Loaded.Logger.Warnw("node.AddToKnownPeers(_) failed", "reason", "unresponsive bootstrap node", "skipping", bt.Addr)
+					config.Loaded.Logger.Warnw("node.AddToKnownPeers(_) failed", "reason", err, "skipping", bt.Addr)
 				} else {
 					config.Loaded.Logger.Infow("node registered to bootstrap node known peer ", "boostrap node", bt.Addr, "added peer", newNd.ListenAddress)
 				}
@@ -374,7 +380,7 @@ func addDataProviderPeer(p *protonode.DPInfo) error {
 					_, err = client.AddToKnownPeers(ctx, newDp)
 
 					if err != nil {
-						config.Loaded.Logger.Warnw("dp.AddToKnownPeers(_) failed", "reason", "unresponsive bootstrap dp", "skipping", bt)
+						config.Loaded.Logger.Warnw("dp.AddToKnownPeers(_) failed", "reason", err, "skipping", bt)
 					} else {
 						config.Loaded.Logger.Infow("Added dp to bootstrap dp known peer ", "boostrap dp", bt, "added peer", newDp.ListenAddress)
 					}
@@ -494,7 +500,7 @@ func NewNodeServiceServer(n *Node) (*grpc.Server, error) {
 	n.knownPeers = make(map[string]*protonode.NodeInfo)
 	n.bootstraps = make(map[string]*protonode.NodeInfo)
 
-	fmt.Printf("%v", n.Organization)
+	config.Loaded.Logger.Info("node organization: ", n.Organization)
 
 	for _, bt := range bootstrap2.Nodes() {
 		p := &protonode.NodeInfo{
@@ -624,6 +630,11 @@ func (n *Node) TotalNetworkRequests(ctx context.Context, null *protonode.Null) (
 			Name:   peer.Name,
 			OrgID:  peer.KOrgId,
 			Domain: peer.Website,
+		}
+
+		//@Todo only bootstrap Nodes can be accessed with known cert file
+		if !slices.Contains(bootstrap2.Nodes(), bt) {
+			continue
 		}
 
 		client, conn, err := NewNodeServiceClient(bt)

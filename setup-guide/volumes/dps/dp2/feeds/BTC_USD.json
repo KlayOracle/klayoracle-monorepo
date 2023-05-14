@@ -1,14 +1,11 @@
 {
   "active":true,
-  "name":"KLAY_USD",
-  "adapterId":"0x8b7460cccfa0aca303ee85c3fb81c344faad2fbab415adc32b2984008b7efd76",
-  "oracleAddress":"0xbc884088e406422a3ef39aedd1c546de7ac4be7c",
-  "category": 2,
-  "frequency": 900000000000,
+  "name":"BTC_USD",
+  "adapterId":"0x30a0bdd56d071b172a4a0a93f2cf82765a83b349443f7d3f0c90833e9e07be7d",
+  "oracleAddress":"0xf57761CC1FcF506Da4396E62C5920C1632c30620",
   "feeds":[
     {
-      "url":"https://min-api.cryptocompare.com/data/pricemultifull?fsyms=KLAY&tsyms=USD",
-      "request_type":0,
+      "url":"https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=USD",
       "headers":[
         {
           "field":{
@@ -19,7 +16,9 @@
       "reducers":[
         {
           "function":"PARSE",
-          "args":["$.RAW.KLAY.USD.PRICE"]
+          "args":[
+            "$.RAW.BTC.USD.PRICE"
+          ]
         },
         {
           "function":"FLOAT64_MUL_UINT64",
@@ -27,12 +26,10 @@
             "1000000000"
           ]
         }
-      ],
-      "payload": ""
+      ]
     },
     {
-      "url":"https://rest.coinapi.io/v1/exchangerate/KLAY/USD",
-      "request_type": 0,
+      "url":"https://rest.coinapi.io/v1/exchangerate/BTC/USD",
       "headers":[
         {
           "field":{
@@ -43,7 +40,9 @@
       "reducers":[
         {
           "function":"PARSE",
-          "args":["$.rate"]
+          "args":[
+            "$.rate"
+          ]
         },
         {
           "function":"FLOAT64_MUL_UINT64",
@@ -53,5 +52,7 @@
         }
       ]
     }
-  ]
+  ],
+  "category":"PRICE_FEED",
+  "frequency":"800000000000"
 }
