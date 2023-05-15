@@ -33,7 +33,7 @@
       "headers":[
         {
           "field":{
-            "X-CoinAPI-Key":"209D7E0E-9330-4706-B693-6E2ED10279A5"
+            "X-CoinAPI-Key":"${X_COIN_API_KEY}"
           }
         }
       ],
