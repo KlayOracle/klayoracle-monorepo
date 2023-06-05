@@ -7,7 +7,7 @@
 
 ## Official KlayOracle monorepo
 
-KlayOracle is a decentralized oracle for the Klaytn blockchain. This monorepo contains all core packages that make up the KlayOracle protocol.
+KlayOracle is a decentralized oracle for compatible EVM blockchains. This monorepo contains all core packages that make up the KlayOracle protocol.
 
 ## 📚 Learn More
 
