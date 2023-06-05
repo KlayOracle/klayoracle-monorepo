@@ -1,0 +1,32 @@
+// SPDX-License-Identifier: MIT
+
+pragma ever-solidity >= 0.61.2;
+
+import "./KlayOracleInterface.tsol";
+
+contract OracleConsumerSample {
+    address public immutable oracleAddress;
+
+    uint256 public klayOutput;
+
+    constructor(address _oracleAddress) {
+        require(_oracleAddress != address(0));
+        oracleAddress = _oracleAddress;
+    }
+
+    function swapEthtoKlay() public returns (bool) {
+        KlayOracleInterface oracle = KlayOracleInterface(oracleAddress);
+
+        bool replied = oracle.newOracleRequest(
+            this.swap.selector,
+            address(this)
+        );
+
+        return replied;
+    }
+
+    function swap(uint256 _klayOutput) public {
+        klayOutput = _klayOutput;
+        //Swap eth to klay
+    }
+}

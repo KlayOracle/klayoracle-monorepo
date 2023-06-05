@@ -1,0 +1,34 @@
+{
+  "name": "node-gzip",
+  "version": "1.1.2",
+  "description": "Simply gzip and ungzip in Node.js with promises",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rm -rf dist && mkdir dist && babel src --out-dir dist"
+  },
+  "author": "Rebsos",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Rebsos/node-gzip.git"
+  },
+  "keywords": [
+    "node",
+    "gzip",
+    "compress",
+    "promise",
+    "gunzip",
+    "ungzip",
+    "decompress",
+    "uncompress",
+    "gz",
+    "zlib",
+    "async",
+    "await",
+    "promises"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1"
+  }
+}

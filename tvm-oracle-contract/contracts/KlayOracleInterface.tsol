@@ -1,0 +1,38 @@
+// SPDX-License-Identifier: MIT
+
+pragma ever-solidity >= 0.61.2;
+
+
+interface KlayOracleInterface {
+    struct Request {
+        bytes32 requestId;
+        address nodeAddress;
+        bytes32 adapterId;
+        bytes4 callbackFunctionId;
+        address callBackContract;
+        bytes32 data;
+        uint256 timestamp;
+    }
+
+    /**
+     * @dev This function is called by the node to fulfill a request
+     * @param roundTime Time to aggregate the data
+     * @param roundAnswer The data to be returned
+     * @param signature The signature of the signed data
+     */
+    function newRoundData(
+        uint256 roundTime,
+        bytes32 roundAnswer,
+        bytes memory signature
+    ) external returns (bool);
+
+    /**
+     * @dev This function is called by the consumer contract to request data from the node
+     * @param callbackFunctionId bytes4 of the consumer contract callback function
+     * @param callBackContract The contract with the callback function requesting offchain data
+     */
+    function newOracleRequest(
+        bytes4 callbackFunctionId,
+        address callBackContract
+    ) external returns (bool);
+}

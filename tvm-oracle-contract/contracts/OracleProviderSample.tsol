@@ -1,0 +1,26 @@
+// SPDX-License-Identifier: MIT
+
+pragma ever-solidity >= 0.61.2;
+
+import "./KlayOracle.tsol";
+
+contract OracleProviderSample is KlayOracle {
+    constructor(
+        address _nodeAddress,
+        bytes32 _adapterId
+    ) KlayOracle(_nodeAddress, _adapterId) {}
+
+    function _isWhitelisted(
+        address _address
+    ) internal pure override returns (bool) {
+        require(_address != address(0), "KlayOracle: consumer is invalid");
+        return true;
+    }
+
+    function _beforeFulfill(
+        Request memory request
+    ) internal pure override returns (bool) {
+        require(request.data != bytes32(0), "KlayOracle: data is empty");
+        return true;
+    }
+}

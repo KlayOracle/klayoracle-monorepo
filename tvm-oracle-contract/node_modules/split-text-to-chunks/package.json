@@ -1,0 +1,20 @@
+{
+	"name": "split-text-to-chunks",
+	"description": "Split a text string to chunks for e.g. word wrapping",
+	"version": "1.0.0",
+	"repository": "srcagency/wrap-words",
+	"bin": {
+		"wordwrap": "cli.js"
+	},
+	"scripts": {
+		"test": "node test"
+	},
+	"dependencies": {
+		"get-stdin": "^5.0.1",
+		"minimist": "^1.2.0"
+	},
+	"devDependencies": {
+		"tape": "^4.8.0"
+	},
+	"license": "MIT"
+}

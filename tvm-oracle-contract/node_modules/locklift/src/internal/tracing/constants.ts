@@ -1,0 +1,1 @@
+export const CONSOLE_ADDRESS = ":7fffffffffffffffffffffffffffffffffffffffffffffffff123456789abcde";
