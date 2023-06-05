@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	goever "github.com/move-ton/ever-client-go"
 	"log"
+
+	goever "github.com/move-ton/ever-client-go"
 )
 
 func main() {
