@@ -14,12 +14,16 @@ var (
 	KlaytnChainId   = 1001
 )
 
-func NewClient() {
-	client, err := client.Dial(os.Getenv("NODE_URL"))
+func NewWssClient() {
+	client, err := client.Dial(os.Getenv("NODE_URL_WSS"))
 	if err != nil {
-		config.Loaded.Logger.Fatalw("connection to klaytn client failed", "error", err)
+		config.Loaded.Logger.Fatalw("wss connection to blockchain client failed", "error", err)
 	}
 
 	KlaytnClient = client
 	KlaytnClientCtx = context.Background()
+}
+
+func NewHttpClient() (*client.Client, error) {
+	return client.Dial(os.Getenv("NODE_URL_HTTPS"))
 }

@@ -5,6 +5,8 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"github.com/klaytn/klaytn/common"
+	"math/big"
 	"os"
 	"path"
 	"strings"
@@ -34,12 +36,19 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+const TxTimeout = time.Minute * 1
+
 var (
 	errMissingMetadata            = status.Errorf(codes.InvalidArgument, "missing metadata")
 	errInvalidToken               = status.Errorf(codes.Unauthenticated, "invalid token")
 	errDataProviderNotWhitelisted = status.Errorf(codes.Unknown, "you need to be whitelisted")
 	errAddingToKnownPeer          = status.Errorf(codes.Unknown, "cannot add to known DP known peers")
 )
+
+type RoundQueue struct {
+	adapter *protonode.Adapter
+	answer  int64
+}
 
 type Node struct {
 	protonode.UnimplementedNodeServiceServer
@@ -51,6 +60,9 @@ type Node struct {
 	bootstraps    map[string]*protonode.NodeInfo // A list of 3 default bootstrap node nodes
 	knownPeers    map[string]*protonode.NodeInfo
 	listenAddress string
+	LastTxHash    string
+	LastNonce     *big.Int
+	RoundQueue    *[]RoundQueue
 }
 
 func (n *Node) HandShake(ctx context.Context, provider *protonode.DPInfo) (*protonode.HandShakeStatus, error) {
@@ -70,6 +82,7 @@ func (n *Node) HandShake(ctx context.Context, provider *protonode.DPInfo) (*prot
 	//	config.Loaded.Logger.Warnw("ignoring adding to known peer", "reason", "bootstrap dp", "listen address", provider.ListenAddress)
 	//} else {
 	err := addDataProviderPeer(provider)
+
 	if err != nil {
 		config.Loaded.Logger.Fatal("error adding to known peer: ", err)
 		return nil, errAddingToKnownPeer
@@ -215,9 +228,101 @@ func (n *Node) execJob(adapter *protonode.Adapter, jobId string) {
 	} else {
 		config.Loaded.Logger.Infow("updating oracle with round answer", "oracle", adapter.OracleAddress, "answer", roundAnswer)
 
-		UpdateRoundAnswer(adapter, roundAnswer)
+		// We need to queue round due to issue arising from submitting parallel transaction
+		// causing nonce to clash, and keep track of nonce then doing +1 can block all ahead txs if a lower tx fails.
+		// Solution:
+		// - Add round details to a queue on the node using mutex lock to ensure concurrency
+		// - Keep checking queue for new transaction hash
+		// - If its empty, log new time, pick next round using FIFO
+		// - Send round details to Oracle contract, and update last transaction hash
+		// - Keep checking if last transaction using its hash is done or its timeout (i.e. More than {TxTimeout} in sec)
+		// - If transaction is taking longer than {TxTimeout} secs, send transaction with same nonce and higher gas to cancel it (send 0 token to null address with higher gas).
+		// - If transaction is mined clear last hash & last time
+		//UpdateRoundAnswer(adapter, roundAnswer)
+
+		n.queueRound(adapter, roundAnswer)
 	}
 
+}
+
+func (n *Node) queueRound(adapter *protonode.Adapter, roundAnswer int64) {
+	n.mu.Lock()
+	defer n.mu.Unlock()
+
+	*n.RoundQueue = append(*n.RoundQueue, RoundQueue{
+		adapter: adapter,
+		answer:  roundAnswer,
+	})
+}
+
+func (n *Node) WatchRoundQueue() {
+
+	//If queue is free, and new answer is available
+	//update round on oracle contract
+	if n.LastTxHash == "" && len(*n.RoundQueue) > 0 {
+		adapter := (*n.RoundQueue)[0].adapter
+		roundAnswer := (*n.RoundQueue)[0].answer
+
+		err, hash := UpdateRoundAnswer(adapter, roundAnswer)
+
+		if err != nil || hash.String() == "0x0000000000000000000000000000000000000000000000000000000000000000" {
+			config.Loaded.Logger.Warn(err)
+		} else {
+			n.LastTxHash = hash.String()
+
+			for {
+				timeout := <-time.After(TxTimeout)
+
+				config.Loaded.Logger.Infow("wait time for round is up, checking transaction", "hash", n.LastTxHash, "after", timeout.Local())
+
+				client, err := NewHttpClient()
+				go func() {
+					defer client.Close()
+				}()
+
+				if err != nil {
+					config.Loaded.Logger.Fatalw("https connection to blockchain client failed", "error", err)
+				} else {
+
+					transaction, pending, err := client.TransactionByHash(KlaytnClientCtx, common.HexToHash(n.LastTxHash))
+
+					if err != nil {
+						config.Loaded.Logger.Warnw("error fetching transaction for round answer, transaction probably failed", "hash", n.LastTxHash, "error", err)
+
+						//@Todo cover more reasons for this case. e.g client connection error e.t.c
+						nonce, err := client.NonceAt(KlaytnClientCtx, common.HexToAddress(""), nil)
+						if err != nil {
+							config.Loaded.Logger.Fatal("cannot determine nonce for node address: %v", err)
+						} else {
+							n.LastNonce = big.NewInt(int64(nonce))
+							n.LastTxHash = ""
+						}
+
+					} else if pending == true {
+						config.Loaded.Logger.Warnw("transaction to update round answer is taking longer than TxTimeout configured, canceling trx to free nonce", "hash", n.LastTxHash)
+
+						//@Todo
+						//Cancel pending transaction
+						//Update new nonce +1
+					} else {
+						config.Loaded.Logger.Infow("successful transaction response from oracle", "transaction", transaction)
+
+						n.mu.Lock()
+
+						n.LastNonce = n.LastNonce.Add(n.LastNonce, big.NewInt(1))
+						n.LastTxHash = ""
+
+						*n.RoundQueue = (*n.RoundQueue)[1:]
+
+						n.mu.Unlock()
+					}
+				}
+
+				return
+			}
+		}
+
+	}
 }
 
 func addNodePeer(p *protonode.NodeInfo) error {
@@ -363,17 +468,13 @@ func addDataProviderPeer(p *protonode.DPInfo) error {
 			err := func() error {
 
 				//Bootstrap node can't add self as peer
-				client, conn, err := adapter.NewDPServiceClient(bt)
+				client, _, err := adapter.NewDPServiceClient(bt)
 				if err != nil {
 					return fmt.Errorf("failed connecting to client: %v", err)
 				}
 
 				ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second) //Enough time to authenticate and add DP to known peers
 				defer cancel()
-				//defer conn.Close()
-				defer func() {
-					fmt.Println("State", conn.GetState())
-				}()
 
 				//Add all DP services in list as this bootstrap DP know peer
 				for _, newDp := range list {
@@ -407,7 +508,7 @@ func getPeerListDP(listenAddr string) (*protoadapter.DPInfos, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second) //Enough time to authenticate and add DP to known peers
 	defer cancel()
-	//defer conn.Close()
+
 	defer func() {
 		fmt.Println("State", conn.GetState())
 	}()
