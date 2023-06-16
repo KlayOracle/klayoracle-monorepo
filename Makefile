@@ -98,7 +98,7 @@ devnet-tables:
 
 .PHONY: devnet-cluster
 devnet-cluster:
-	@make docker-network; TARGET=images.var make export-var; make node-image; make dp-image
+	@make docker-network; TARGET=images.var make export-var; NODE_PORT=${NODE_PORT} make node-image; DP_PORT=${DP_PORT}  make dp-image
 	@make devnet-tables
 	@docker compose up --detach
 

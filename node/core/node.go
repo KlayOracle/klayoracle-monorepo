@@ -239,7 +239,6 @@ func (n *Node) execJob(adapter *protonode.Adapter, jobId string) {
 		// - Keep checking if last transaction using its hash is done or its timeout (i.e. More than {TxTimeout} in sec)
 		// - If transaction is taking longer than {TxTimeout} secs, send transaction with same nonce and higher gas to cancel it (send 0 token to null address with higher gas).
 		// - If transaction is mined clear last hash & last time
-		//UpdateRoundAnswer(adapter, roundAnswer)
 
 		n.queueRound(adapter, roundAnswer)
 	}

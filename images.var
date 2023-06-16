@@ -1,2 +1,4 @@
-NODE_IMAGE=klayoracle-node:v1.0.0-dev
-DP_IMAGE=klayoracle-dp:v1.0.0-dev
+NODE_IMAGE=klayoracle-node:v1.0.1-dev
+DP_IMAGE=klayoracle-dp:v1.0.1-dev
+NODE_PORT=50051
+DP_PORT=50002
