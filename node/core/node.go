@@ -5,13 +5,14 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"github.com/klaytn/klaytn/common"
 	"math/big"
 	"os"
 	"path"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/klaytn/klaytn/common"
 
 	"github.com/jackc/pgtype"
 

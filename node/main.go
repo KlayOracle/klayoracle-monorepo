@@ -1,13 +1,14 @@
 package main
 
 import (
-	"github.com/klaytn/klaytn/common"
 	"log"
 	"math/big"
 	"net"
 	"os"
 	"path"
 	"time"
+
+	"github.com/klaytn/klaytn/common"
 
 	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
 
