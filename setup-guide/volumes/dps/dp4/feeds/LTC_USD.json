@@ -3,6 +3,8 @@
   "name":"LTC_USD",
   "adapterId":"0x80c51b7821b52c6f30405f8036052ddd88c8a5e57d58d08edd542b98b9f857ca",
   "oracleAddress":"0xce4bC34b8718C61901AB76b81e4e6BA8d096eAce",
+  "category": 2,
+  "frequency":"60000000000",
   "feeds":[
     {
       "url":"https://min-api.cryptocompare.com/data/pricemultifull?fsyms=LTC&tsyms=USD",
@@ -52,7 +54,5 @@
         }
       ]
     }
-  ],
-  "category":"PRICE_FEED",
-  "frequency":"900000000000"
+  ]
 }

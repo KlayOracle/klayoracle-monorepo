@@ -4,7 +4,7 @@
   "adapterId":"0x8b7460cccfa0aca303ee85c3fb81c344faad2fbab415adc32b2984008b7efd76",
   "oracleAddress":"0xbc884088e406422a3ef39aedd1c546de7ac4be7c",
   "category": 2,
-  "frequency": 500000000000,
+  "frequency": 60000000000,
   "feeds":[
     {
       "url":"https://min-api.cryptocompare.com/data/pricemultifull?fsyms=KLAY&tsyms=USD",

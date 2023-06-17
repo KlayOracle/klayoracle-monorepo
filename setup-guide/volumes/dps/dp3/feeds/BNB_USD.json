@@ -3,6 +3,8 @@
   "name":"BNB_USD",
   "adapterId":"0x0eecd1450f7aae52732ff1dcdcb7f5fc194249cc8c0665c82c65c8028bc64b75",
   "oracleAddress":"0x1FdebbE196D2FeE7Ca98126a8b1f0f42a6E2833f",
+  "category": 2,
+  "frequency":"60000000000",
   "feeds":[
     {
       "url":"https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BNB&tsyms=USD",
@@ -52,7 +54,5 @@
         }
       ]
     }
-  ],
-  "category":"PRICE_FEED",
-  "frequency":"700000000000"
+  ]
 }

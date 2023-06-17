@@ -501,17 +501,13 @@ func addDataProviderPeer(p *protonode.DPInfo) error {
 
 func getPeerListDP(listenAddr string) (*protoadapter.DPInfos, error) {
 
-	client, conn, err := adapter.NewDPServiceClient(listenAddr)
+	client, _, err := adapter.NewDPServiceClient(listenAddr)
 	if err != nil {
 		return nil, fmt.Errorf("failed connecting to client: %v", err)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second) //Enough time to authenticate and add DP to known peers
 	defer cancel()
-
-	defer func() {
-		fmt.Println("State", conn.GetState())
-	}()
 
 	res, err := client.ListKnownPeers(ctx, &protoadapter.Null{})
 

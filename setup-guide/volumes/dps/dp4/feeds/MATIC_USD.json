@@ -3,6 +3,8 @@
   "name":"MATIC_USD",
   "adapterId":"0x2f20c88a76819df609a3325798c0000afd79c3e44fbd3f10b8b34972537f513e",
   "oracleAddress":"0x0080f3FF6ca9123Cf069D2C5A35d6463E6Faa0BD",
+  "category": 2,
+  "frequency":"60000000000",
   "feeds":[
     {
       "url":"https://min-api.cryptocompare.com/data/pricemultifull?fsyms=MATIC&tsyms=USD",
@@ -52,7 +54,5 @@
         }
       ]
     }
-  ],
-  "category":"PRICE_FEED",
-  "frequency":"600000000000"
+  ]
 }
