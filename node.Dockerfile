@@ -1,5 +1,5 @@
 #Build Image
-FROM golang:1.19-buster as build
+FROM golang:1.18-buster as build
 RUN go version
 WORKDIR /klayoracle
 

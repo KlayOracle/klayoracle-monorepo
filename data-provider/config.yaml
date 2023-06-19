@@ -4,7 +4,6 @@ feed:
   path: "feeds"
   adapters:
     - KLAY_USD.json
-    - WEMIX_USD.json
 organization:
   k_org_id: 535797165684
   name: "KlayOracle Inc."

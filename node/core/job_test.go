@@ -54,7 +54,7 @@ func TestUpdateRoundAnswer(t *testing.T) {
 	wd, _ := os.Getwd()
 	boot.Boot(path.Join(wd, ".."), path.Join(wd, "..", "config.yaml"), path.Join(wd, "..", ".env"))
 
-	NewClient()
+	NewWssClient()
 
 	newAdapter := protonode.Adapter{}
 

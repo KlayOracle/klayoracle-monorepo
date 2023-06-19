@@ -195,7 +195,6 @@ func FetchRoundSizeAll(adapters []string) (pgx.Rows, error) {
 
 	query := fmt.Sprintf("SELECT COUNT(*) as count from node_responses WHERE adapter_id in %s", fetch)
 
-	fmt.Println(query)
 	rows, err := conn.Query(connCtx, query)
 	if err != nil {
 		config.Loaded.Logger.Warnw("error fetching round size", "feeds", adapters, "err", err)

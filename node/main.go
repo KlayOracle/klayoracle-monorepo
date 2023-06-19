@@ -2,9 +2,13 @@ package main
 
 import (
 	"log"
+	"math/big"
 	"net"
 	"os"
 	"path"
+	"time"
+
+	"github.com/klaytn/klaytn/common"
 
 	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
 
@@ -29,8 +33,9 @@ func main() {
 	boot.Boot(wd, path.Join(wd, "config.yaml"), path.Join(wd, ".env"))
 
 	//@Todo refactor
-	core.NewClient()
+	core.NewWssClient()
 	defer func() {
+		config.Loaded.Logger.Warnw("closing blockchain client connection")
 		core.KlaytnClient.Close()
 	}()
 
@@ -43,6 +48,24 @@ func main() {
 	if err != nil {
 		config.Loaded.Logger.Fatal(err)
 	}
+
+	//Set round queue default
+	n.RoundQueue = new([]core.RoundQueue)
+	nodeAddress := common.HexToAddress(os.Getenv("PUBLIC_ADDRESS"))
+	nonce, err := core.KlaytnClient.NonceAt(core.KlaytnClientCtx, nodeAddress, nil)
+	if err != nil {
+		config.Loaded.Logger.Fatal("cannot determine nonce for node address: %v", err)
+	}
+
+	n.LastNonce = big.NewInt(int64(nonce))
+
+	//Start watching queue every 5 secs
+	go func() {
+		for now := range time.Tick(time.Second * 5) {
+			config.Loaded.Logger.Infow("checking round queue for available answer", "size", len(*n.RoundQueue), "time", now.Local())
+			n.WatchRoundQueue()
+		}
+	}()
 
 	lis, err := net.Listen("tcp", os.Getenv("HOST_IP"))
 	if err != nil {

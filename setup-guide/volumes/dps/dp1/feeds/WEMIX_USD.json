@@ -4,7 +4,7 @@
   "adapterId": "0x2a465136f2276513295f8eb454f01b6b472d1b70e38f5e6c9c538299aa1d4ea5",
   "oracleAddress": "0x251b2c534fa7d696b356a96b17bf87a2ad38f394",
   "category": 2,
-  "frequency": 500000000000,
+  "frequency": 60000000000,
   "feeds": [
     {
       "url": "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=WEMIX&tsyms=USD",

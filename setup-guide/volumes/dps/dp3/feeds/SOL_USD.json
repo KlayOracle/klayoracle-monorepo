@@ -3,6 +3,8 @@
   "name":"SOL_USD",
   "adapterId":"0xbc8ef9219e9952b80657ddd222efbecb4129da8fa570157f3be32e94356e4a49",
   "oracleAddress":"0xc8D7Df132015f44FbB7D535Ca48677cC129566c8",
+  "category": 2,
+  "frequency":"60000000000",
   "feeds":[
     {
       "url":"https://min-api.cryptocompare.com/data/pricemultifull?fsyms=SOL&tsyms=USD",
@@ -52,7 +54,5 @@
         }
       ]
     }
-  ],
-  "category":"PRICE_FEED",
-  "frequency":"700000000000"
+  ]
 }

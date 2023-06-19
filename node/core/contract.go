@@ -50,13 +50,14 @@ func getAddress(privateKey *ecdsa.PrivateKey) common.Address {
 	return crypto.PubkeyToAddress(*publicKeyECDSA)
 }
 
-func UpdateRoundAnswer(adapter *protonode.Adapter, roundAnswer int64) {
+func UpdateRoundAnswer(adapter *protonode.Adapter, roundAnswer int64) (error, common.Hash) {
 	oracleAddress := common.HexToAddress(adapter.OracleAddress)
 
 	oracleDP, err := oracle.NewOracleProviderSample(oracleAddress, KlaytnClient)
 	if err != nil {
 		config.Loaded.Logger.Warnw("cannot instantiate oracle", "error", err)
 	} else {
+
 		gasPrice, _ := KlaytnClient.SuggestGasPrice(KlaytnClientCtx)
 		nodePrivateKey := nodeSigningKey()
 		nodeAddr := getAddress(nodePrivateKey)
@@ -84,13 +85,20 @@ func UpdateRoundAnswer(adapter *protonode.Adapter, roundAnswer int64) {
 		copy(roundAnswerByte32[:], common.LeftPadBytes(big.NewInt(roundAnswer).Bytes(), 32))
 
 		if err != nil {
-			config.Loaded.Logger.Warnw("unable to sign round data", "error", err)
+			msg := "unable to sign round data"
+			config.Loaded.Logger.Warnw(msg, "error", err)
+
+			return fmt.Errorf(msg), common.Hash{}
 		} else {
 			contractABI, _ := abi.JSON(strings.NewReader(oracle.KlayOracleABI))
 			payload, err := contractABI.Pack("newRoundData", big.NewInt(roundTime), roundAnswerByte32, signature)
 
 			if err != nil {
-				config.Loaded.Logger.Warnw("unable to pack round data", "error", err)
+				msg := "unable to pack round data"
+
+				config.Loaded.Logger.Warnw(msg, "error", err)
+
+				return fmt.Errorf(msg), common.Hash{}
 			} else {
 
 				gasEstimate, err := KlaytnClient.EstimateGas(KlaytnClientCtx, klaytn.CallMsg{
@@ -100,7 +108,10 @@ func UpdateRoundAnswer(adapter *protonode.Adapter, roundAnswer int64) {
 					GasPrice: gasPrice,
 				})
 				if err != nil {
-					config.Loaded.Logger.Warnw("unable to estimate gas", "error", err)
+					msg := "unable to estimate gas"
+					config.Loaded.Logger.Warnw(msg, "error", err)
+
+					return fmt.Errorf(msg), common.Hash{}
 				} else {
 
 					auth := bind.NewKeyedTransactor(nodePrivateKey)
@@ -115,12 +126,15 @@ func UpdateRoundAnswer(adapter *protonode.Adapter, roundAnswer int64) {
 					} else {
 						config.Loaded.Logger.Infow("successfully updated round data", "adapter", adapter.AdapterId, "transaction", trx.String())
 					}
+
+					return nil, trx.Hash()
 				}
 			}
 		}
 
 	}
 
+	return fmt.Errorf("unknown error"), common.Hash{}
 }
 
 func DeployNewOracleProviderSample(nodeAddress, adapterId string) {

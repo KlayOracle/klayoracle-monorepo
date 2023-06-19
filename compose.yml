@@ -2,7 +2,7 @@ version: "3.9"  # Try this compose file for local-dev setup
 services:
   bt1-node:
     build: .
-    image: klayoracle-node:v1.0.0-dev
+    image: klayoracle-node:v1.0.1-dev
     container_name: bootstrap_node1
     ports:
       - "50051:50051"
@@ -15,7 +15,7 @@ services:
       - setup-guide/volumes/nodes/nd1/.env
   bt2-node:
     build: .
-    image: klayoracle-node:v1.0.0-dev
+    image: klayoracle-node:v1.0.1-dev
     container_name: bootstrap_node2
     ports:
       - "50052:50051"
@@ -30,7 +30,7 @@ services:
       - setup-guide/volumes/nodes/nd2/.env
   bt3-node:
     build: .
-    image: klayoracle-node:v1.0.0-dev
+    image: klayoracle-node:v1.0.1-dev
     container_name: bootstrap_node3
     ports:
       - "50053:50051"
@@ -45,7 +45,7 @@ services:
       - setup-guide/volumes/nodes/nd3/.env
   bt4-node:
     build: .
-    image: klayoracle-node:v1.0.0-dev
+    image: klayoracle-node:v1.0.1-dev
     container_name: bootstrap_node4
     ports:
       - "50054:50051"
@@ -60,7 +60,7 @@ services:
       - setup-guide/volumes/nodes/nd4/.env
   bt1-dp:
     build: .
-    image: klayoracle-dp:v1.0.0-dev
+    image: klayoracle-dp:v1.0.1-dev
     container_name: bootstrap_dp1
     depends_on:
       - bt1-node
@@ -76,7 +76,7 @@ services:
       - setup-guide/volumes/dps/dp1/.env
   bt2-dp:
     build: .
-    image: klayoracle-dp:v1.0.0-dev
+    image: klayoracle-dp:v1.0.1-dev
     container_name: bootstrap_dp2
     ports:
       - "50003:50002"
@@ -93,7 +93,7 @@ services:
       - setup-guide/volumes/dps/dp2/.env
   bt3-dp:
     build: .
-    image: klayoracle-dp:v1.0.0-dev
+    image: klayoracle-dp:v1.0.1-dev
     container_name: bootstrap_dp3
     ports:
       - "50004:50002"
@@ -110,7 +110,7 @@ services:
       - setup-guide/volumes/dps/dp3/.env
   bt4-dp:
     build: .
-    image: klayoracle-dp:v1.0.0-dev
+    image: klayoracle-dp:v1.0.1-dev
     container_name: bootstrap_dp4
     ports:
       - "50005:50002"
