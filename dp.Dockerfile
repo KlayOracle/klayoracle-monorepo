@@ -16,7 +16,6 @@ COPY data-provider/go.mod data-provider/go.sum /data-provider/
 WORKDIR /node
 RUN go mod tidy
 
-WORKDIR -
 WORKDIR /data-provider
 RUN go mod tidy
 RUN go build -o kloc-dp . && cp -r . /var/klayoracle
