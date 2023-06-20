@@ -1,10 +1,10 @@
 name: Build Docker images
 on:
   push:
-    branches: ["ci-cd"]
+    branches: ["development"]
 
 env:
-  REGISTRY: gitea.in.olakunleoladimeji.com
+  REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
   NODE_IMAGE: ${{ github.repository }}/node
   DP_IMAGE: ${{ github.repository }}/data-provider
