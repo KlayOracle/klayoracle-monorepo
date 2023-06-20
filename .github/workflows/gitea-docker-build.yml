@@ -5,9 +5,9 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-  NODE_IMAGE: ${{ github.repository }}/node
-  DP_IMAGE: ${{ github.repository }}/data-provider
+  IMAGE_NAME: ${{ gitea.repository }}
+  NODE_IMAGE: ${{ gitea.repository }}/node
+  DP_IMAGE: ${{ gitea.repository }}/data-provider
   NODE_PORT: 50051
   DP_PORT: 50052
 
