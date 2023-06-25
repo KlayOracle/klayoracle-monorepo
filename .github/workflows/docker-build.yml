@@ -4,7 +4,7 @@ on:
     branches: ["ci-cd"]
 
 env:
-  REGISTRY: gitea.in.olakunleoladimeji.com
+  REGISTRY: ${{ secrets.REGISTRY_URL }}
   IMAGE_NAME: ${{ github.repository }}
   NODE_IMAGE: ${{ github.repository }}/node
   DP_IMAGE: ${{ github.repository }}/data-provider
@@ -21,6 +21,19 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Nyx infer
+        id: nyx
+        uses: mooltiverse/nyx/github-action@main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NYX_VERBOSITY: INFO
+        with:
+          dryRun: true
+
+      - name: Print version
+        run: echo the inferred version is ${{ steps.nyx.outputs.version }}
+
 
       - name: Log in to the Container Registry
         uses: docker/login-action@v2
