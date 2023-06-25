@@ -1,0 +1,20 @@
+preset: extended
+
+releasePrefix: v
+
+releaseTypes:
+  enabled:
+    - mainline
+    - integration
+    - hotfix
+    - feature
+    - internal
+  items:
+    mainline:
+      matchBranches: ^main$
+    integration: 
+      matchBranches: "^(develop|development|integration|latest)$"
+    hotfix:
+      matchBranches: "^(fix|hotfix)((-|\\/)[0-9a-zA-Z-_]+)?$"
+    feature:
+      matchBranches: "^(feat|feature)((-|\\/)[0-9a-zA-Z-_]+)?$"
