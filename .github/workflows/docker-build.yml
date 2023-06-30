@@ -8,7 +8,7 @@ on:
       # - main
 
 env:
-  REGISTRY: ${{ secrets.REGISTRY_URL }}
+  REGISTRY: http://gitea-http
   IMAGE_NAME: ${{ github.repository }}
   NODE_IMAGE: ${{ github.repository }}/node
   DP_IMAGE: ${{ github.repository }}/data-provider
