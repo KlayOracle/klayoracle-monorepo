@@ -7,3 +7,7 @@ node_modules/
 vendor/
 tmp/
 setup-guide
+
+.env
+config.yaml
+certs/host/x509

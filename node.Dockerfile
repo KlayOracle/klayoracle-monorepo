@@ -19,7 +19,7 @@ RUN go mod tidy
 WORKDIR /node
 RUN go mod tidy
 RUN go build -o kloc-node . && cp -r . /var/klayoracle
-RUN rm /var/klayoracle/.env /var/klayoracle/config.yaml /var/klayoracle/certs/host/x509 -r
+# RUN rm /var/klayoracle/.env /var/klayoracle/config.yaml /var/klayoracle/certs/host/x509 -r
 
 ##Final Image
 FROM ubuntu:20.04
