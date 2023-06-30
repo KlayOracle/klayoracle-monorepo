@@ -26,17 +26,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Nyx infer
-        id: nyx
-        uses: mooltiverse/nyx-github-action@main
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NYX_VERBOSITY: DEBUG
-        with:
-          dryRun: true
+      # - name: Nyx infer
+      #   id: nyx
+      #   uses: mooltiverse/nyx-github-action@main
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     NYX_VERBOSITY: DEBUG
+      #   with:
+      #     dryRun: true
 
-      - name: Print version
-        run: echo the inferred version is ${{ steps.nyx.outputs.version }}
+      # - name: Print version
+      #   run: echo the inferred version is ${{ steps.nyx.outputs.version }}
 
 
       - name: Log in to the Container Registry
