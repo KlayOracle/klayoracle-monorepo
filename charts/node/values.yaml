@@ -5,10 +5,18 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io
+  repository: ghcr.io/klayoracle/klayoracle-node
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
+
+bootstrap:
+  enabled: false
+  public_dns: 
+  ssl:
+    secretName:
+    secretKeyName:
+    secretCertName:
 
 imagePullSecrets: []
 nameOverride: ""

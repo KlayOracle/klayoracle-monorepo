@@ -1,7 +1,11 @@
 name: Build Docker images
+
 on:
   push:
     branches: ["ci-cd"]
+      # - development
+      # - staging
+      # - main
 
 env:
   REGISTRY: ${{ secrets.REGISTRY_URL }}
@@ -64,5 +68,3 @@ jobs:
             ${{ env.DP_IMAGE }}
           build-args: |
             PORT=${{ env.DP_PORT }}
-
-
