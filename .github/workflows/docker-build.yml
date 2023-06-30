@@ -7,6 +7,11 @@ on:
       # - staging
       # - main
 
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
 env:
   # REGISTRY: http://gitea-http
   IMAGE_NAME: ${{ github.repository }}
@@ -56,8 +61,6 @@ jobs:
           push: true
           tags: |
             ${{ env.NODE_IMAGE }}
-          secrets: |
-            GIT_AUTH_TOKEN=${{ secrets.GITEA_TOKEN }}
           build-args: |
             PORT=${{ env.NODE_PORT }}
 
@@ -72,5 +75,3 @@ jobs:
             ${{ env.DP_IMAGE }}
           build-args: |
             PORT=${{ env.DP_PORT }}
-          secrets: |
-            GIT_AUTH_TOKEN=${{ secrets.GITEA_TOKEN }}
