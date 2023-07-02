@@ -72,7 +72,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ${REGISTRY}/${{ github.repository }}/node
+            ${{ env.REGISTRY }}/${{ github.repository }}/node
           build-args: |
             PORT=${{ env.NODE_PORT }}
 
