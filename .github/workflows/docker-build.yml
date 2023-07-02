@@ -13,7 +13,7 @@ permissions:
   id-token: write
 
 env:
-  REGISTRY: http://gitea.in.olakunleoladimeji.com
+  REGISTRY: gitea.in.olakunleoladimeji.com
   NODE_IMAGE: ${{ format('{0}/{1}/node', github.server_url, github.repository) }}
   DP_IMAGE: ${{ format('{0}/{1}/data-provider', github.server_url, github.repository) }}
   NODE_PORT: 50051
