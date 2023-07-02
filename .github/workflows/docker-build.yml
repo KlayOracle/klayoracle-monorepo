@@ -60,16 +60,20 @@ jobs:
         with:
           driver-opts: network=host
 
-      - name: Build and push Node Docker images
-        uses: docker/build-push-action@v4
-        with:
-          file: node.Dockerfile
-          context: .
-          push: true
-          tags: |
-            ${{ env.NODE_IMAGE }}
-          build-args: |
-            PORT=${{ env.NODE_PORT }}
+      - 
+        name: Dump current vars
+        run: echo '${{ toJSON(github) }}'
+
+      # - name: Build and push Node Docker images
+      #   uses: docker/build-push-action@v4
+      #   with:
+      #     file: node.Dockerfile
+      #     context: .
+      #     push: true
+      #     tags: |
+      #       ${{ env.NODE_IMAGE }}
+      #     build-args: |
+      #       PORT=${{ env.NODE_PORT }}
 
 
       # - name: Build and push Data provider Docker images
