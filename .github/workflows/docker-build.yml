@@ -14,13 +14,14 @@ permissions:
 
 env:
   REGISTRY: gitea.in.olakunleoladimeji.com
-  NODE_IMAGE: ${{ format('{0}/{1}/node', github.server_url, github.repository) }}
+  NODE_IMAGE: ${{ format('{0}/{1}/node', vars, github.repository) }}
   DP_IMAGE: ${{ format('{0}/{1}/data-provider', github.server_url, github.repository) }}
   NODE_PORT: 50051
   DP_PORT: 50052
 
 jobs:
   build-docker-images:
+      
     runs-on: ubuntu-latest
     container: catthehacker/ubuntu:act-latest
     permissions:
@@ -64,16 +65,16 @@ jobs:
         name: Dump current vars
         run: echo '${{ toJSON(github) }}'
 
-      # - name: Build and push Node Docker images
-      #   uses: docker/build-push-action@v4
-      #   with:
-      #     file: node.Dockerfile
-      #     context: .
-      #     push: true
-      #     tags: |
-      #       ${{ env.NODE_IMAGE }}
-      #     build-args: |
-      #       PORT=${{ env.NODE_PORT }}
+      - name: Build and push Node Docker images
+        uses: docker/build-push-action@v4
+        with:
+          file: node.Dockerfile
+          context: .
+          push: true
+          tags: |
+            ${REGISTRY}/${{ github.repository }}/node
+          build-args: |
+            PORT=${{ env.NODE_PORT }}
 
 
       # - name: Build and push Data provider Docker images
