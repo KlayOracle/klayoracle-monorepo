@@ -14,9 +14,8 @@ permissions:
 
 env:
   REGISTRY: http://gitea.in.olakunleoladimeji.com
-  IMAGE_NAME: ${{ gitea.repository }}
-  NODE_IMAGE: ${{ gitea.repository }}/node
-  DP_IMAGE: ${{ gitea.repository }}/data-provider
+  NODE_IMAGE: ${{ format('{0}/{1}/node', github.server_url, github.repository) }}
+  DP_IMAGE: ${{ format('{0}/{1}/data-provider', github.server_url, github.repository) }}
   NODE_PORT: 50051
   DP_PORT: 50052
 
