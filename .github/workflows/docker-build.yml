@@ -9,6 +9,7 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
   NODE_PORT: 50051
   DP_PORT: 50052
 
@@ -24,6 +25,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Log in to the Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          logout: true
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - 
         name: Set docker tag based on branch
@@ -50,25 +59,17 @@ jobs:
       #     NYX_VERBOSITY: DEBUG
       #   with:
       #     dryRun: true
-
-      - name: Print version
-        run: echo the inferred version is ${{ steps.docker_tag.outputs.tag }}
-        
-
-
-      - name: Log in to the Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ env.REGISTRY }}
-          logout: true
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+
+      - id: repo_lc
+        uses: ASzc/change-string-case-action@v5
+        with:
+          string: ${{ github.repository }}
 
       - name: Build and push Node Docker images
         uses: docker/build-push-action@v4
@@ -77,7 +78,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ github.repository }}/node:${{ steps.docker_tag.outputs.tag }}
+            ${{ env.REGISTRY }}/${{ steps.repo_lc.outputs.lowercase }}/node:${{ steps.docker_tag.outputs.tag }}
           build-args: |
             PORT=${{ env.NODE_PORT }}
 
@@ -89,6 +90,6 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ github.repository }}/data-provider:${{ steps.docker_tag.outputs.tag }}
+            ${{ env.REGISTRY }}/${{ steps.repo_lc.outputs.lowercase }}/data-provider:${{ steps.docker_tag.outputs.tag }}
           build-args: |
             PORT=${{ env.DP_PORT }}
