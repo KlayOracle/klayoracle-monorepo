@@ -19,7 +19,7 @@ RUN go mod tidy
 WORKDIR /data-provider
 RUN go mod tidy
 RUN go build -o kloc-dp . && cp -r . /var/klayoracle
-RUN rm /var/klayoracle/.env /var/klayoracle/config.yaml /var/klayoracle/certs/node/x509 /var/klayoracle/feeds -r
+# RUN rm /var/klayoracle/.env /var/klayoracle/config.yaml /var/klayoracle/certs/node/x509 /var/klayoracle/feeds -r
 
 ##Final Image
 FROM ubuntu:20.04
