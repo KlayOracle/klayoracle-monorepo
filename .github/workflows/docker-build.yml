@@ -2,10 +2,10 @@ name: Build Docker images
 
 on:
   push:
-    branches: ["ci-cd"]
-      # - development
-      # - staging
-      # - main
+    branches:
+      - development
+      - staging
+      - main
 
 permissions:
   contents: read
@@ -13,9 +13,7 @@ permissions:
   id-token: write
 
 env:
-  REGISTRY: gitea.in.olakunleoladimeji.com
-  NODE_IMAGE: ${{ format('{0}/{1}/node', vars, github.repository) }}
-  DP_IMAGE: ${{ format('{0}/{1}/data-provider', github.server_url, github.repository) }}
+  REGISTRY: ghcr.io
   NODE_PORT: 50051
   DP_PORT: 50052
 
@@ -31,6 +29,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - 
+        name: Set docker tag based on branch
+        shell: bash
+        run: |
+          branchName=${{ github.ref_name }}
+          if [ $branchName = 'main' ]; then dockerTag='stable'; elif [ $branchName = 'staging' ] then dockerTag='staging'; else 'latest'; fi
+          echo "::set-output name=tag::$(echo $dockerTag)"
+        id: docker_tag
 
       # - name: Nyx infer
       #   id: nyx
@@ -58,12 +65,6 @@ jobs:
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-        # with:
-        #   driver-opts: network=host
-
-      - 
-        name: Dump current vars
-        run: echo '${{ toJSON(github) }}'
 
       - name: Build and push Node Docker images
         uses: docker/build-push-action@v4
@@ -72,18 +73,18 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ github.repository }}/node
+            ${{ env.REGISTRY }}/${{ github.repository }}/node:${{ steps.docker_tag.outputs.tag }}
           build-args: |
             PORT=${{ env.NODE_PORT }}
 
 
-      # - name: Build and push Data provider Docker images
-      #   uses: docker/build-push-action@v4
-      #   with:
-      #     file: dp.Dockerfile
-      #     context: .
-      #     push: true
-      #     tags: |
-      #       ${{ env.DP_IMAGE }}
-      #     build-args: |
-      #       PORT=${{ env.DP_PORT }}
+      - name: Build and push Data provider Docker images
+        uses: docker/build-push-action@v4
+        with:
+          file: dp.Dockerfile
+          context: .
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ github.repository }}/data-provider:${{ steps.docker_tag.outputs.tag }}
+          build-args: |
+            PORT=${{ env.DP_PORT }}
