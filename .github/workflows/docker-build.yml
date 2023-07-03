@@ -35,7 +35,13 @@ jobs:
         shell: bash
         run: |
           branchName=${{ github.ref_name }}
-          if [ $branchName = 'main' ]; then dockerTag='stable'; elif [ $branchName = 'staging' ] then dockerTag='staging'; else 'latest'; fi
+          if [ $branchName = "main" ]; then 
+              dockerTag='stable' 
+          elif [ $branchName = 'staging' ]; then 
+              dockerTag='staging' 
+          else 
+              dockerTag='latest' 
+          fi
           echo "::set-output name=tag::$(echo $dockerTag)"
         id: docker_tag
 
@@ -48,43 +54,44 @@ jobs:
       #   with:
       #     dryRun: true
 
-      # - name: Print version
-      #   run: echo the inferred version is ${{ steps.nyx.outputs.version }}
+      - name: Print version
+        run: echo the inferred version is ${{ steps.docker_tag.outputs.tag }}
+        
 
 
-      - name: Log in to the Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ env.REGISTRY }}
-          logout: true
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      -
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      # - name: Log in to the Container Registry
+      #   uses: docker/login-action@v2
+      #   with:
+      #     registry: ${{ env.REGISTRY }}
+      #     logout: true
+      #     username: ${{ github.actor }}
+      #     password: ${{ secrets.GITHUB_TOKEN }}
+      # -
+      #   name: Set up QEMU
+      #   uses: docker/setup-qemu-action@v2
+      # -
+      #   name: Set up Docker Buildx
+      #   uses: docker/setup-buildx-action@v2
 
-      - name: Build and push Node Docker images
-        uses: docker/build-push-action@v4
-        with:
-          file: node.Dockerfile
-          context: .
-          push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ github.repository }}/node:${{ steps.docker_tag.outputs.tag }}
-          build-args: |
-            PORT=${{ env.NODE_PORT }}
+      # - name: Build and push Node Docker images
+      #   uses: docker/build-push-action@v4
+      #   with:
+      #     file: node.Dockerfile
+      #     context: .
+      #     push: true
+      #     tags: |
+      #       ${{ env.REGISTRY }}/${{ github.repository }}/node:${{ steps.docker_tag.outputs.tag }}
+      #     build-args: |
+      #       PORT=${{ env.NODE_PORT }}
 
 
-      - name: Build and push Data provider Docker images
-        uses: docker/build-push-action@v4
-        with:
-          file: dp.Dockerfile
-          context: .
-          push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ github.repository }}/data-provider:${{ steps.docker_tag.outputs.tag }}
-          build-args: |
-            PORT=${{ env.DP_PORT }}
+      # - name: Build and push Data provider Docker images
+      #   uses: docker/build-push-action@v4
+      #   with:
+      #     file: dp.Dockerfile
+      #     context: .
+      #     push: true
+      #     tags: |
+      #       ${{ env.REGISTRY }}/${{ github.repository }}/data-provider:${{ steps.docker_tag.outputs.tag }}
+      #     build-args: |
+      #       PORT=${{ env.DP_PORT }}
