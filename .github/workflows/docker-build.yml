@@ -1,11 +1,6 @@
 name: Build Docker images
 
-on:
-  push:
-    branches:
-      - development
-      - staging
-      - main
+on: [push]
 
 permissions:
   contents: read
@@ -39,6 +34,8 @@ jobs:
               dockerTag='stable' 
           elif [ $branchName = 'staging' ]; then 
               dockerTag='staging' 
+          elif [ $branchName = 'development' ]; then 
+              dockerTag='develop' 
           else 
               dockerTag='latest' 
           fi
