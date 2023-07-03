@@ -11,3 +11,4 @@ setup-guide
 .env
 config.yaml
 certs/host/x509
+feeds

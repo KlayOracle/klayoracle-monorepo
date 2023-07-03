@@ -70,7 +70,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           file: node.Dockerfile
-          context: .
+          context: "{{defaultContext}}:node"
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ steps.repo_lc.outputs.lowercase }}/node:${{ steps.docker_tag.outputs.tag }}
@@ -82,7 +82,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           file: dp.Dockerfile
-          context: .
+          context: "{{defaultContext}}:data-provider"
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ steps.repo_lc.outputs.lowercase }}/data-provider:${{ steps.docker_tag.outputs.tag }}
