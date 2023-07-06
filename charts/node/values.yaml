@@ -18,6 +18,17 @@ bootstrap:
     secretKeyName:
     secretCertName:
 
+env:
+  publicAddress: ""
+  privateKey: ""
+  grpcGoLogVerbosityLevel: 99
+  grpcGoLogSeverityLevel: info
+  hostIP: localhost:50051
+  nodeUrl: wss://localhost/ws
+  nodeUrlHttps: https://localhost
+  oauthToken: ""
+  cockroachDnsUrl: ""
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""

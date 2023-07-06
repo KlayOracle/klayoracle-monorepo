@@ -37,6 +37,25 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+          env:
+            - name: OAUTH_TOKEN
+              value: {{ .Values.env.oauthToken }}
+            - name: HOST_IP
+              value: {{ .Values.env.hostIP }}
+            - name: GRPC_GO_LOG_VERBOSITY_LEVEL
+              value: {{ .Values.env.grpcGoLogVerbosityLevel | quote }}
+            - name: GRPC_GO_LOG_SEVERITY_LEVEL
+              value: {{ .Values.env.grpcGoLogSeverityLevel }}
+            - name: COCKROACH_DNS_URL
+              value: {{ .Values.env.cockroachDnsUrl }}
+            - name: PRIVATE_KEY
+              value: {{ .Values.env.privateKey }}
+            - name: PUBLIC_ADDRESS
+              value: {{ .Values.env.publicAddress }}
+            - name: NODE_URL
+              value: {{ .Values.env.nodeUrl }}
+            - name: NODE_URL_HTTPS
+              value: {{ .Values.env.nodeUrlHttps }}
           livenessProbe:
             httpGet:
               path: /
