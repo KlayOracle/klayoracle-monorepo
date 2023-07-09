@@ -68,6 +68,10 @@ Generate certificates for Node server
 {{- $altNames := list ( printf "%s.%s" (include "node.name" .) .Release.Namespace ) ( printf "%s.%s.svc" (include "node.name" .) .Release.Namespace ) -}}
 {{- $ca := genCA "node-ca" 365 -}}
 {{- $cert := genSignedCert ( include "node.name" . ) nil $altNames 365 $ca -}}
-tls.crt: {{ $cert.Cert | b64enc }}
-tls.key: {{ $cert.Key | b64enc }}
+
+{{- range $i := until (.Values.replicaCount | int) }}
+node-{{ $i }}.crt: {{ $cert.Cert | b64enc }}
+node-{{ $i }}.key: {{ $cert.Key | b64enc }}  
+{{ end -}}
+
 {{- end -}}

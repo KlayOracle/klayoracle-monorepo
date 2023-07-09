@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "node.fullname" . }}
   labels:
@@ -38,6 +38,10 @@ spec:
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             - name: OAUTH_TOKEN
               value: {{ .Values.env.oauthToken }}
             - name: HOST_IP
@@ -56,14 +60,16 @@ spec:
               value: {{ .Values.env.nodeUrl }}
             - name: NODE_URL_HTTPS
               value: {{ .Values.env.nodeUrlHttps }}
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
+            - name: environment
+              value: {{ .Values.env.runtime }}
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
