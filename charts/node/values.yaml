@@ -18,6 +18,8 @@ bootstrap:
     secretKeyName:
     secretCertName:
 
+fqdn: ""
+
 env:
   publicAddress: ""
   privateKey: ""

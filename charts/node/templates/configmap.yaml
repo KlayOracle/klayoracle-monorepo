@@ -8,9 +8,9 @@ data:
     env: stage #options: dev, stage, production
     organization:
       k_org_id: 535797165684
-      name: KlayOracle Inc. ${POD_NAME}
-      website: "node-1.origineum.com"
+      name: KlayOracle Inc. 
+      website: ${POD_NAME}.{{ .Values.fqdn }}
     ssl:
-      key: "x509/origineum_node_key.pem"
-      certificate: "x509/origineum_node_cert.pem"
+      key: "x509/${POD_NAME}.key"
+      certificate: "x509/${POD_NAME}.crt"
   

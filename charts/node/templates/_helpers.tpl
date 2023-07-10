@@ -70,8 +70,8 @@ Generate certificates for Node server
 {{- $cert := genSignedCert ( include "node.name" . ) nil $altNames 365 $ca -}}
 
 {{- range $i := until (.Values.replicaCount | int) }}
-node-{{ $i }}.crt: {{ $cert.Cert | b64enc }}
-node-{{ $i }}.key: {{ $cert.Key | b64enc }}  
+{{ include "node.fullname" $}}-{{ $i }}.crt: {{ $cert.Cert | b64enc }}
+{{ include "node.fullname" $}}-{{ $i }}.key: {{ $cert.Key | b64enc }}  
 {{ end -}}
 
 {{- end -}}
