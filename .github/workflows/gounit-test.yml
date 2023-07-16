@@ -21,5 +21,5 @@ jobs:
         with:
           go-version: ${{ matrix.go }}
       - name: Running Test For ${{ matrix.directory }}
-        run: COCKROACH_DNS_URL=${{ secrets.COCKROACH_DNS_URL }} NODE_URL_WSS=${{ secrets.NODE_URL_WSS }} NODE_URL_HTTPS=${{ secrets.NODE_URL_HTTPS }} PRIVATE_KEY=${{ secrets.PRIVATE_KEY }}  go test -v ./...
+        run: COCKROACH_DNS_URL=${{ secrets.COCKROACH_DNS_URL }} NODE_URL_WSS=${{ secrets.NODE_URL_WSS }} NODE_URL_HTTPS=${{ secrets.NODE_URL_HTTPS }} PRIVATE_KEY=${{ secrets.PRIVATE_KEY }} X_COIN_API_KEY=${{ secrets.PRIVATE_KEY }} go test -v ./...
         working-directory: ${{ matrix.directory }}
