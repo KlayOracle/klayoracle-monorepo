@@ -3,6 +3,9 @@ WD=$(shell pwd)
 HOST_IP := "0.0.0.0:50051"
 NODE_PORT := "50051"
 DP_PORT := "50002"
+NODE_IMAGE=klayoracle-node:v1.0.1-dev
+DP_IMAGE=klayoracle-dp:v1.0.1-dev
+
 
 .PHONY: proto-installed
 proto-installed:
@@ -96,9 +99,13 @@ export-var:
 devnet-tables:
 	@for var in $(shell cat setup-guide/volumes/nodes/nd{1,2,3,4}/db.var); do export "$${var}" && make node-tables ; done;
 
+.PHONY: demo
+demo:
+	@TARGET=images.var make export-var; echo ${NODE_IMAGE};
+
 .PHONY: devnet-cluster
 devnet-cluster:
-	@make docker-network; TARGET=images.var make export-var; make node-image; make dp-image
+	@make docker-network; NODE_IMAGE=${NODE_IMAGE} NODE_PORT=${NODE_PORT} make node-image; DP_PORT=${DP_PORT} DP_IMAGE=${DP_IMAGE}  make dp-image
 	@make devnet-tables
 	@docker compose up --detach
 
@@ -113,5 +120,4 @@ solidity-bindings:
     		exit 1; \
      else \
        solc --abi oracle-contract/contracts/*.sol -o node/contracts/build --bin --overwrite @openzeppelin=oracle-contract/node_modules/@openzeppelin ; \
-       cd node/utils && go run compile_contract/compile_contract.go ; \
-     fi
+       cd node/utils && go run compile_contract/compil

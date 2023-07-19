@@ -3,6 +3,8 @@
   "name":"BTC_USD",
   "adapterId":"0x30a0bdd56d071b172a4a0a93f2cf82765a83b349443f7d3f0c90833e9e07be7d",
   "oracleAddress":"0xf57761CC1FcF506Da4396E62C5920C1632c30620",
+  "category": 2,
+  "frequency":"60000000000",
   "feeds":[
     {
       "url":"https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=USD",
@@ -52,7 +54,5 @@
         }
       ]
     }
-  ],
-  "category":"PRICE_FEED",
-  "frequency":"800000000000"
+  ]
 }

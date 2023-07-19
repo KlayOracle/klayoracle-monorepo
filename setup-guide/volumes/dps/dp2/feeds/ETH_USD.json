@@ -3,6 +3,8 @@
   "name":"ETH_USD",
   "adapterId":"0xbcfb1c8981fe009ce033e88b6c3ef7f554f590f240a96ef9e5895a14e20ee529",
   "oracleAddress":"0x8D58564D0e7394902a10105BbE183c9A44f02d1d",
+  "category": 2,
+  "frequency":"60000000000",
   "feeds":[
     {
       "url":"https://min-api.cryptocompare.com/data/pricemultifull?fsyms=ETH&tsyms=USD",
@@ -52,7 +54,5 @@
         }
       ]
     }
-  ],
-  "category":"PRICE_FEED",
-  "frequency":"800000000000"
+  ]
 }
