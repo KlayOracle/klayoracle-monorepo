@@ -7,7 +7,7 @@ func Nodes() []string {
 	env := os.Getenv("environment")
 
 	if env == "staging" {
-		return []string{"bootstrap-dp1.digioracle.link:50002", "bootstrap-dp2.digioracle.link:50002", "bootstrap-dp3.digioracle.link:50002"}
+		return []string{"bootstrap-dp-1.digioracle.link:50002", "bootstrap-dp-2.digioracle.link:50002", "bootstrap-dp-3.digioracle.link:50002"}
 	}
 
 	if env == "docker" {
