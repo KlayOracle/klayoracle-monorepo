@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.16;
 
-import "https://github.com/KlayOracle/klayoracle-monorepo/blob/development/oracle-contract/contracts/KlayOracleInterface.sol";
+import "./KlayOracleInterface.sol";
 
 contract OracleConsumerSample {
     address public immutable oracleAddress;
