@@ -26,7 +26,7 @@ contract OracleConsumerSample {
     }
 
     function swap(uint256 _klayOutput) external {
-        require(msg.sender == oracleAddress, "not allowed");    //ensure only Oracle contract can set price
+        require(msg.sender == oracleAddress, "not allowed"); //ensure only Oracle contract can set price
         klayOutput = _klayOutput;
         //Swap usd to klay
     }
