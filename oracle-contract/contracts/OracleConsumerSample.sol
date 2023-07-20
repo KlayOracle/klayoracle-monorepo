@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.16;
 
-import "./KlayOracleInterface.sol";
+import "https://github.com/KlayOracle/klayoracle-monorepo/blob/development/oracle-contract/contracts/KlayOracleInterface.sol";
 
 contract OracleConsumerSample {
     address public immutable oracleAddress;
@@ -14,7 +14,7 @@ contract OracleConsumerSample {
         oracleAddress = _oracleAddress;
     }
 
-    function swapEthtoKlay() public returns (bool) {
+    function swapUsdtoKlay() public returns (bool) {
         KlayOracleInterface oracle = KlayOracleInterface(oracleAddress);
 
         bool replied = oracle.newOracleRequest(
@@ -25,8 +25,9 @@ contract OracleConsumerSample {
         return replied;
     }
 
-    function swap(uint256 _klayOutput) public {
+    function swap(uint256 _klayOutput) external {
+        require(msg.sender == oracleAddress, "not allowed");    //ensure only Oracle contract can set price
         klayOutput = _klayOutput;
-        //Swap eth to klay
+        //Swap usd to klay
     }
 }
