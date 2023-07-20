@@ -221,8 +221,8 @@
       ]
     },
     "/Users/oluwafemialofe/Development/GO/klayoracle-monorepo/oracle-contract/contracts/OracleConsumerSample.sol": {
-      "lastModificationDate": 1676989025745,
-      "contentHash": "0ffce9089c24ff1d2046a6f95e8c9414",
+      "lastModificationDate": 1689839669158,
+      "contentHash": "1615bdaeb71bd31a01de4c94725bb99c",
       "sourceName": "contracts/OracleConsumerSample.sol",
       "solcConfig": {
         "version": "0.8.16",
