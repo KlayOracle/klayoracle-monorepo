@@ -42,38 +42,38 @@ Feel free to email engineering@klayoracle.com
 ## Checklist
 
 - Install go version >= 18
-- Docker desktop
+- Docker Desktop
 - Cockroach cli
 - Mac/Linux machine
 
 ### Node Runner
 
-- Generate a selfsigned certificate for each node. [see guide using open ssl](setup-guide/openssl).
+- Generate a self-signed certificate for each node. [see guide using open ssl](setup-guide/openssl).
 - Use different authority or wildcard matching authority of each node you intend to run.
 - In `node/config.yml`, set the `key` and the `pem` you used to generate the certificate.
 - Give the certificate pem file to data providers for authenticating with your Node. You can also run your own data providers.
-- Update your organization details in `node/config.yml`. Website must match authority used to sign certificate, an example will be if authority is `*.origineum.com`, website can be `node-1.origineum.com`. Otherwise, node service will fail to start.
-- In `.env`, `HOST_IP` is the dns for reaching your node. If you're running a docker container, you can override it and other `env` variable by passing from terminal.
-- In `.env` `PRIVATE_KEY` is your Node signer with enough Klay tokens to pay for request.
+- Update your organization details in `node/config.yml`. The website must match the authority used to sign the certificate; an example will be if the authority is `*.origineum.com`, the website can be `node-1.origineum.com`. Otherwise, the node service will fail to start.
+- In `.env`, `HOST_IP` is the DNS for reaching your node. If you're running a docker container, you can override it and other `env` variables by passing from the terminal.
+- In `.env` `PRIVATE_KEY` is your Node signer with enough Klay tokens to pay for the request.
 - In `.env` `COCKROACH_DNS_URL` is your full connection string to [https://cockroachlabs.cloud/](https://cockroachlabs.cloud/) cluster. A free account will suffice for a considerable period.
 - In `.env` `OAUTH_TOKEN` is the Oauth token given to data providers using your Node.
 - Run `make gomodtidy`, `make node-tables`, `make node-server-nolog HOST_IP=0.0.0.0:50054` or `make node-server HOST_IP=0.0.0.0:50054` on your local machine to test it locally.
 
 ### DP Runner
 
-- Using sample [KLAY_USD](data-provider/feeds/KLAY_USD.json) and [WEMIX_USD](data-provider/feeds/WEMIX_USD.json), add all the feeds your data provider will serving to consumer contract.
+- Using sample [KLAY_USD](data-provider/feeds/KLAY_USD.json) and [WEMIX_USD](data-provider/feeds/WEMIX_USD.json), add all the feeds your data provider will serve to the consumer contract.
 - Use the setup guide to understand and add a compatible feed. [Guide here](https://klayoracle.gitbook.io/v1.0.0/data-providers/)
-- Using the `make` command, generate unique 32 bytes string identifier for each adapter feed. example `make adapter-id-gen ADAPTERS="KLAY_USD.json WEMIX_USD.json"` will generate `adapterId` for each feed.
+- Using the `make` command, generate a unique 32 bytes string identifier for each adapter feed. Example `make adapter-id-gen ADAPTERS="KLAY_USD.json WEMIX_USD.json"` will generate `adapterId` for each feed.
 - Optionally if you prefer to prettifier your feed after generating `adapterId`, use https://jsonformatter.curiousconcept.com/.
 - Deploy [OracleProvider](https://github.com/KlayOracle/klayoracle-monorepo/blob/development/oracle-contract/contracts/OracleProviderSample.sol) contract for each feed and replace the `oracleAddress` key.
 - Test if your Adapter will run successfully when sent to Node by running `make adapter-dry-run ADAPTERS="KLAY_USD.json WEMIX_USD.json"`
 - Add the certificate of the Node your data provider will be using to `data-provider/certs/node`. Update the path in `data-provider/config.yml`.
 - Update your organization details in `data-provider/config.yml`.
-- In `.env`, `HOST_IP` is the dns for reaching your data provider. As a rule of thumb if you are running multiple data provider don't run on same host,
+- In `.env`, `HOST_IP` is the dns for reaching your data provider. As a rule of thumb, if you are running multiple data providers, don't run on the same host,
 - Add the list of feeds to be loaded to `data-provider/config.yml`. Any `feed` name not listed will not be sent to the node for aggregation.
 - Run `make gomodtidy`, `make dp-client-nolog HOST_IP=0.0.0.0:50002` or `make dp-client HOST_IP=0.0.0.0:50002` on your local machine to test it locally.
 
-Refer to the KlayOracle full [documentation](https://klayoracle.gitbook.io/v1.0.0/) for detailed instruction.
+For detailed instructions, please look at the KlayOracle full [documentation](https://klayoracle.gitbook.io/v1.0.0/).
 
 ### Available Price Feed
 
@@ -91,6 +91,6 @@ Refer to the KlayOracle full [documentation](https://klayoracle.gitbook.io/v1.0.
 
 >NB: Divide response by 1e9
 
-### Using Docker
+### Fetch KLAY/USD Price Feed
 
-[![KlayOracle v1.0.0-dev Docker setup for local devnet](https://user-images.githubusercontent.com/7295729/238190885-6558ac60-cf0e-4ba7-898c-153584ae9866.png)](https://www.youtube.com/watch?v=Tu1QkayeXYk)
+[![Fetch KLAY/USD Price Feed using DigiOracle formerly KlayOracle](https://user-images.githubusercontent.com/7295729/238190885-6558ac60-cf0e-4ba7-898c-153584ae9866.png)](https://www.youtube.com/watch?v=pJJK9vz_Y_Q)
