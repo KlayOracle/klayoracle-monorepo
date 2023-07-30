@@ -121,14 +121,12 @@ func main() {
 
 								config.Loaded.Logger.Infow("re attempting handshake to node after 60secs", "node", config.Loaded.ServiceNode)
 
-								var herr error
+								hConn, err = dp.HandShake() //handshake connection
 
-								hConn, herr = dp.HandShake() //handshake connection
-
-								if herr != nil {
-									config.Loaded.Logger.Infow("connection re-established with node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode)
-								} else {
+								if err != nil {
 									config.Loaded.Logger.Infow("could not re-established connection with node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
+								} else {
+									config.Loaded.Logger.Infow("connection re-established with node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode)
 								}
 
 							}
