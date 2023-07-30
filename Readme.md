@@ -91,6 +91,6 @@ For detailed instructions, please look at the KlayOracle full [documentation](ht
 
 >NB: Divide response by 1e9
 
-### Fetch KLAY/USD Price Feed
+### Video: Fetch KLAY/USD Price Feed
 
 [![Fetch KLAY/USD Price Feed using DigiOracle formerly KlayOracle](https://user-images.githubusercontent.com/7295729/257072009-19734d6b-1f6e-4cc7-8301-e6ffae5a7665.png)](https://www.youtube.com/watch?v=pJJK9vz_Y_Q)
