@@ -58,9 +58,9 @@ func main() {
 
 	//Create client and start handshake to Node Service
 	go func() {
-		conn, err := dp.HandShake()
+		hConn, err := dp.HandShake() //handshake connection
 		defer func() {
-			err = conn.Close()
+			err = hConn.Close()
 			if err != nil {
 				config.Loaded.Logger.Warnw("cannot close connection", "error", err)
 			}
@@ -107,12 +107,31 @@ func main() {
 						err = adapter.CastBtwDPInfo(adapterCfg, nodeAdapter)
 						if err != nil {
 							config.Loaded.Logger.Warnw("error sending adapter request to service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
-						}
+						} else {
 
-						status, err := client.QueueJob(ctx, nodeAdapter)
+							status, err := client.QueueJob(ctx, nodeAdapter)
 
-						if err != nil || status.Status == 1 {
-							config.Loaded.Logger.Warnw("error sending adapter request to service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
+							if err != nil || status.Status == 1 {
+								config.Loaded.Logger.Warnw("error sending adapter request to service node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
+
+								//re-attempt HandShake with node again until reconnect
+								if hConn != nil {
+									_ = hConn.Close()
+								}
+
+								config.Loaded.Logger.Infow("re attempting handshake to node after 60secs", "node", config.Loaded.ServiceNode)
+
+								var herr error
+
+								hConn, herr = dp.HandShake() //handshake connection
+
+								if herr != nil {
+									config.Loaded.Logger.Infow("connection re-established with node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode)
+								} else {
+									config.Loaded.Logger.Infow("could not re-established connection with node", "data provider", os.Getenv("HOST_IP"), "node", config.Loaded.ServiceNode, "error", err)
+								}
+
+							}
 						}
 
 					}()

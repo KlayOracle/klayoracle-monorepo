@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"path"
 	"sync"
@@ -123,7 +122,9 @@ func (dp *DataProvider) HandShake() (*grpc.ClientConn, error) {
 	})
 
 	if err != nil {
-		log.Fatal("node.HandShake(_) failed: ", err)
+		config.Loaded.Logger.Warn("node.HandShake(_) failed: ", err)
+
+		return nil, err
 	}
 
 	if res.Status == true {
