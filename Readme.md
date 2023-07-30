@@ -93,4 +93,4 @@ For detailed instructions, please look at the KlayOracle full [documentation](ht
 
 ### Fetch KLAY/USD Price Feed
 
-[![Fetch KLAY/USD Price Feed using DigiOracle formerly KlayOracle](https://user-images.githubusercontent.com/7295729/238190885-6558ac60-cf0e-4ba7-898c-153584ae9866.png)](https://www.youtube.com/watch?v=pJJK9vz_Y_Q)
+[![Fetch KLAY/USD Price Feed using DigiOracle formerly KlayOracle](https://user-images.githubusercontent.com/7295729/257072009-19734d6b-1f6e-4cc7-8301-e6ffae5a7665.png)](https://www.youtube.com/watch?v=pJJK9vz_Y_Q)
