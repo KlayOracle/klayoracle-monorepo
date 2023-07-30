@@ -12,6 +12,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/pborman/uuid"
+
 	"github.com/klaytn/klaytn/common"
 
 	"github.com/jackc/pgtype"
@@ -19,8 +21,6 @@ import (
 	"github.com/klayoracle/klayoracle-monorepo/data-provider/adapter"
 	bootstrap2 "github.com/klayoracle/klayoracle-monorepo/node/bootstrap"
 	"google.golang.org/grpc/credentials/oauth"
-
-	"github.com/pborman/uuid"
 
 	"github.com/klayoracle/klayoracle-monorepo/node/storage"
 
@@ -170,37 +170,41 @@ func (n *Node) Peer() {
 
 func (n *Node) QueueJob(ctx context.Context, adapter *protonode.Adapter) (*protonode.RequestStatus, error) {
 	md, _ := metadata.FromIncomingContext(ctx)
-	provider := md["provider"][0]
 
-	_, ok := n.dataProviders[provider]
+	if len(md["provider"]) > 0 {
+		provider := md["provider"][0]
 
-	if ok {
-		config.Loaded.Logger.Infow("new queue request", "data provider", provider, "request", adapter)
-		n.mu.Lock()
-		defer n.mu.Unlock()
+		_, ok := n.dataProviders[provider]
 
-		jobId := uuid.New()
+		if ok {
+			config.Loaded.Logger.Infow("new queue request", "data provider", provider, "request", adapter)
+			n.mu.Lock()
+			defer n.mu.Unlock()
 
-		n.Jobs[jobId] = adapter
+			jobId := uuid.New()
 
-		err := storage.StoreJob(adapter)
-		if err != nil {
-			config.Loaded.Logger.Warnw("error storing job", "err", err)
+			n.Jobs[jobId] = adapter
+
+			err := storage.StoreJob(adapter)
+			if err != nil {
+				config.Loaded.Logger.Warnw("error storing job", "err", err)
+			}
+
+			config.Loaded.Logger.Infow("job in queue: ", "jobId", jobId)
+			config.Loaded.Logger.Infow("total job in queue: ", "size", len(n.Jobs))
+
+			go func() {
+				n.execJob(adapter, jobId)
+			}()
+		} else {
+			config.Loaded.Logger.Warnw("adapter has not registered an handshake", "service node",
+				os.Getenv("HOST_IP"), "data provider", provider)
+
+			return &protonode.RequestStatus{
+				Status: 1,
+			}, fmt.Errorf("adapter has not registered an handshake")
 		}
 
-		config.Loaded.Logger.Infow("job in queue: ", "jobId", jobId)
-		config.Loaded.Logger.Infow("total job in queue: ", "size", len(n.Jobs))
-
-		go func() {
-			n.execJob(adapter, jobId)
-		}()
-	} else {
-		config.Loaded.Logger.Warnw("adapter has not registered an handshake", "service node",
-			os.Getenv("HOST_IP"), "data provider", provider)
-
-		return &protonode.RequestStatus{
-			Status: 1,
-		}, fmt.Errorf("adapter has not registered an handshake")
 	}
 
 	return &protonode.RequestStatus{
