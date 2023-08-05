@@ -4,14 +4,14 @@ import (
 	"context"
 	"os"
 
+	client "github.com/ethereum/go-ethereum/ethclient"
 	"github.com/klayoracle/klayoracle-monorepo/node/config"
-	"github.com/klaytn/klaytn/client"
 )
 
 var (
 	KlaytnClient    *client.Client
 	KlaytnClientCtx context.Context
-	KlaytnChainId   = 1001
+	KlaytnChainId   = os.Getenv("CHAIN_ID")
 )
 
 func NewWssClient() {

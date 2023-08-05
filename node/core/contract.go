@@ -3,21 +3,21 @@ package core
 import (
 	"crypto/ecdsa"
 	"fmt"
+	"github.com/ethereum/go-ethereum"
 	"log"
 	"math/big"
 	"os"
 	"strings"
 	"time"
 
+	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/klayoracle/klayoracle-monorepo/node/config"
 	"github.com/klayoracle/klayoracle-monorepo/node/contracts/oracle"
 	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
-	"github.com/klaytn/klaytn"
-	"github.com/klaytn/klaytn/accounts/abi"
-	"github.com/klaytn/klaytn/accounts/abi/bind"
-	"github.com/klaytn/klaytn/common"
-	"github.com/klaytn/klaytn/common/hexutil"
-	"github.com/klaytn/klaytn/crypto"
 )
 
 func nodeSigningKey() *ecdsa.PrivateKey {
@@ -101,7 +101,7 @@ func UpdateRoundAnswer(adapter *protonode.Adapter, roundAnswer int64) (error, co
 				return fmt.Errorf(msg), common.Hash{}
 			} else {
 
-				gasEstimate, err := KlaytnClient.EstimateGas(KlaytnClientCtx, klaytn.CallMsg{
+				gasEstimate, err := KlaytnClient.EstimateGas(KlaytnClientCtx, ethereum.CallMsg{
 					From:     nodeAddr,
 					To:       &oracleAddress,
 					Data:     payload,
@@ -124,7 +124,7 @@ func UpdateRoundAnswer(adapter *protonode.Adapter, roundAnswer int64) (error, co
 					if err != nil {
 						config.Loaded.Logger.Warnw("error while updating round data", "error", err)
 					} else {
-						config.Loaded.Logger.Infow("successfully updated round data", "adapter", adapter.AdapterId, "transaction", trx.String())
+						config.Loaded.Logger.Infow("successfully updated round data", "adapter", adapter.AdapterId, "transaction", trx.Hash())
 					}
 
 					return nil, trx.Hash()

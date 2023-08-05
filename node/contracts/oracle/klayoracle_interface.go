@@ -4,57 +4,63 @@
 package oracle
 
 import (
+	"errors"
 	"math/big"
 	"strings"
 
-	"github.com/klaytn/klaytn"
-	"github.com/klaytn/klaytn/accounts/abi"
-	"github.com/klaytn/klaytn/accounts/abi/bind"
-	"github.com/klaytn/klaytn/blockchain/types"
-	"github.com/klaytn/klaytn/common"
-	"github.com/klaytn/klaytn/event"
+	ethereum "github.com/ethereum/go-ethereum"
+	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/event"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
 var (
+	_ = errors.New
 	_ = big.NewInt
 	_ = strings.NewReader
-	_ = klaytn.NotFound
+	_ = ethereum.NotFound
 	_ = bind.Bind
 	_ = common.Big1
 	_ = types.BloomLookup
 	_ = event.NewSubscription
+	_ = abi.ConvertType
 )
 
+// KlayOracleInterfaceMetaData contains all meta data concerning the KlayOracleInterface contract.
+var KlayOracleInterfaceMetaData = &bind.MetaData{
+	ABI: "[{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"callbackFunctionId\",\"type\":\"bytes4\"},{\"internalType\":\"address\",\"name\":\"callBackContract\",\"type\":\"address\"}],\"name\":\"newOracleRequest\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"roundTime\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"roundAnswer\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"}],\"name\":\"newRoundData\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+}
+
 // KlayOracleInterfaceABI is the input ABI used to generate the binding from.
-const KlayOracleInterfaceABI = "[{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"callbackFunctionId\",\"type\":\"bytes4\"},{\"internalType\":\"address\",\"name\":\"callBackContract\",\"type\":\"address\"}],\"name\":\"newOracleRequest\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"roundTime\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"roundAnswer\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"signature\",\"type\":\"bytes\"}],\"name\":\"newRoundData\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
+// Deprecated: Use KlayOracleInterfaceMetaData.ABI instead.
+var KlayOracleInterfaceABI = KlayOracleInterfaceMetaData.ABI
 
-// KlayOracleInterfaceBinRuntime is the compiled bytecode used for adding genesis block without deploying code.
-const KlayOracleInterfaceBinRuntime = ``
-
-// KlayOracleInterface is an auto generated Go binding around a Klaytn contract.
+// KlayOracleInterface is an auto generated Go binding around an Ethereum contract.
 type KlayOracleInterface struct {
 	KlayOracleInterfaceCaller     // Read-only binding to the contract
 	KlayOracleInterfaceTransactor // Write-only binding to the contract
 	KlayOracleInterfaceFilterer   // Log filterer for contract events
 }
 
-// KlayOracleInterfaceCaller is an auto generated read-only Go binding around a Klaytn contract.
+// KlayOracleInterfaceCaller is an auto generated read-only Go binding around an Ethereum contract.
 type KlayOracleInterfaceCaller struct {
 	contract *bind.BoundContract // Generic contract wrapper for the low level calls
 }
 
-// KlayOracleInterfaceTransactor is an auto generated write-only Go binding around a Klaytn contract.
+// KlayOracleInterfaceTransactor is an auto generated write-only Go binding around an Ethereum contract.
 type KlayOracleInterfaceTransactor struct {
 	contract *bind.BoundContract // Generic contract wrapper for the low level calls
 }
 
-// KlayOracleInterfaceFilterer is an auto generated log filtering Go binding around a Klaytn contract events.
+// KlayOracleInterfaceFilterer is an auto generated log filtering Go binding around an Ethereum contract events.
 type KlayOracleInterfaceFilterer struct {
 	contract *bind.BoundContract // Generic contract wrapper for the low level calls
 }
 
-// KlayOracleInterfaceSession is an auto generated Go binding around a Klaytn contract,
+// KlayOracleInterfaceSession is an auto generated Go binding around an Ethereum contract,
 // with pre-set call and transact options.
 type KlayOracleInterfaceSession struct {
 	Contract     *KlayOracleInterface // Generic contract binding to set the session for
@@ -62,31 +68,31 @@ type KlayOracleInterfaceSession struct {
 	TransactOpts bind.TransactOpts    // Transaction auth options to use throughout this session
 }
 
-// KlayOracleInterfaceCallerSession is an auto generated read-only Go binding around a Klaytn contract,
+// KlayOracleInterfaceCallerSession is an auto generated read-only Go binding around an Ethereum contract,
 // with pre-set call options.
 type KlayOracleInterfaceCallerSession struct {
 	Contract *KlayOracleInterfaceCaller // Generic contract caller binding to set the session for
 	CallOpts bind.CallOpts              // Call options to use throughout this session
 }
 
-// KlayOracleInterfaceTransactorSession is an auto generated write-only Go binding around a Klaytn contract,
+// KlayOracleInterfaceTransactorSession is an auto generated write-only Go binding around an Ethereum contract,
 // with pre-set transact options.
 type KlayOracleInterfaceTransactorSession struct {
 	Contract     *KlayOracleInterfaceTransactor // Generic contract transactor binding to set the session for
 	TransactOpts bind.TransactOpts              // Transaction auth options to use throughout this session
 }
 
-// KlayOracleInterfaceRaw is an auto generated low-level Go binding around a Klaytn contract.
+// KlayOracleInterfaceRaw is an auto generated low-level Go binding around an Ethereum contract.
 type KlayOracleInterfaceRaw struct {
 	Contract *KlayOracleInterface // Generic contract binding to access the raw methods on
 }
 
-// KlayOracleInterfaceCallerRaw is an auto generated low-level read-only Go binding around a Klaytn contract.
+// KlayOracleInterfaceCallerRaw is an auto generated low-level read-only Go binding around an Ethereum contract.
 type KlayOracleInterfaceCallerRaw struct {
 	Contract *KlayOracleInterfaceCaller // Generic read-only contract binding to access the raw methods on
 }
 
-// KlayOracleInterfaceTransactorRaw is an auto generated low-level write-only Go binding around a Klaytn contract.
+// KlayOracleInterfaceTransactorRaw is an auto generated low-level write-only Go binding around an Ethereum contract.
 type KlayOracleInterfaceTransactorRaw struct {
 	Contract *KlayOracleInterfaceTransactor // Generic write-only contract binding to access the raw methods on
 }
@@ -129,18 +135,18 @@ func NewKlayOracleInterfaceFilterer(address common.Address, filterer bind.Contra
 
 // bindKlayOracleInterface binds a generic wrapper to an already deployed contract.
 func bindKlayOracleInterface(address common.Address, caller bind.ContractCaller, transactor bind.ContractTransactor, filterer bind.ContractFilterer) (*bind.BoundContract, error) {
-	parsed, err := abi.JSON(strings.NewReader(KlayOracleInterfaceABI))
+	parsed, err := KlayOracleInterfaceMetaData.GetAbi()
 	if err != nil {
 		return nil, err
 	}
-	return bind.NewBoundContract(address, parsed, caller, transactor, filterer), nil
+	return bind.NewBoundContract(address, *parsed, caller, transactor, filterer), nil
 }
 
 // Call invokes the (constant) contract method with params as input values and
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_KlayOracleInterface *KlayOracleInterfaceRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_KlayOracleInterface *KlayOracleInterfaceRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _KlayOracleInterface.Contract.KlayOracleInterfaceCaller.contract.Call(opts, result, method, params...)
 }
 
@@ -159,7 +165,7 @@ func (_KlayOracleInterface *KlayOracleInterfaceRaw) Transact(opts *bind.Transact
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_KlayOracleInterface *KlayOracleInterfaceCallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_KlayOracleInterface *KlayOracleInterfaceCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _KlayOracleInterface.Contract.contract.Call(opts, result, method, params...)
 }
 

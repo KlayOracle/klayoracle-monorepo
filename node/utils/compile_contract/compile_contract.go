@@ -18,7 +18,7 @@ func main() {
 
 	buildDir := path.Join(wd, "..", "contracts", "build")
 	targetDir := path.Join(wd, "..", "contracts", "oracle")
-	abiGen := path.Join(wd, "..", "bin", "abigen")
+	//abiGen := path.Join(wd, "..", "bin", "abigen") //use installed ethereum abigen
 
 	contractNames := []string{"KlayOracle", "KlayOracleInterface", "OracleProviderSample", "OracleConsumerSample"}
 
@@ -26,7 +26,7 @@ func main() {
 		buildFilename := buildDir + "/" + contractName
 		bindingFilename := targetDir + "/" + toSnakeCase(contractName) + ".go"
 		cmd := exec.Command(
-			abiGen, fmt.Sprintf("--bin=%s.bin", buildFilename),
+			"abigen", fmt.Sprintf("--bin=%s.bin", buildFilename),
 			fmt.Sprintf("--abi=%s.abi", buildFilename),
 			fmt.Sprintf("--pkg=%s", contractName),
 			fmt.Sprintf("--out=%s", bindingFilename),

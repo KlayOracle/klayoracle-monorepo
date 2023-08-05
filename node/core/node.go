@@ -14,7 +14,7 @@ import (
 
 	"github.com/pborman/uuid"
 
-	"github.com/klaytn/klaytn/common"
+	"github.com/ethereum/go-ethereum/common"
 
 	"github.com/jackc/pgtype"
 

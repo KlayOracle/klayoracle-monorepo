@@ -130,7 +130,7 @@ abstract contract KlayOracle is KlayOracleInterface {
         bytes32 _r,
         bytes32 _s
     ) public pure returns (address) {
-        bytes memory prefix = "\x19Klaytn Signed Message:\n32";
+        bytes memory prefix = "\x19Ethereum Signed Message:\n32";
         bytes32 prefixedHashMessage = keccak256(
             abi.encodePacked(prefix, _hashedMessage)
         );

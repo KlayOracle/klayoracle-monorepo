@@ -8,7 +8,7 @@ import (
 	"path"
 	"time"
 
-	"github.com/klaytn/klaytn/common"
+	"github.com/ethereum/go-ethereum/common"
 
 	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
 

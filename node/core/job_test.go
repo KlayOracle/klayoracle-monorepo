@@ -16,7 +16,7 @@ var byt = []byte(`
 				"name": "KLAY_USD",
 				"job_type": "DATA_FEED",
 				"adapter_id":"0x8b7460cccfa0aca303ee85c3fb81c344faad2fbab415adc32b2984008b7efd76",
-				"oracle_address": "0x6e776d60fcb8c744748402a47de34295ced8f393",
+				"oracle_address": "0x7055108d9B5AB0765191A570f8F22A4ccEffd950",
 				"category": 2,
 				"frequency": 30000000000,
 				"feeds": [

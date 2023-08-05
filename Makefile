@@ -119,5 +119,6 @@ solidity-bindings:
     		echo "error: solc not installed" >&2; \
     		exit 1; \
      else \
-       solc --abi oracle-contract/contracts/*.sol -o node/contracts/build --bin --overwrite @openzeppelin=oracle-contract/node_modules/@openzeppelin ; \
-       cd node/utils && go run compile_contract/compil
+    	solc --abi oracle-contract/contracts/*.sol -o node/contracts/build --bin --overwrite @openzeppelin=oracle-contract/node_modules/@openzeppelin ; \
+    	cd node/utils && go run compile_contract/compile_contract.go;	\
+    fi
