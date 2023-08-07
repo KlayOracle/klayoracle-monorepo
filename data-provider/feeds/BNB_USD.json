@@ -1,13 +1,13 @@
 {
   "active":true,
-  "name":"MANTLE_USD",
+  "name":"BNB_USD",
   "adapterId":"0x8b7460cccfa0aca303ee85c3fb81c344faad2fbab415adc32b2984008b7efd76",
   "oracleAddress":"0xB1b28f760d66A9BecD0C0EdA490681467175F09B",
   "category": 2,
   "frequency": 60000000000,
   "feeds":[
     {
-      "url":"https://yahoo-finance127.p.rapidapi.com/price/mnt-usd",
+      "url":"https://yahoo-finance127.p.rapidapi.com/price/bnb-usd",
       "request_type":0,
       "headers":[
         {
@@ -39,6 +39,6 @@
         }
       ],
       "payload": ""
-    }
+    },
   ]
 }

@@ -54,8 +54,6 @@ func main() {
 			panic(err)
 		}
 
-		fmt.Println(newAdapter.Feeds)
-
 		fmt.Printf("\n")
 
 		logger.Infow("ok!", "feed", newAdapter.Name, "output", result)

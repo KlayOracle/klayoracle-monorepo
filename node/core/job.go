@@ -2,6 +2,7 @@ package core
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"math/big"
 	"net/http"
@@ -148,6 +149,7 @@ func request(f *protonode.Feed) (string, error) {
 	bodyReader := bytes.NewReader([]byte(f.Payload))
 
 	req, err := http.NewRequest(method, f.Url, bodyReader)
+
 	defer req.Body.Close()
 	if err != nil {
 		return "", err
@@ -173,6 +175,8 @@ func request(f *protonode.Feed) (string, error) {
 	}
 
 	body, err := io.ReadAll(res.Body)
+
+	fmt.Println(string(body))
 
 	return string(body), nil
 }

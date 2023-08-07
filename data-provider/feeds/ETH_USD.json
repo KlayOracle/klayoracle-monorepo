@@ -1,25 +1,35 @@
 {
   "active":true,
-  "name":"KLAY_USD",
+  "name":"ETH_USD",
   "adapterId":"0x8b7460cccfa0aca303ee85c3fb81c344faad2fbab415adc32b2984008b7efd76",
-  "oracleAddress":"0xbc884088e406422a3ef39aedd1c546de7ac4be7c",
+  "oracleAddress":"0xB1b28f760d66A9BecD0C0EdA490681467175F09B",
   "category": 2,
   "frequency": 60000000000,
   "feeds":[
     {
-      "url":"https://min-api.cryptocompare.com/data/pricemultifull?fsyms=KLAY&tsyms=USD",
+      "url":"https://yahoo-finance127.p.rapidapi.com/price/eth-usd",
       "request_type":0,
       "headers":[
         {
           "field":{
             "Content-Type":"application/json"
           }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Host":"${YAHOO_API_HOST}"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Key":"${YAHOO_API_KEY}"
+          }
         }
       ],
       "reducers":[
         {
           "function":"PARSE",
-          "args":["$.RAW.KLAY.USD.PRICE"]
+          "args":["$.regularMarketPrice.raw"]
         },
         {
           "function":"FLOAT64_MUL_UINT64",
@@ -31,19 +41,19 @@
       "payload": ""
     },
     {
-      "url":"https://rest.coinapi.io/v1/exchangerate/KLAY/USD",
+      "url":"https://api.polygon.io/v1/last/crypto/ETH/USD?apiKey=${POLYGON_KEY}",
       "request_type": 0,
       "headers":[
         {
           "field":{
-            "X-CoinAPI-Key":"${X_COIN_API_KEY}"
+            "Content-Type":"application/json"
           }
         }
       ],
       "reducers":[
         {
           "function":"PARSE",
-          "args":["$.rate"]
+          "args":["$.last.price"]
         },
         {
           "function":"FLOAT64_MUL_UINT64",
@@ -51,7 +61,8 @@
             "1000000000"
           ]
         }
-      ]
+      ],
+      "payload": ""
     }
   ]
 }
