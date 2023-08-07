@@ -13,6 +13,7 @@ services:
       - klayoracle
     env_file:
       - setup-guide/volumes/nodes/nd1/.env
+    restart: unless-stopped
   bt2-node:
     build: .
     image: klayoracle-node:v1.0.1-dev
@@ -28,6 +29,7 @@ services:
       - klayoracle
     env_file:
       - setup-guide/volumes/nodes/nd2/.env
+    restart: unless-stopped
   bt3-node:
     build: .
     image: klayoracle-node:v1.0.1-dev
@@ -43,6 +45,7 @@ services:
       - klayoracle
     env_file:
       - setup-guide/volumes/nodes/nd3/.env
+    restart: unless-stopped
   bt4-node:
     build: .
     image: klayoracle-node:v1.0.1-dev
@@ -58,6 +61,7 @@ services:
       - klayoracle
     env_file:
       - setup-guide/volumes/nodes/nd4/.env
+    restart: unless-stopped
   bt1-dp:
     build: .
     image: klayoracle-dp:v1.0.1-dev
@@ -74,6 +78,7 @@ services:
       - klayoracle
     env_file:
       - setup-guide/volumes/dps/dp1/.env
+    restart: unless-stopped
   bt2-dp:
     build: .
     image: klayoracle-dp:v1.0.1-dev
@@ -91,6 +96,7 @@ services:
       - klayoracle
     env_file:
       - setup-guide/volumes/dps/dp2/.env
+    restart: unless-stopped
   bt3-dp:
     build: .
     image: klayoracle-dp:v1.0.1-dev
@@ -108,6 +114,7 @@ services:
       - klayoracle
     env_file:
       - setup-guide/volumes/dps/dp3/.env
+    restart: unless-stopped
   bt4-dp:
     build: .
     image: klayoracle-dp:v1.0.1-dev
@@ -125,5 +132,6 @@ services:
       - klayoracle
     env_file:
       - setup-guide/volumes/dps/dp4/.env
+    restart: unless-stopped
 networks:
   klayoracle: {}
