@@ -2,10 +2,11 @@ package core
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"path"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/klayoracle/klayoracle-monorepo/node/boot"
 	"github.com/klayoracle/klayoracle-monorepo/node/protonode"
