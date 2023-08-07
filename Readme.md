@@ -5,9 +5,11 @@
 ![slither analysis](https://github.com/KlayOracle/klayoracle-monorepo/actions/workflows/slither.yml/badge.svg)
 ![snyk check](https://github.com/KlayOracle/klayoracle-monorepo/actions/workflows/snyk.yml/badge.svg)
 
-## Official KlayOracle monorepo
+## Official DigiOracle monorepo
 
-KlayOracle is a decentralized oracle for the Klaytn blockchain. This monorepo contains all core packages that make up the KlayOracle protocol.
+DigiOracle (formerly KlayOracle) is a blockchain oracle that helps smart contract developers connect Web3 applications to real-world events, data, and assets.
+
+This monorepo contains all core packages that make up the DigiOracle protocol.
 
 ## 📚 Learn More
 
@@ -15,9 +17,9 @@ Docs
 - [Developer documentation](https://klayoracle.gitbook.io/v1.0.0/)
 - [Architecture Decision Records](/docs/arch)
 
-Website: [klayoracle.com](https://klayoracle.com)
+Website: [digioracle.link](https://digioracle.link)
 
-Blog: [klayoracle.medium.com](https://klayoracle.medium.com)
+Blog: [digioracle-network.medium.com](https://digioracle-network.medium.com)
 
 ### 📦 Packages
 
@@ -32,7 +34,7 @@ Feel free to email engineering@klayoracle.com
 
 ## Connect with KlayOracle
 
-[Website](https://klayoracle.com) | [Dorahacks](https://community.dorahacks.io/t/klayoracle-an-open-source-oracle-framework-to-securely-integrate-off-chain-data-with-klaytn-smart-contracts/58) | [Twitter](https://twitter.com/klayoracle) | [Medium](https://klayoracle.medium.com/) | [Telegram](https://t.me/klayoracle) | [YouTube](https://www.youtube.com/@klayoracle)
+[Website](https://digioracle.link) | [Dorahacks](https://community.dorahacks.io/t/klayoracle-an-open-source-oracle-framework-to-securely-integrate-off-chain-data-with-klaytn-smart-contracts/58) | [Twitter](https://twitter.com/klayoracle) | [Medium](https://digioracle-network.medium.com/) | [Telegram](https://t.me/klayoracle) | [YouTube](https://www.youtube.com/@klayoracle)
 
 ## Contributors
 
