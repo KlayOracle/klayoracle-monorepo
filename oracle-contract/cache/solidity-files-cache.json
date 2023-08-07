@@ -2,7 +2,7 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/oluwafemialofe/Development/GO/klayoracle-monorepo/oracle-contract/contracts/KlayOracle.sol": {
-      "lastModificationDate": 1682176894873,
+      "lastModificationDate": 1691415955071,
       "contentHash": "e685a43476340cf7c43ccc63be52510b",
       "sourceName": "contracts/KlayOracle.sol",
       "solcConfig": {
