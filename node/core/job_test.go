@@ -1,6 +1,8 @@
 package core
 
 import (
+	"fmt"
+	"github.com/stretchr/testify/assert"
 	"os"
 	"path"
 	"testing"
@@ -62,5 +64,9 @@ func TestUpdateRoundAnswer(t *testing.T) {
 	protojson.Unmarshal(stream, &newAdapter)
 
 	//DeployNewOracleProviderSample(os.Getenv("PUBLIC_ADDRESS"), "0x8b7460cccfa0aca303ee85c3fb81c344faad2fbab415adc32b2984008b7efd76")
-	UpdateRoundAnswer(&newAdapter, 10)
+	err, hash := UpdateRoundAnswer(&newAdapter, 10)
+
+	fmt.Println("Transaction hash: ", hash.String())
+
+	assert.Nil(t, err, err)
 }

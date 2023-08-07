@@ -3,7 +3,7 @@ service_node: 0.0.0.0:50051
 feed:
   path: "feeds"
   adapters:
-    - KLAY_USD.json
+    - MANTLE_USD.json
 organization:
   k_org_id: 535797165684
   name: "KlayOracle Inc."

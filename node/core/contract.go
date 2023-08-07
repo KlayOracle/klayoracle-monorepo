@@ -62,7 +62,15 @@ func UpdateRoundAnswer(adapter *protonode.Adapter, roundAnswer int64) (error, co
 		gasPrice, _ := KlaytnClient.SuggestGasPrice(KlaytnClientCtx)
 		nodePrivateKey := nodeSigningKey()
 		nodeAddr := getAddress(nodePrivateKey)
-		transactor := bind.NewKeyedTransactor(nodePrivateKey)
+		ChainId, _ := new(big.Int).SetString(os.Getenv("CHAIN_ID"), 10)
+		transactor, err := bind.NewKeyedTransactorWithChainID(nodePrivateKey, ChainId)
+
+		if err != nil {
+			msg := "unable to bind.NewKeyedTransactorWithChainID"
+			config.Loaded.Logger.Warnw(msg, "error", err)
+
+			return fmt.Errorf(msg), common.Hash{}
+		}
 
 		//transactor.Nonce = big.NewInt(int64(getNonce(nodeAddr)))
 		transactor.Value = big.NewInt(0)
@@ -76,8 +84,12 @@ func UpdateRoundAnswer(adapter *protonode.Adapter, roundAnswer int64) (error, co
 			common.LeftPadBytes(big.NewInt(roundTime).Bytes(), 32),
 		)
 
-		prefixedHashMsg := crypto.Keccak256Hash([]byte(fmt.Sprintf("\x19Klaytn Signed Message:\n%d%s", len(hash), hash)))
-		signature, _ := crypto.Sign(prefixedHashMsg.Bytes(), nodePrivateKey)
+		prefixedHashMsg := crypto.Keccak256Hash([]byte(fmt.Sprintf("\x19Ethereum Signed Message:\n%d%s", len(hash), string(hash[:]))))
+
+		signature, err := crypto.Sign(prefixedHashMsg.Bytes(), nodePrivateKey)
+		if err != nil {
+			log.Fatal(err)
+		}
 
 		var (
 			roundAnswerByte32 [32]byte
@@ -91,7 +103,7 @@ func UpdateRoundAnswer(adapter *protonode.Adapter, roundAnswer int64) (error, co
 
 			return fmt.Errorf(msg), common.Hash{}
 		} else {
-			contractABI, _ := abi.JSON(strings.NewReader(oracle.KlayOracleABI))
+			contractABI, _ := abi.JSON(strings.NewReader(oracle.KlayOracleMetaData.ABI))
 			payload, err := contractABI.Pack("newRoundData", big.NewInt(roundTime), roundAnswerByte32, signature)
 
 			if err != nil {
@@ -115,8 +127,16 @@ func UpdateRoundAnswer(adapter *protonode.Adapter, roundAnswer int64) (error, co
 					return fmt.Errorf(msg), common.Hash{}
 				} else {
 
-					auth := bind.NewKeyedTransactor(nodePrivateKey)
-					//auth.Nonce = big.NewInt(int64(getNonce(nodeAddr)))
+					ChainId, _ := new(big.Int).SetString(os.Getenv("CHAIN_ID"), 10)
+					auth, err := bind.NewKeyedTransactorWithChainID(nodePrivateKey, ChainId)
+					if err != nil {
+						msg := "unable to bind.NewKeyedTransactorWithChainID"
+						config.Loaded.Logger.Warnw(msg, "error", err)
+
+						return fmt.Errorf(msg), common.Hash{}
+					}
+
+					auth.Nonce = big.NewInt(int64(getNonce(nodeAddr)))
 					auth.GasLimit = gasEstimate
 					auth.Context = KlaytnClientCtx
 					auth.GasPrice = gasPrice

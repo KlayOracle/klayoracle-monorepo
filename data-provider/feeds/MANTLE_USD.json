@@ -1,0 +1,74 @@
+{
+  "active":true,
+  "name":"MANTLE_USD",
+  "adapterId":"0x8b7460cccfa0aca303ee85c3fb81c344faad2fbab415adc32b2984008b7efd76",
+  "oracleAddress":"0xB1b28f760d66A9BecD0C0EdA490681467175F09B",
+  "category": 2,
+  "frequency": 60000000000,
+  "feeds":[
+    {
+      "url":"https://yahoo-finance127.p.rapidapi.com/price/mnt-usd",
+      "request_type":0,
+      "headers":[
+        {
+          "field":{
+            "Content-Type":"application/json"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Host":"${YAHOO_API_HOST}"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Key":"${YAHOO_API_KEY}"
+          }
+        }
+      ],
+      "reducers":[
+        {
+          "function":"PARSE",
+          "args":["$.regularMarketPrice.raw"]
+        },
+        {
+          "function":"FLOAT64_MUL_UINT64",
+          "args":[
+            "1000000000"
+          ]
+        }
+      ],
+      "payload": ""
+    },
+    {
+      "url":"https://api.polygon.io/v1/last/crypto/MANTLE/USD",
+      "request_type": 0,
+      "headers":[
+        {
+          "field":{
+            "Content-Type":"application/json"
+          }
+        }
+      ],
+      "reducers":[
+        {
+          "function":"PARSE",
+          "args":["$.last.price"]
+        },
+        {
+          "function":"FLOAT64_MUL_UINT64",
+          "args":[
+            "1000000000"
+          ]
+        }
+      ],
+      "payload": [
+        {
+          "field": {
+            "apiKey": "${POLYGON_IO_KEY}"
+          }
+        }
+      ]
+    }
+  ]
+}
