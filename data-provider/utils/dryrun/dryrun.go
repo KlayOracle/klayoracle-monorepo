@@ -17,7 +17,7 @@ import (
 
 func main() {
 	wd, _ := os.Getwd()
-	boot.Boot(path.Join(wd, "../../node"), path.Join(wd, "../../node", "config.yaml"), path.Join(wd, "../../node", ".env"))
+	boot.Boot(path.Join(wd, "../../data-provider"), path.Join(wd, "../../data-provider", "config.yaml"), path.Join(wd, "../../data-provider", ".env"))
 
 	flag.Parse()
 	adapterList := flag.Args()

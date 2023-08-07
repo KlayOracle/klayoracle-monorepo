@@ -11,7 +11,7 @@ import (
 var (
 	KlaytnClient    *client.Client
 	KlaytnClientCtx context.Context
-	KlaytnChainId   = 1001
+	KlaytnChainId   = os.Getenv("CHAIN_ID")
 )
 
 func NewWssClient() {
