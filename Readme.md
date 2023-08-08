@@ -81,7 +81,7 @@ For detailed instructions, please look at the KlayOracle full [documentation](ht
 
 | 	                           | **Feed**   	                      | **Oracle Address**	 | **Decimal** |
 |-----------------------------|-----------------------------------|---------------------|-----------|
-| **Mantle (Testnet)**  	     | 	                                 | 	                   | 9 |
+| **Mantle (Testnet)**  	     | 	                                 | 	                   |  |
 | 	                           | MANTLE/USD  	                     | 0x94bfd13Dc52951a81c77c24350d1911e1C17cd65	                 | 9 |
 | 	                           | DOT/USD  	                        | 	0xA0698f9889a1B7906B2C236FAb7a9c5d128fa32a                 | 9 |
 | 	                           | AVAX/USD  	                       | 	0x6f785c43FBB5569b7f1A57fe62fBCCE96175612a                 | 9 |
