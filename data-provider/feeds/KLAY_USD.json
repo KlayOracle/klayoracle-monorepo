@@ -1,11 +1,43 @@
 {
   "active":true,
   "name":"KLAY_USD",
-  "adapterId":"0x8b7460cccfa0aca303ee85c3fb81c344faad2fbab415adc32b2984008b7efd76",
-  "oracleAddress":"0xbc884088e406422a3ef39aedd1c546de7ac4be7c",
-  "category": 2,
-  "frequency": 60000000000,
+  "adapterId":"0x7016c733c995ca868e6bc6e552be732fa005e5967e821f6a563b5f0cd8841297",
+  "oracleAddress":"0x62cB9Ccd9F08e27A89A9C8C5CCeEAEf7ddC4043B",
   "feeds":[
+    {
+      "url":"https://yahoo-finance127.p.rapidapi.com/price/klay-usd",
+      "headers":[
+        {
+          "field":{
+            "Content-Type":"application/json"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Host":"${YAHOO_API_HOST}"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Key":"${YAHOO_API_KEY}"
+          }
+        }
+      ],
+      "reducers":[
+        {
+          "function":"PARSE",
+          "args":[
+            "$.regularMarketPrice.raw"
+          ]
+        },
+        {
+          "function":"FLOAT64_MUL_UINT64",
+          "args":[
+            "1000000000"
+          ]
+        }
+      ]
+    },
     {
       "url":"https://min-api.cryptocompare.com/data/pricemultifull?fsyms=KLAY&tsyms=USD",
       "request_type":0,
@@ -13,6 +45,11 @@
         {
           "field":{
             "Content-Type":"application/json"
+          }
+        },
+        {
+          "field":{
+            "Authorization":"Apikey ${CRYPTO_COMPARE_KEY}"
           }
         }
       ],
@@ -29,29 +66,8 @@
         }
       ],
       "payload": ""
-    },
-    {
-      "url":"https://rest.coinapi.io/v1/exchangerate/KLAY/USD",
-      "request_type": 0,
-      "headers":[
-        {
-          "field":{
-            "X-CoinAPI-Key":"${X_COIN_API_KEY}"
-          }
-        }
-      ],
-      "reducers":[
-        {
-          "function":"PARSE",
-          "args":["$.rate"]
-        },
-        {
-          "function":"FLOAT64_MUL_UINT64",
-          "args":[
-            "1000000000"
-          ]
-        }
-      ]
     }
-  ]
+  ],
+  "category": 2,
+  "frequency":"60000000000"
 }

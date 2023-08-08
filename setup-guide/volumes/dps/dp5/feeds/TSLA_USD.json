@@ -1,0 +1,44 @@
+{
+  "active":true,
+  "name":"TSLA_USD",
+  "adapterId":"0x307cac18269e1baadeb3f1939e0c02a636e58d14915d558ab5e7f203d7f50426",
+  "oracleAddress":"0xc9654D64c0f783d87271c5edA514951436a9a8ea",
+  "feeds":[
+    {
+      "url":"https://yahoo-finance127.p.rapidapi.com/price/tsla",
+      "headers":[
+        {
+          "field":{
+            "Content-Type":"application/json"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Host":"${YAHOO_API_HOST}"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Key":"${YAHOO_API_KEY}"
+          }
+        }
+      ],
+      "reducers":[
+        {
+          "function":"PARSE",
+          "args":[
+            "$.regularMarketPrice.raw"
+          ]
+        },
+        {
+          "function":"FLOAT64_MUL_UINT64",
+          "args":[
+            "1000000000"
+          ]
+        }
+      ]
+    }
+  ],
+  "category": 2,
+  "frequency":"60000000000"
+}

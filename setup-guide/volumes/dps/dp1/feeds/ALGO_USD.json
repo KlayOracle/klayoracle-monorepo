@@ -1,11 +1,11 @@
 {
   "active":true,
-  "name":"MATIC_USD",
-  "adapterId":"0x1c3c28aaf1f8e724de9f5de5c1b35d0531c304cdd7f2ecded0d72d601d2ca329",
-  "oracleAddress":"0x1FAD86EfBa4FADCF49E79aBFAFEB0F54Ef7342a0",
+  "name":"ALGO_USD",
+  "adapterId":"0x8dfe4946000877b0f066cfdbae47a170fa51f2c9dfbdd38498522b31035dd6f0",
+  "oracleAddress":"0xcbE8E1F7aF9e21192E4260152aDC91c8805Be222",
   "feeds":[
     {
-      "url":"https://yahoo-finance127.p.rapidapi.com/price/avax-usd",
+      "url":"https://yahoo-finance127.p.rapidapi.com/price/algo-usd",
       "headers":[
         {
           "field":{
@@ -39,7 +39,7 @@
       ]
     },
     {
-      "url":"https://api.polygon.io/v1/last/crypto/MATIC/USD?apiKey=${POLYGON_KEY}",
+      "url":"https://api.polygon.io/v1/last/crypto/ALGO/USD?apiKey=${POLYGON_KEY}",
       "headers":[
         {
           "field":{

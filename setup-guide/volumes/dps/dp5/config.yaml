@@ -1,0 +1,17 @@
+env: dev #options: dev, stage, production
+service_node: bootstrap_node5:50051
+feed:
+  path: "feeds"
+  adapters:
+    - NVDA_USD.json
+    - PEPE_USD.json
+    - SOL_USD.json
+    - TSLA_USD.json
+    - XRP_USD.json
+organization:
+  k_org_id: 535797165698
+  name: "KlayOracle Inc."
+  website: "dp-5.klayoracle.com"
+ssl:
+  key: ""
+  certificate: "x509/535797165688.pem"

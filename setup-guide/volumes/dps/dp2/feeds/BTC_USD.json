@@ -1,17 +1,25 @@
 {
   "active":true,
   "name":"BTC_USD",
-  "adapterId":"0x30a0bdd56d071b172a4a0a93f2cf82765a83b349443f7d3f0c90833e9e07be7d",
-  "oracleAddress":"0xf57761CC1FcF506Da4396E62C5920C1632c30620",
-  "category": 2,
-  "frequency":"60000000000",
+  "adapterId":"0x3dc8f06ebc54e32fc7ec448306ece148cfb45b7b4df5870b7c07d3fb338ec038",
+  "oracleAddress":"0xc8D7Df132015f44FbB7D535Ca48677cC129566c8",
   "feeds":[
     {
-      "url":"https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC&tsyms=USD",
+      "url":"https://yahoo-finance127.p.rapidapi.com/price/btc-usd",
       "headers":[
         {
           "field":{
             "Content-Type":"application/json"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Host":"${YAHOO_API_HOST}"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Key":"${YAHOO_API_KEY}"
           }
         }
       ],
@@ -19,7 +27,7 @@
         {
           "function":"PARSE",
           "args":[
-            "$.RAW.BTC.USD.PRICE"
+            "$.regularMarketPrice.raw"
           ]
         },
         {
@@ -31,11 +39,11 @@
       ]
     },
     {
-      "url":"https://rest.coinapi.io/v1/exchangerate/BTC/USD",
+      "url":"https://api.polygon.io/v1/last/crypto/BTC/USD?apiKey=${POLYGON_KEY}",
       "headers":[
         {
           "field":{
-            "X-CoinAPI-Key":"${X_COIN_API_KEY}"
+            "Content-Type":"application/json"
           }
         }
       ],
@@ -43,7 +51,7 @@
         {
           "function":"PARSE",
           "args":[
-            "$.rate"
+            "$.last.price"
           ]
         },
         {
@@ -54,5 +62,7 @@
         }
       ]
     }
-  ]
+  ],
+  "category": 2,
+  "frequency":"60000000000"
 }

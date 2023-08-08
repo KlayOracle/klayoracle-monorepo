@@ -3,8 +3,8 @@ WD=$(shell pwd)
 HOST_IP := "0.0.0.0:50051"
 NODE_PORT := "50051"
 DP_PORT := "50002"
-NODE_IMAGE=klayoracle-node:v1.0.1-dev
-DP_IMAGE=klayoracle-dp:v1.0.1-dev
+NODE_IMAGE=klayoracle-node:v1.2-beta
+DP_IMAGE=klayoracle-dp:v1.2-beta
 
 
 .PHONY: proto-installed
@@ -97,7 +97,7 @@ export-var:
 
 .PHONEY: devnet-tables
 devnet-tables:
-	@for var in $(shell cat setup-guide/volumes/nodes/nd{1,2,3,4}/db.var); do export "$${var}" && make node-tables ; done;
+	@for var in $(shell cat setup-guide/volumes/nodes/nd{1,2,3,4,5}/db.var); do export "$${var}" && make node-tables ; done;
 
 .PHONY: demo
 demo:
@@ -108,6 +108,12 @@ devnet-cluster:
 	@make docker-network; NODE_IMAGE=${NODE_IMAGE} NODE_PORT=${NODE_PORT} make node-image; DP_PORT=${DP_PORT} DP_IMAGE=${DP_IMAGE}  make dp-image
 	@make devnet-tables
 	@docker compose up --detach
+
+.PHONY: cyp-cluster
+cyp-cluster:
+	@make docker-network; NODE_IMAGE=${NODE_IMAGE} NODE_PORT=${NODE_PORT} make node-image; DP_PORT=${DP_PORT} DP_IMAGE=${DP_IMAGE}  make dp-image
+	@make devnet-tables
+	@docker compose --file compose-cyp.yml up --detach
 
 .PHONY: node-tables
 node-tables:

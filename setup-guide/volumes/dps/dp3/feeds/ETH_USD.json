@@ -1,17 +1,25 @@
 {
   "active":true,
-  "name":"BNB_USD",
-  "adapterId":"0x0eecd1450f7aae52732ff1dcdcb7f5fc194249cc8c0665c82c65c8028bc64b75",
-  "oracleAddress":"0x1FdebbE196D2FeE7Ca98126a8b1f0f42a6E2833f",
-  "category": 2,
-  "frequency":"60000000000",
+  "name":"ETH_USD",
+  "adapterId":"0x52482cb876f14f2f694cd9c257bb782760dd9bab9661ac58241923168f3d2837",
+  "oracleAddress":"0xce4bC34b8718C61901AB76b81e4e6BA8d096eAce",
   "feeds":[
     {
-      "url":"https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BNB&tsyms=USD",
+      "url":"https://yahoo-finance127.p.rapidapi.com/price/eth-usd",
       "headers":[
         {
           "field":{
             "Content-Type":"application/json"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Host":"${YAHOO_API_HOST}"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Key":"${YAHOO_API_KEY}"
           }
         }
       ],
@@ -19,7 +27,7 @@
         {
           "function":"PARSE",
           "args":[
-            "$.RAW.BNB.USD.PRICE"
+            "$.regularMarketPrice.raw"
           ]
         },
         {
@@ -31,11 +39,11 @@
       ]
     },
     {
-      "url":"https://rest.coinapi.io/v1/exchangerate/BNB/USD",
+      "url":"https://api.polygon.io/v1/last/crypto/ETH/USD?apiKey=${POLYGON_KEY}",
       "headers":[
         {
           "field":{
-            "X-CoinAPI-Key":"${X_COIN_API_KEY}"
+            "Content-Type":"application/json"
           }
         }
       ],
@@ -43,7 +51,7 @@
         {
           "function":"PARSE",
           "args":[
-            "$.rate"
+            "$.last.price"
           ]
         },
         {
@@ -54,5 +62,7 @@
         }
       ]
     }
-  ]
+  ],
+  "category": 2,
+  "frequency":"60000000000"
 }

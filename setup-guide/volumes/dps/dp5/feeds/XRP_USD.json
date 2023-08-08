@@ -1,17 +1,25 @@
 {
   "active":true,
-  "name":"ETH_USD",
-  "adapterId":"0xbcfb1c8981fe009ce033e88b6c3ef7f554f590f240a96ef9e5895a14e20ee529",
-  "oracleAddress":"0x8D58564D0e7394902a10105BbE183c9A44f02d1d",
-  "category": 2,
-  "frequency":"60000000000",
+  "name":"XRP_USD",
+  "adapterId":"0x7016c733c995ca868e6bc6e552be732fa005e5967e821f6a563b5f0cd8841297",
+  "oracleAddress":"0x52fe38E36A3ec9Dc3dE1819a88411668E456bDE5",
   "feeds":[
     {
-      "url":"https://min-api.cryptocompare.com/data/pricemultifull?fsyms=ETH&tsyms=USD",
+      "url":"https://yahoo-finance127.p.rapidapi.com/price/avax-usd",
       "headers":[
         {
           "field":{
             "Content-Type":"application/json"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Host":"${YAHOO_API_HOST}"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Key":"${YAHOO_API_KEY}"
           }
         }
       ],
@@ -19,7 +27,7 @@
         {
           "function":"PARSE",
           "args":[
-            "$.RAW.ETH.USD.PRICE"
+            "$.regularMarketPrice.raw"
           ]
         },
         {
@@ -31,11 +39,11 @@
       ]
     },
     {
-      "url":"https://rest.coinapi.io/v1/exchangerate/ETH/USD",
+      "url":"https://api.polygon.io/v1/last/crypto/XRP/USD?apiKey=${POLYGON_KEY}",
       "headers":[
         {
           "field":{
-            "X-CoinAPI-Key":"${X_COIN_API_KEY}"
+            "Content-Type":"application/json"
           }
         }
       ],
@@ -43,7 +51,7 @@
         {
           "function":"PARSE",
           "args":[
-            "$.rate"
+            "$.last.price"
           ]
         },
         {
@@ -54,5 +62,7 @@
         }
       ]
     }
-  ]
+  ],
+  "category": 2,
+  "frequency":"60000000000"
 }

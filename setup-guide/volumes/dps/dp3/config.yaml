@@ -3,8 +3,10 @@ service_node: bootstrap_node3:50051
 feed:
   path: "feeds"
   adapters:
-    - BNB_USD.json
-    - SOL_USD.json
+    - ETH_USD.json
+    - GOOG_USD.json
+    - GOOGL_USD.json
+    - JPM_USD.json
 organization:
   k_org_id: 535797165696
   name: "KlayOracle Inc."

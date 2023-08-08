@@ -1,1 +1,1 @@
-COCKROACH_DNS_URL=postgresql://cockroachdb_user:NVCD-W5UA5aiu-Ebc6JYgA@bare-zebu-7471.8nj.cockroachlabs.cloud:26257/klayoracle_bootstrap_node_1?sslmode=verify-full
+COCKROACH_DNS_URL=postgresql://cypress_user_node_1:c4BktpVNy3HkFAjqvp2jlA@mauve-cricket-7613.8nj.cockroachlabs.cloud:26257/cypress_db_node_1?sslmode=verify-full

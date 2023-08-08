@@ -1,17 +1,25 @@
 {
   "active":true,
   "name":"SOL_USD",
-  "adapterId":"0xbc8ef9219e9952b80657ddd222efbecb4129da8fa570157f3be32e94356e4a49",
-  "oracleAddress":"0xc8D7Df132015f44FbB7D535Ca48677cC129566c8",
-  "category": 2,
-  "frequency":"60000000000",
+  "adapterId":"0xc95845e727728414d2e9bb7cc00687b6dcfe5a3ae49393680bf175b37772de90",
+  "oracleAddress":"0x70f1bB87C395a377476903AAE8b1A37b76347c8D",
   "feeds":[
     {
-      "url":"https://min-api.cryptocompare.com/data/pricemultifull?fsyms=SOL&tsyms=USD",
+      "url":"https://yahoo-finance127.p.rapidapi.com/price/sol-usd",
       "headers":[
         {
           "field":{
             "Content-Type":"application/json"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Host":"${YAHOO_API_HOST}"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Key":"${YAHOO_API_KEY}"
           }
         }
       ],
@@ -19,7 +27,7 @@
         {
           "function":"PARSE",
           "args":[
-            "$.RAW.SOL.USD.PRICE"
+            "$.regularMarketPrice.raw"
           ]
         },
         {
@@ -31,11 +39,11 @@
       ]
     },
     {
-      "url":"https://rest.coinapi.io/v1/exchangerate/SOL/USD",
+      "url":"https://api.polygon.io/v1/last/crypto/SOL/USD?apiKey=${POLYGON_KEY}",
       "headers":[
         {
           "field":{
-            "X-CoinAPI-Key":"${X_COIN_API_KEY}"
+            "Content-Type":"application/json"
           }
         }
       ],
@@ -43,7 +51,7 @@
         {
           "function":"PARSE",
           "args":[
-            "$.rate"
+            "$.last.price"
           ]
         },
         {
@@ -54,5 +62,7 @@
         }
       ]
     }
-  ]
+  ],
+  "category": 2,
+  "frequency":"60000000000"
 }

@@ -3,8 +3,10 @@ service_node: bootstrap_node1:50051
 feed:
   path: "feeds"
   adapters:
+    - AAPL_USD.json
+    - ALGO_USD.json
+    - AMZN_USD.json
     - KLAY_USD.json
-    - WEMIX_USD.json
 organization:
   k_org_id: 535797165694
   name: "KlayOracle Inc."

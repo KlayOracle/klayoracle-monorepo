@@ -1,0 +1,44 @@
+{
+  "active":true,
+  "name":"MSFT_USD",
+  "adapterId":"0x40287cc8c51ed84f7b5aefa766a35e7ee3b9fe4976e73113184bf53efe4422ca",
+  "oracleAddress":"0xa618871566f9446AefC671792874fA6628A9BA49",
+  "feeds":[
+    {
+      "url":"https://yahoo-finance127.p.rapidapi.com/price/msft",
+      "headers":[
+        {
+          "field":{
+            "Content-Type":"application/json"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Host":"${YAHOO_API_HOST}"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Key":"${YAHOO_API_KEY}"
+          }
+        }
+      ],
+      "reducers":[
+        {
+          "function":"PARSE",
+          "args":[
+            "$.regularMarketPrice.raw"
+          ]
+        },
+        {
+          "function":"FLOAT64_MUL_UINT64",
+          "args":[
+            "1000000000"
+          ]
+        }
+      ]
+    }
+  ],
+  "category": 2,
+  "frequency":"60000000000"
+}

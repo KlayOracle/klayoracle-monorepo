@@ -1,0 +1,44 @@
+{
+  "active":true,
+  "name":"META_USD",
+  "adapterId":"0xb7925e94154f172b02c967070223cd3ef82f22f3983ea839a1fb97dcd801155d",
+  "oracleAddress":"0x8DFAC6650073d5818Eab9F4a150eDE1B8471050D",
+  "feeds":[
+    {
+      "url":"https://yahoo-finance127.p.rapidapi.com/price/meta",
+      "headers":[
+        {
+          "field":{
+            "Content-Type":"application/json"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Host":"${YAHOO_API_HOST}"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Key":"${YAHOO_API_KEY}"
+          }
+        }
+      ],
+      "reducers":[
+        {
+          "function":"PARSE",
+          "args":[
+            "$.regularMarketPrice.raw"
+          ]
+        },
+        {
+          "function":"FLOAT64_MUL_UINT64",
+          "args":[
+            "1000000000"
+          ]
+        }
+      ]
+    }
+  ],
+  "category": 2,
+  "frequency":"60000000000"
+}
