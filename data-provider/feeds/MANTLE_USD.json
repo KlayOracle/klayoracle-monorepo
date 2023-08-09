@@ -1,1 +1,73 @@
-{"active":true,"name":"MANTLE_USD","adapterId":"0x8ec1b46a57b4ebc66693290ac0967e50da0a115643f79761e396400360db04af","oracleAddress":"0xB1b28f760d66A9BecD0C0EdA490681467175F09B","feeds":[{"url":"https://yahoo-finance127.p.rapidapi.com/price/mnt-usd","headers":[{"field":{"Content-Type":"application/json"}},{"field":{"X-RapidAPI-Host":"${YAHOO_API_HOST}"}},{"field":{"X-RapidAPI-Key":"${YAHOO_API_KEY}"}}],"reducers":[{"function":"PARSE","args":["$.regularMarketPrice.raw"]},{"function":"FLOAT64_MUL_UINT64","args":["1000000000"]}]}],"category":"PRICE_FEED","frequency":"60000000000"}
+{
+  "active":true,
+  "name":"MANTLE_USD",
+  "adapterId":"0x7016c733c995ca868e6bc6e552be732fa005e5967e821f6a563b5f0cd8841297",
+  "oracleAddress":"0x94bfd13Dc52951a81c77c24350d1911e1C17cd65",
+  "feeds":[
+    {
+      "url":"https://yahoo-finance127.p.rapidapi.com/price/mnt-usd",
+      "headers":[
+        {
+          "field":{
+            "Content-Type":"application/json"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Host":"${YAHOO_API_HOST}"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Key":"${YAHOO_API_KEY}"
+          }
+        }
+      ],
+      "reducers":[
+        {
+          "function":"PARSE",
+          "args":[
+            "$.regularMarketPrice.raw"
+          ]
+        },
+        {
+          "function":"FLOAT64_MUL_UINT64",
+          "args":[
+            "1000000000"
+          ]
+        }
+      ]
+    },
+    {
+      "url":"https://min-api.cryptocompare.com/data/pricemultifull?fsyms=MNT&tsyms=USD",
+      "request_type":0,
+      "headers":[
+        {
+          "field":{
+            "Content-Type":"application/json"
+          }
+        },
+        {
+          "field":{
+            "Authorization":"Apikey ${CRYPTO_COMPARE_KEY}"
+          }
+        }
+      ],
+      "reducers":[
+        {
+          "function":"PARSE",
+          "args":["$.RAW.MNT.USD.PRICE"]
+        },
+        {
+          "function":"FLOAT64_MUL_UINT64",
+          "args":[
+            "1000000000"
+          ]
+        }
+      ],
+      "payload": ""
+    }
+  ],
+  "category": 2,
+  "frequency":"60000000000"
+}

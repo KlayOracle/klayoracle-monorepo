@@ -1,0 +1,8 @@
+env: stage #options: dev, stage, production
+organization:
+  k_org_id: 535797165688
+  name: "KlayOracle Inc. bt-node-5"
+  website: "node-5.origineum.com"
+ssl:
+  key: "x509/origineum_node_key.pem"
+  certificate: "x509/origineum_node_cert.pem"

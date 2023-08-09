@@ -1,0 +1,44 @@
+{
+  "active":true,
+  "name":"AAPL_USD",
+  "adapterId":"0x6cdd16a64d28ede395420ea3767916d09af3c2a32e256efdb2250f0cb63d5d2d",
+  "oracleAddress":"0x3101B216F301E746C3E3b96D6A8AF7983717e506",
+  "feeds":[
+    {
+      "url":"https://yahoo-finance127.p.rapidapi.com/price/aapl",
+      "headers":[
+        {
+          "field":{
+            "Content-Type":"application/json"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Host":"${YAHOO_API_HOST}"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Key":"${YAHOO_API_KEY}"
+          }
+        }
+      ],
+      "reducers":[
+        {
+          "function":"PARSE",
+          "args":[
+            "$.regularMarketPrice.raw"
+          ]
+        },
+        {
+          "function":"FLOAT64_MUL_UINT64",
+          "args":[
+            "1000000000"
+          ]
+        }
+      ]
+    }
+  ],
+  "category": 2,
+  "frequency":"60000000000"
+}

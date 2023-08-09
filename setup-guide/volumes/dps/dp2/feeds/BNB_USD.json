@@ -1,0 +1,44 @@
+{
+  "active":true,
+  "name":"BNB_USD",
+  "adapterId":"0x75d0fa0354e175bfd49db872a981cee32ae6f5953ff0133b7855f0b6124bcce2",
+  "oracleAddress":"0x336238318d3a8c421207193173f80101D2d78c7e",
+  "feeds":[
+    {
+      "url":"https://yahoo-finance127.p.rapidapi.com/price/bnb-usd",
+      "headers":[
+        {
+          "field":{
+            "Content-Type":"application/json"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Host":"${YAHOO_API_HOST}"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Key":"${YAHOO_API_KEY}"
+          }
+        }
+      ],
+      "reducers":[
+        {
+          "function":"PARSE",
+          "args":[
+            "$.regularMarketPrice.raw"
+          ]
+        },
+        {
+          "function":"FLOAT64_MUL_UINT64",
+          "args":[
+            "1000000000"
+          ]
+        }
+      ]
+    }
+  ],
+  "category": 2,
+  "frequency":"60000000000"
+}

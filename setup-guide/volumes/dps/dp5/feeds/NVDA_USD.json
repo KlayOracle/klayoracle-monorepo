@@ -1,0 +1,44 @@
+{
+  "active":true,
+  "name":"NVDA_USD",
+  "adapterId":"0x3a502832827d8f1e9abaeb8c609176dd675276c12b8c56875b1f03437d93e8c1",
+  "oracleAddress":"0x2070c4d9a6Bf7E291edED112584162A5469F53b4",
+  "feeds":[
+    {
+      "url":"https://yahoo-finance127.p.rapidapi.com/price/nvda",
+      "headers":[
+        {
+          "field":{
+            "Content-Type":"application/json"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Host":"${YAHOO_API_HOST}"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Key":"${YAHOO_API_KEY}"
+          }
+        }
+      ],
+      "reducers":[
+        {
+          "function":"PARSE",
+          "args":[
+            "$.regularMarketPrice.raw"
+          ]
+        },
+        {
+          "function":"FLOAT64_MUL_UINT64",
+          "args":[
+            "1000000000"
+          ]
+        }
+      ]
+    }
+  ],
+  "category": 2,
+  "frequency":"60000000000"
+}

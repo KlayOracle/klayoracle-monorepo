@@ -1,0 +1,44 @@
+{
+  "active":true,
+  "name":"JPM_USD",
+  "adapterId":"0x1d660541af91a1c2e2d728d4fbb1a26e45fed27de99824253acac56515b9945a",
+  "oracleAddress":"0x81B238602226Ea019876676E9617737e4BDC5447",
+  "feeds":[
+    {
+      "url":"https://yahoo-finance127.p.rapidapi.com/price/jpm",
+      "headers":[
+        {
+          "field":{
+            "Content-Type":"application/json"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Host":"${YAHOO_API_HOST}"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Key":"${YAHOO_API_KEY}"
+          }
+        }
+      ],
+      "reducers":[
+        {
+          "function":"PARSE",
+          "args":[
+            "$.regularMarketPrice.raw"
+          ]
+        },
+        {
+          "function":"FLOAT64_MUL_UINT64",
+          "args":[
+            "1000000000"
+          ]
+        }
+      ]
+    }
+  ],
+  "category": 2,
+  "frequency":"60000000000"
+}

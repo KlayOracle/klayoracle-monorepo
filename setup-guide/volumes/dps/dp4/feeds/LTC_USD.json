@@ -1,17 +1,25 @@
 {
   "active":true,
   "name":"LTC_USD",
-  "adapterId":"0x80c51b7821b52c6f30405f8036052ddd88c8a5e57d58d08edd542b98b9f857ca",
-  "oracleAddress":"0xce4bC34b8718C61901AB76b81e4e6BA8d096eAce",
-  "category": 2,
-  "frequency":"60000000000",
+  "adapterId":"0x32e939b7511987b5792d990460356159dd8cd1170f6ea197d2dae2f88ce15a58",
+  "oracleAddress":"0x7c023184b0949794F8df014915a8deBdE73A432a",
   "feeds":[
     {
-      "url":"https://min-api.cryptocompare.com/data/pricemultifull?fsyms=LTC&tsyms=USD",
+      "url":"https://yahoo-finance127.p.rapidapi.com/price/ltc-usd",
       "headers":[
         {
           "field":{
             "Content-Type":"application/json"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Host":"${YAHOO_API_HOST}"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Key":"${YAHOO_API_KEY}"
           }
         }
       ],
@@ -19,7 +27,7 @@
         {
           "function":"PARSE",
           "args":[
-            "$.RAW.LTC.USD.PRICE"
+            "$.regularMarketPrice.raw"
           ]
         },
         {
@@ -31,11 +39,11 @@
       ]
     },
     {
-      "url":"https://rest.coinapi.io/v1/exchangerate/LTC/USD",
+      "url":"https://api.polygon.io/v1/last/crypto/LTC/USD?apiKey=${POLYGON_KEY}",
       "headers":[
         {
           "field":{
-            "X-CoinAPI-Key":"${X_COIN_API_KEY}"
+            "Content-Type":"application/json"
           }
         }
       ],
@@ -43,16 +51,18 @@
         {
           "function":"PARSE",
           "args":[
-            "$.rate"
+            "$.last.price"
           ]
         },
         {
           "function":"FLOAT64_MUL_UINT64",
           "args":[
-            "6000000000"
+            "1000000000"
           ]
         }
       ]
     }
-  ]
+  ],
+  "category": 2,
+  "frequency":"60000000000"
 }

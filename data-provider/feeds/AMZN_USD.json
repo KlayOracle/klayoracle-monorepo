@@ -1,1 +1,44 @@
-{"active":true,"name":"AMZN_USD","adapterId":"0x2de74470883541042c54b15c2ea6d4849f409ea464249e533cc2ffe516c1c8df","oracleAddress":"0xB1b28f760d66A9BecD0C0EdA490681467175F09B","feeds":[{"url":"https://yahoo-finance127.p.rapidapi.com/price/amzn","headers":[{"field":{"Content-Type":"application/json"}},{"field":{"X-RapidAPI-Host":"${YAHOO_API_HOST}"}},{"field":{"X-RapidAPI-Key":"${YAHOO_API_KEY}"}}],"reducers":[{"function":"PARSE","args":["$.regularMarketPrice.raw"]},{"function":"FLOAT64_MUL_UINT64","args":["1000000000"]}]}],"category":"PRICE_FEED","frequency":"60000000000"}
+{
+  "active":true,
+  "name":"AMZN_USD",
+  "adapterId":"0xc97d8ed8d26060157b3b63965489646a82dcbbd3b65ed7af43177bcec97ae7a4",
+  "oracleAddress":"0xf57761CC1FcF506Da4396E62C5920C1632c30620",
+  "feeds":[
+    {
+      "url":"https://yahoo-finance127.p.rapidapi.com/price/amzn",
+      "headers":[
+        {
+          "field":{
+            "Content-Type":"application/json"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Host":"${YAHOO_API_HOST}"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Key":"${YAHOO_API_KEY}"
+          }
+        }
+      ],
+      "reducers":[
+        {
+          "function":"PARSE",
+          "args":[
+            "$.regularMarketPrice.raw"
+          ]
+        },
+        {
+          "function":"FLOAT64_MUL_UINT64",
+          "args":[
+            "1000000000"
+          ]
+        }
+      ]
+    }
+  ],
+  "category": 2,
+  "frequency":"60000000000"
+}

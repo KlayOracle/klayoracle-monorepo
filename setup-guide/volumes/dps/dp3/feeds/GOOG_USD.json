@@ -1,0 +1,44 @@
+{
+  "active":true,
+  "name":"GOOG_USD",
+  "adapterId":"0xf1a1c99df45211fa684a74d6de24d762bd5cf7376e0b3fea257361b45e9c37e9",
+  "oracleAddress":"0x9b18663631A53d891f0C7199bb656A4863a94D5a",
+  "feeds":[
+    {
+      "url":"https://yahoo-finance127.p.rapidapi.com/price/goog",
+      "headers":[
+        {
+          "field":{
+            "Content-Type":"application/json"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Host":"${YAHOO_API_HOST}"
+          }
+        },
+        {
+          "field":{
+            "X-RapidAPI-Key":"${YAHOO_API_KEY}"
+          }
+        }
+      ],
+      "reducers":[
+        {
+          "function":"PARSE",
+          "args":[
+            "$.regularMarketPrice.raw"
+          ]
+        },
+        {
+          "function":"FLOAT64_MUL_UINT64",
+          "args":[
+            "1000000000"
+          ]
+        }
+      ]
+    }
+  ],
+  "category": 2,
+  "frequency":"60000000000"
+}

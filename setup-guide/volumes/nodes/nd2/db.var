@@ -1,1 +1,1 @@
-COCKROACH_DNS_URL=postgresql://cockroachdb_user:-zVf8I-1FptRGzPlfyZDnQ@earth-mustang-7614.8nj.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full
+COCKROACH_DNS_URL=postgresql://mantle_testnet_user_node_2:w-Nyij-F3Lr6en1Jk5mYgA@honest-quagga-7615.8nj.cockroachlabs.cloud:26257/mantle_testnet_db_node_2?sslmode=verify-full

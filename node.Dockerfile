@@ -1,5 +1,5 @@
 #Build Image
-FROM golang:1.18-buster as build
+FROM golang:1.19-buster as build
 RUN go version
 WORKDIR /klayoracle
 
@@ -19,7 +19,8 @@ RUN go mod tidy
 WORKDIR -
 WORKDIR /node
 RUN go mod tidy
-RUN go build -o kloc-node . && cp -r . /var/klayoracle
+RUN go build -o kloc-node .
+RUN cp -r . /var/klayoracle
 RUN rm /var/klayoracle/.env /var/klayoracle/config.yaml /var/klayoracle/certs/host/x509 -r
 
 ##Final Image
