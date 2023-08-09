@@ -81,7 +81,7 @@ For detailed instructions, please look at the KlayOracle full [documentation](ht
 
 | 	                           | **Feed**   	                      | **Oracle Address**	 | **Decimal** |
 |-----------------------------|-----------------------------------|---------------------|-----------|
-| **Klaytn Baobab (Mainnet)** | 	                                 | 	                   |  |
+| **Klaytn Cypress (Mainnet)** | 	                                 | 	                   |  |
 | 	                           | KLAY/USD  	                       | 0x62cB9Ccd9F08e27A89A9C8C5CCeEAEf7ddC4043B	                 | 9 |
 | 	                           | DOT/USD  	                        | 	0x49573a03fDfBf54766c0BB3C20Db5aAfea749211                 | 9 |
 | 	                           | AVAX/USD  	                       | 	0x8D58564D0e7394902a10105BbE183c9A44f02d1d                 | 9 |
