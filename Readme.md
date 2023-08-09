@@ -127,12 +127,12 @@ For detailed instructions, please look at the KlayOracle full [documentation](ht
 | 	                           | GOOGL/USD (Alphabet Inc. CI A)  	 | 	 0x                | 9 |
 | 	                           | GOOG/USD (Alphabet Inc. CI C)  	  | 	 0x                | 9 |
 | **Mantle (Testnet)**  	     | 	                                 | 	                   |  |
-| 	                           | MANTLE/USD  	                     | 0x94bfd13Dc52951a81c77c24350d1911e1C17cd65	                 | 9 |
+| 	                           | MANTLE/USD  	                     | 0xC41d55C1Da69634588FEcD28A1156D2249BD3dA1	                 | 9 |
 | 	                           | DOT/USD  	                        | 	0xA0698f9889a1B7906B2C236FAb7a9c5d128fa32a                 | 9 |
 | 	                           | AVAX/USD  	                       | 	0x6f785c43FBB5569b7f1A57fe62fBCCE96175612a                 | 9 |
-| 	                           | AMZN/USD  	                       | 	0x0fCB49fb0c573d4273126f19EaF6A696B5881DEB                 | 9 |
-| 	                           | ALGO/USD  	                       | 	0x98E46422C5f0ce5630782604434B5A89CA29A051                 | 9 |
-| 	                           | AAPL/USD  	                       | 	0x3101B216F301E746C3E3b96D6A8AF7983717e506                 | 9 |
+| 	                           | AMZN/USD  	                       | 	0x2F09d2D8EFd85F4Fe03663933eDAD918513A3A9E                 | 9 |
+| 	                           | ALGO/USD  	                       | 	0xcFCec0C69438e0A125c4B0450d3793e6EdDf7B05                 | 9 |
+| 	                           | AAPL/USD  	                       | 	0x300C9dCa1E530E2b34C58Abe3848A5ba511ca624                 | 9 |
 | 	                           | BTC/USD  	                        | 0x85190f5303D85c2668275cE7A07758ba22cE0C35	                 | 9 |
 | 	                           | ETH/USD  	                        | 0x7274F4c13438Bbf955eA87A883679511F8921f36	                 | 9 |
 | 	                           | BNB/USD  	                        | 0x336238318d3a8c421207193173f80101D2d78c7e	                 | 9 |
