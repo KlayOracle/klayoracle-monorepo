@@ -29,3 +29,5 @@ Note.txt
 
 setup-guide/volumes/nodes/nd[0-9]/host/x509
 setup-guide/volumes/dps/dp[0-9]/node/x509
+
+setup-guide/volumes/nodes/nd[0-9]/db.var
