@@ -37,7 +37,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-const TxTimeout = time.Minute * 1
+const TxTimeout = time.Minute * 2
 
 var (
 	errMissingMetadata            = status.Errorf(codes.InvalidArgument, "missing metadata")
