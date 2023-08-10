@@ -104,28 +104,27 @@ For detailed instructions, please look at the KlayOracle full [documentation](ht
 | 	                           | GOOGL/USD (Alphabet Inc. CI A)  	 | 	 0x65a14cf12730eBF7874eE459F3C9F5d33e909c15                | 9 |
 | 	                           | GOOG/USD (Alphabet Inc. CI C)  	  | 	 0x0080f3FF6ca9123Cf069D2C5A35d6463E6Faa0BD                | 9 |
 | **Klaytn Baobab (Testnet)** | 	                                 | 	                   |  |
-| 	                           | KLAY/USD  	                       | 0xbc884088e406422a3ef39aedd1c546de7ac4be7c	                 | 9 |
-| 	                           | WEMIX/USD  	                      | 	0x251b2c534fa7d696b356a96b17bf87a2ad38f394                 | 9 |
-| 	                           | DOT/USD  	                        | 	0x                 | 9 |
-| 	                           | AVAX/USD  	                       | 	0x                 | 9 |
-| 	                           | AMZN/USD  	                       | 	0x                 | 9 |
-| 	                           | ALGO/USD  	                       | 	0x                 | 9 |
-| 	                           | AAPL/USD  	                       | 	0x                 | 9 |
-| 	                           | BTC/USD  	                        | 0xf57761CC1FcF506Da4396E62C5920C1632c30620	                 | 9 |
-| 	                           | ETH/USD  	                        | 0x8D58564D0e7394902a10105BbE183c9A44f02d1d	                 | 9 |
-| 	                           | BNB/USD  	                        | 0x1FdebbE196D2FeE7Ca98126a8b1f0f42a6E2833f	                 | 9 |
-| 	                           | SOL/USD  	                        | 0xc8D7Df132015f44FbB7D535Ca48677cC129566c8	                 | 9 |
-| 	                           | LTC/USD  	                        | 0xce4bC34b8718C61901AB76b81e4e6BA8d096eAce	                 | 9 |
-| 	                           | MATIC/USD  	                      | 	 0x0080f3FF6ca9123Cf069D2C5A35d6463E6Faa0BD                | 9 |
-| 	                           | XRP/USD  	                        | 	 0x                | 9 |
-| 	                           | PEPE/USD  	                       | 	 0x                | 9 |
-| 	                           | TSLA/USD (Tesla)  	               | 	 0x                | 9 |
-| 	                           | NVDA/USD (Nivida)  	              | 	 0x                | 9 |
-| 	                           | MSFT/USD (Microsoft)  	           | 	 0x                | 9 |
-| 	                           | META/USD (Facebook - META)  	     | 	 0x                | 9 |
-| 	                           | JPM/USD (JP Morgan)  	            | 	 0x                | 9 |
-| 	                           | GOOGL/USD (Alphabet Inc. CI A)  	 | 	 0x                | 9 |
-| 	                           | GOOG/USD (Alphabet Inc. CI C)  	  | 	 0x                | 9 |
+| 	                           | KLAY/USD  	                       | 0xA0ED7B1cFaE9cf93C407F17f39D817D6002163a9	                 | 9 |
+| 	                           | DOT/USD  	                        | 	0xFF143bB9FC20BfCf73d9FC85b4562732B7781B42                 | 9 |
+| 	                           | AVAX/USD  	                       | 	0x55eA33667F78f6E0FeC977Cc30673e0Cf9b5457A                 | 9 |
+| 	                           | AMZN/USD  	                       | 	0x97BA0761eec90D3C0A76D2ca6533A8595c81d5E2                 | 9 |
+| 	                           | ALGO/USD  	                       | 	0x84F9583A0A18a70F396dEBDaCD700B0CD9784091                 | 9 |
+| 	                           | AAPL/USD  	                       | 	0x52fe38E36A3ec9Dc3dE1819a88411668E456bDE5                 | 9 |
+| 	                           | BTC/USD  	                        | 0x1d14aD4E06065F53EaB313119A3B1933D764978b	                 | 9 |
+| 	                           | ETH/USD  	                        | 0x68ead609f859aD1a737a3dbaA73e25311046a5c2	                 | 9 |
+| 	                           | BNB/USD  	                        | 0xD8bB23aa6CD6BBE0B8fc52275398E219Eaa53102	                 | 9 |
+| 	                           | SOL/USD  	                        | 0x80C0BE0ABEA4db2A63c05c03969F279080181D37	                 | 9 |
+| 	                           | LTC/USD  	                        | 0x2DD00bb74D1C1eB9bc64BB9eC926A7cC4222c5bE	                 | 9 |
+| 	                           | MATIC/USD  	                      | 	 0x64d6a1501e1e5185BF327746eaefB193D10D5038                | 9 |
+| 	                           | XRP/USD  	                        | 	 0xbe21230F89329d3A32FC6ec89c0025Da4475dB16                | 9 |
+| 	                           | PEPE/USD  	                       | 	 0x80d8aBE62A1a4bc96643f5e89Dfe3Ef99B82759c                | 9 |
+| 	                           | TSLA/USD (Tesla)  	               | 	 0xCdFCB548BB28F8D878e18234688eccF7E9E25a19                | 9 |
+| 	                           | NVDA/USD (Nivida)  	              | 	 0x007C4f6AE43C2C059dAb11E289D7eD30cB301134                | 9 |
+| 	                           | MSFT/USD (Microsoft)  	           | 	 0x19271a32944546701A034F3b661F4283064CBD97                | 9 |
+| 	                           | META/USD (Facebook - META)  	     | 	 0x11a8341dEDe589773ce7e3c48801F77ec542e6FD                | 9 |
+| 	                           | JPM/USD (JP Morgan)  	            | 	 0xb30259d8a55509091A0671018D75197F6c480463                | 9 |
+| 	                           | GOOGL/USD (Alphabet Inc. CI A)  	 | 	 0xc406DC5F3469527362bEcB6ba59EC0c24AB2C03F                | 9 |
+| 	                           | GOOG/USD (Alphabet Inc. CI C)  	  | 	 0x209F857D9695851e55700115788b9052F82835B2                | 9 |
 | **Mantle (Testnet)**  	     | 	                                 | 	                   |  |
 | 	                           | MANTLE/USD  	                     | 0xC41d55C1Da69634588FEcD28A1156D2249BD3dA1	                 | 9 |
 | 	                           | DOT/USD  	                        | 	0xA0698f9889a1B7906B2C236FAb7a9c5d128fa32a                 | 9 |
