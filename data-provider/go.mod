@@ -1,6 +1,6 @@
 module github.com/klayoracle/klayoracle-monorepo/data-provider
 
-go 1.18
+go 1.19
 
 require (
 	github.com/joho/godotenv v1.5.1

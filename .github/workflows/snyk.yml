@@ -4,7 +4,7 @@ jobs:
   security:
     strategy:
       matrix:
-        go: [1.18, 1.19]
+        go: [1.19, 1.20]
         directory: [ "node", "data-provider", "oracle-contract"]
     runs-on: ubuntu-latest
     steps:
