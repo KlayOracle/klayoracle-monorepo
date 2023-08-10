@@ -29,12 +29,6 @@ var byt = []byte(`
 						"headers": [{"field": {"Content-Type" : "application/json"}},{"field": {"Authorization" : "${BEARER_TOKEN}"}}],
 						"reducers": [{"function": "PARSE","args": ["$.RAW.KLAY.USD.PRICE"]},{"function": "FLOAT64_MUL_UINT64","args": ["1000000000"]}],
       					"payload": ""
-						},
-						{
-						"url": "https://rest.coinapi.io/v1/exchangerate/KLAY/USD",
-						"request_type": 0,
-						"headers": [{"field": {"X-CoinAPI-Key": "${X_COIN_API_KEY}"}}],
-						"reducers": [{"function": "PARSE","args": ["$.rate"]},{"function": "FLOAT64_MUL_UINT64","args": ["1000000000"]}]
 						}
 					]
 				}
