@@ -2,7 +2,7 @@
   "active":true,
   "name":"TSLA_USD",
   "adapterId":"0x307cac18269e1baadeb3f1939e0c02a636e58d14915d558ab5e7f203d7f50426",
-  "oracleAddress":"0xc9654D64c0f783d87271c5edA514951436a9a8ea",
+  "oracleAddress":"0xCdFCB548BB28F8D878e18234688eccF7E9E25a19",
   "feeds":[
     {
       "url":"https://yahoo-finance127.p.rapidapi.com/price/tsla",

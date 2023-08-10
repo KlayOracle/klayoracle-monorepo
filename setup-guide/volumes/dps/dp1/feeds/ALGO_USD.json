@@ -2,7 +2,7 @@
   "active":true,
   "name":"ALGO_USD",
   "adapterId":"0x8dfe4946000877b0f066cfdbae47a170fa51f2c9dfbdd38498522b31035dd6f0",
-  "oracleAddress":"0xcbE8E1F7aF9e21192E4260152aDC91c8805Be222",
+  "oracleAddress":"0x84F9583A0A18a70F396dEBDaCD700B0CD9784091",
   "feeds":[
     {
       "url":"https://yahoo-finance127.p.rapidapi.com/price/algo-usd",

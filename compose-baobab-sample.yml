@@ -1,0 +1,42 @@
+version: "3.9"  # Try this compose file for local-dev setup
+services:
+  cockroach_db:
+    image: cockroachdb/cockroach:latest
+    container_name: cockroach_db
+    restart: unless-stopped
+    env_file:
+      - ./setup-guide/volumes/cockroachdb/.env
+    ports:
+      - "26257:26257"
+      - "8443:8443"
+  bt1-node:
+    image: klayoracle-node:v1.2-beta
+    container_name: bootstrap_node1
+    ports:
+      - "50051:50051"
+    volumes:
+      - ./setup-guide/volumes/nodes/nd1/host/x509:/var/klayoracle/certs/host/x509
+      - ./setup-guide/volumes/nodes/nd1/config.yaml:/var/klayoracle/config.yaml
+    networks:
+      - klayoracle
+    env_file:
+      - setup-guide/volumes/nodes/nd1/.env
+    restart: unless-stopped
+  bt1-dp:
+    image: klayoracle-dp:v1.2-beta
+    container_name: bootstrap_dp1
+    depends_on:
+      - bt1-node
+    ports:
+      - "50002:50002"
+    volumes:
+      - ./setup-guide/volumes/dps/dp1/node/x509:/var/klayoracle/certs/node/x509
+      - ./setup-guide/volumes/dps/dp1/config.yaml:/var/klayoracle/config.yaml
+      - ./setup-guide/volumes/dps/dp1/feeds:/var/klayoracle/feeds
+    networks:
+      - klayoracle
+    env_file:
+      - setup-guide/volumes/dps/dp1/.env
+    restart: unless-stopped
+networks:
+  klayoracle: {}

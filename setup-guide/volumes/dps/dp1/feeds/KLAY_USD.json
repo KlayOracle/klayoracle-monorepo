@@ -2,7 +2,7 @@
   "active":true,
   "name":"KLAY_USD",
   "adapterId":"0x7016c733c995ca868e6bc6e552be732fa005e5967e821f6a563b5f0cd8841297",
-  "oracleAddress":"0x62cB9Ccd9F08e27A89A9C8C5CCeEAEf7ddC4043B",
+  "oracleAddress":"0xA0ED7B1cFaE9cf93C407F17f39D817D6002163a9",
   "feeds":[
     {
       "url":"https://yahoo-finance127.p.rapidapi.com/price/klay-usd",

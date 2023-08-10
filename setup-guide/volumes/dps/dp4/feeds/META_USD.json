@@ -2,7 +2,7 @@
   "active":true,
   "name":"META_USD",
   "adapterId":"0xb7925e94154f172b02c967070223cd3ef82f22f3983ea839a1fb97dcd801155d",
-  "oracleAddress":"0x8DFAC6650073d5818Eab9F4a150eDE1B8471050D",
+  "oracleAddress":"0x11a8341dEDe589773ce7e3c48801F77ec542e6FD",
   "feeds":[
     {
       "url":"https://yahoo-finance127.p.rapidapi.com/price/meta",

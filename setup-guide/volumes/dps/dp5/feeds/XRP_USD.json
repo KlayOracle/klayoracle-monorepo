@@ -2,7 +2,7 @@
   "active":true,
   "name":"XRP_USD",
   "adapterId":"0x7016c733c995ca868e6bc6e552be732fa005e5967e821f6a563b5f0cd8841297",
-  "oracleAddress":"0x52fe38E36A3ec9Dc3dE1819a88411668E456bDE5",
+  "oracleAddress":"0xbe21230F89329d3A32FC6ec89c0025Da4475dB16",
   "feeds":[
     {
       "url":"https://yahoo-finance127.p.rapidapi.com/price/avax-usd",

@@ -1,7 +1,6 @@
 version: "3.9"  # Try this compose file for local-dev setup
 services:
   bt1-node:
-    build: .
     image: klayoracle-node:v1.2-beta
     container_name: bootstrap_node1
     ports:
@@ -15,7 +14,6 @@ services:
       - setup-guide/volumes/nodes/nd1/.env
     restart: unless-stopped
   bt2-node:
-    build: .
     image: klayoracle-node:v1.2-beta
     container_name: bootstrap_node2
     ports:
@@ -31,7 +29,6 @@ services:
       - setup-guide/volumes/nodes/nd2/.env
     restart: unless-stopped
   bt3-node:
-    build: .
     image: klayoracle-node:v1.2-beta
     container_name: bootstrap_node3
     ports:
@@ -47,7 +44,6 @@ services:
       - setup-guide/volumes/nodes/nd3/.env
     restart: unless-stopped
   bt4-node:
-    build: .
     image: klayoracle-node:v1.2-beta
     container_name: bootstrap_node4
     ports:
@@ -63,7 +59,6 @@ services:
       - setup-guide/volumes/nodes/nd4/.env
     restart: unless-stopped
   bt5-node:
-    build: .
     image: klayoracle-node:v1.2-beta
     container_name: bootstrap_node5
     ports:
@@ -79,7 +74,6 @@ services:
       - setup-guide/volumes/nodes/nd5/.env
     restart: unless-stopped
   bt1-dp:
-    build: .
     image: klayoracle-dp:v1.2-beta
     container_name: bootstrap_dp1
     depends_on:
@@ -96,7 +90,6 @@ services:
       - setup-guide/volumes/dps/dp1/.env
     restart: unless-stopped
   bt2-dp:
-    build: .
     image: klayoracle-dp:v1.2-beta
     container_name: bootstrap_dp2
     ports:
@@ -114,7 +107,6 @@ services:
       - setup-guide/volumes/dps/dp2/.env
     restart: unless-stopped
   bt3-dp:
-    build: .
     image: klayoracle-dp:v1.2-beta
     container_name: bootstrap_dp3
     ports:
@@ -132,7 +124,6 @@ services:
       - setup-guide/volumes/dps/dp3/.env
     restart: unless-stopped
   bt4-dp:
-    build: .
     image: klayoracle-dp:v1.2-beta
     container_name: bootstrap_dp4
     ports:
@@ -150,7 +141,6 @@ services:
       - setup-guide/volumes/dps/dp4/.env
     restart: unless-stopped
   bt5-dp:
-    build: .
     image: klayoracle-dp:v1.2-beta
     container_name: bootstrap_dp5
     ports:

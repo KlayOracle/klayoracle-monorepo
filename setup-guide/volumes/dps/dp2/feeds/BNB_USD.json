@@ -2,7 +2,7 @@
   "active":true,
   "name":"BNB_USD",
   "adapterId":"0x75d0fa0354e175bfd49db872a981cee32ae6f5953ff0133b7855f0b6124bcce2",
-  "oracleAddress":"0x1FdebbE196D2FeE7Ca98126a8b1f0f42a6E2833f",
+  "oracleAddress":"0xD8bB23aa6CD6BBE0B8fc52275398E219Eaa53102",
   "feeds":[
     {
       "url":"https://yahoo-finance127.p.rapidapi.com/price/bnb-usd",

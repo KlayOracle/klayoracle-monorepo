@@ -2,7 +2,7 @@
   "active":true,
   "name":"JPM_USD",
   "adapterId":"0x1d660541af91a1c2e2d728d4fbb1a26e45fed27de99824253acac56515b9945a",
-  "oracleAddress":"0xe2B5222eDA290b79Ee8cb2a6ba67Bfc1C377f972",
+  "oracleAddress":"0xb30259d8a55509091A0671018D75197F6c480463",
   "feeds":[
     {
       "url":"https://yahoo-finance127.p.rapidapi.com/price/jpm",

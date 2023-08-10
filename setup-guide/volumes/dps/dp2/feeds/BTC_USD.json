@@ -2,7 +2,7 @@
   "active":true,
   "name":"BTC_USD",
   "adapterId":"0x3dc8f06ebc54e32fc7ec448306ece148cfb45b7b4df5870b7c07d3fb338ec038",
-  "oracleAddress":"0xc8D7Df132015f44FbB7D535Ca48677cC129566c8",
+  "oracleAddress":"0x1d14aD4E06065F53EaB313119A3B1933D764978b",
   "feeds":[
     {
       "url":"https://yahoo-finance127.p.rapidapi.com/price/btc-usd",

@@ -2,7 +2,7 @@
   "active":true,
   "name":"PEPE_USD",
   "adapterId":"0xcdc17e2db4253f7aa47a340d6e9e91a2f530dcab57f9f863ba70a9243df20b7a",
-  "oracleAddress":"0x672589c68b8C92bd0d644d67Cc6a148b18407C80",
+  "oracleAddress":"0x80d8aBE62A1a4bc96643f5e89Dfe3Ef99B82759c",
   "feeds":[
     {
       "url":"https://yahoo-finance127.p.rapidapi.com/price/algo-usd",

@@ -2,7 +2,7 @@
   "active":true,
   "name":"AAPL_USD",
   "adapterId":"0x6cdd16a64d28ede395420ea3767916d09af3c2a32e256efdb2250f0cb63d5d2d",
-  "oracleAddress":"0x722222452eA9bE8dDF62118835394e8C079d2971",
+  "oracleAddress":"0x52fe38E36A3ec9Dc3dE1819a88411668E456bDE5",
   "feeds":[
     {
       "url":"https://yahoo-finance127.p.rapidapi.com/price/aapl",

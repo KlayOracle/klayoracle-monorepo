@@ -2,7 +2,7 @@
   "active":true,
   "name":"GOOG_USD",
   "adapterId":"0xf1a1c99df45211fa684a74d6de24d762bd5cf7376e0b3fea257361b45e9c37e9",
-  "oracleAddress":"0x0080f3FF6ca9123Cf069D2C5A35d6463E6Faa0BD",
+  "oracleAddress":"0x209F857D9695851e55700115788b9052F82835B2",
   "feeds":[
     {
       "url":"https://yahoo-finance127.p.rapidapi.com/price/goog",
