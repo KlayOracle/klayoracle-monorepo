@@ -125,6 +125,11 @@ For detailed instructions, please look at the KlayOracle full [documentation](ht
 | 	                           | JPM/USD (JP Morgan)  	            | 	 0xb30259d8a55509091A0671018D75197F6c480463                | 9 |
 | 	                           | GOOGL/USD (Alphabet Inc. CI A)  	 | 	 0xc406DC5F3469527362bEcB6ba59EC0c24AB2C03F                | 9 |
 | 	                           | GOOG/USD (Alphabet Inc. CI C)  	  | 	 0x209F857D9695851e55700115788b9052F82835B2                | 9 |
+
+## Mantle Data Feeds & RWA
+
+| 	                           | **Feed**   	                      | **Oracle Address**	 | **Decimal** |
+|-----------------------------|-----------------------------------|---------------------|-----------|
 | **Mantle (Testnet)**  	     | 	                                 | 	                   |  |
 | 	                           | MANTLE/USD  	                     | 0xC41d55C1Da69634588FEcD28A1156D2249BD3dA1	                 | 9 |
 | 	                           | DOT/USD  	                        | 	0xA0698f9889a1B7906B2C236FAb7a9c5d128fa32a                 | 9 |
