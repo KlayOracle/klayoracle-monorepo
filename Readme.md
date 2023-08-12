@@ -77,7 +77,7 @@ Feel free to email engineering@klayoracle.com
 
 For detailed instructions, please look at the KlayOracle full [documentation](https://klayoracle.gitbook.io/v1.0.0/).
 
-### Available Price Feed
+### Klaytn Data Feeds & RWA
 
 | 	                           | **Feed**   	                      | **Oracle Address**	 | **Decimal** |
 |-----------------------------|-----------------------------------|---------------------|-----------|
