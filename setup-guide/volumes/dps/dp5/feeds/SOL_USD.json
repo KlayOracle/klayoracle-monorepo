@@ -2,7 +2,7 @@
   "active":true,
   "name":"SOL_USD",
   "adapterId":"0xc95845e727728414d2e9bb7cc00687b6dcfe5a3ae49393680bf175b37772de90",
-  "oracleAddress":"0x80C0BE0ABEA4db2A63c05c03969F279080181D37",
+  "oracleAddress":"0x70f1bB87C395a377476903AAE8b1A37b76347c8D",
   "feeds":[
     {
       "url":"https://yahoo-finance127.p.rapidapi.com/price/sol-usd",

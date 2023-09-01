@@ -2,7 +2,7 @@
   "active":true,
   "name":"ETH_USD",
   "adapterId":"0x52482cb876f14f2f694cd9c257bb782760dd9bab9661ac58241923168f3d2837",
-  "oracleAddress":"0x68ead609f859aD1a737a3dbaA73e25311046a5c2",
+  "oracleAddress":"0xce4bC34b8718C61901AB76b81e4e6BA8d096eAce",
   "feeds":[
     {
       "url":"https://yahoo-finance127.p.rapidapi.com/price/eth-usd",

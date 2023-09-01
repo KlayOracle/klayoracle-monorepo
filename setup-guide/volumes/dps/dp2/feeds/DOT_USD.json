@@ -2,7 +2,7 @@
   "active":true,
   "name":"DOT_USD",
   "adapterId":"0x72ab500e9d34e6ffe2f0e93813411d1ce2b3520331b7d700f767a0cfb77ce12b",
-  "oracleAddress":"0xFF143bB9FC20BfCf73d9FC85b4562732B7781B42",
+  "oracleAddress":"0x49573a03fDfBf54766c0BB3C20Db5aAfea749211",
   "feeds":[
     {
       "url":"https://yahoo-finance127.p.rapidapi.com/price/dot-usd",

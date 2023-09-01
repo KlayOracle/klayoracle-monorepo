@@ -3,8 +3,9 @@ WD=$(shell pwd)
 HOST_IP := "0.0.0.0:50051"
 NODE_PORT := "50051"
 DP_PORT := "50002"
-NODE_IMAGE=klayoracle-node:v1.2-beta
-DP_IMAGE=klayoracle-dp:v1.2-beta
+NODE_IMAGE=klayoracle-node:v1.0.2-beta
+DP_IMAGE=klayoracle-dp:v1.0.2-beta
+SHELL := /bin/bash
 
 
 .PHONY: proto-installed
@@ -91,29 +92,109 @@ docker-network:
     	echo "$(NETWORK)";	\
     fi
 
+.PHONY: cockroach-network
+cockroach-network:
+	@if [ -z "$(NETWORK)" ];	then	\
+    	 docker network create klayoracle;		\
+    else \
+    	echo "$(NETWORK)";	\
+    fi
+
+.PHONY: cockroach-1
+cockroach-1:
+	@docker run -d \
+    --name=roach1 \
+    --hostname=roach1 \
+    --net=klayoracle \
+    -p 26257:26257 \
+    -p 8081:8080 \
+    -v "./setup-guide/volumes/cockroachdb/roach1:/cockroach/cockroach-data" \
+    -v "./setup-guide/volumes/cockroachdb/migration:/cockroach/migration" \
+    cockroachdb/cockroach:v23.1.8 start \
+      --advertise-addr=roach1:26357 \
+      --http-addr=roach1:8080 \
+      --listen-addr=roach1:26357 \
+      --sql-addr=roach1:26257 \
+      --insecure \
+      --join=roach1:26357,roach2:26357,roach3:26357
+
+.PHONY: cockroach-2
+cockroach-2:
+	@docker run -d \
+       --name=roach2 \
+       --hostname=roach2 \
+       --net=klayoracle \
+       -p 26258:26258 \
+       -p 8082:8081 \
+       -v "./setup-guide/volumes/cockroachdb/roach2:/cockroach/cockroach-data" \
+       cockroachdb/cockroach:v23.1.8 start \
+         --advertise-addr=roach2:26357 \
+         --http-addr=roach2:8081 \
+         --listen-addr=roach2:26357 \
+         --sql-addr=roach2:26258 \
+         --insecure \
+         --join=roach1:26357,roach2:26357,roach3:26357
+
+.PHONY: cockroach-3
+cockroach-3:
+	@docker run -d \
+       --name=roach3 \
+       --hostname=roach3 \
+       --net=klayoracle \
+       -p 26259:26259 \
+       -p 8083:8082 \
+       -v "./setup-guide/volumes/cockroachdb/roach3:/cockroach/cockroach-data" \
+       cockroachdb/cockroach:v23.1.8 start \
+         --advertise-addr=roach3:26357 \
+         --http-addr=roach3:8082 \
+         --listen-addr=roach3:26357 \
+         --sql-addr=roach3:26259 \
+         --insecure \
+         --join=roach1:26357,roach2:26357,roach3:26357
+
+.PHONY: sleep-60seconds
+sleep-60seconds:
+	@echo "Preparing DB..."; \
+    sleep 10; \
+    echo "Finalizing DB..."; \
+
+.PHONY: prepare-db-volume
+prepare-db-volume:
+	@for var in $(shell rm -r ./setup-guide/volumes/cockroachdb/roach{1,2,3}/*); do "roaching..." ; done;
+
+.PHONY: cockroach-init
+cockroach-init:
+	@docker exec -it roach1 ./cockroach --host=roach1:26357 init --insecure
+
+.PHONY: cockroach-migrate
+cockroach-migrate:
+	@cockroach sql --file=./setup-guide/volumes/cockroachdb/migration/dbinit.sql --insecure --host=0.0.0.0:26258
+#	@docker exec -it roach1 ./cockroach sql --file=./migration/dbinit.sql --host=roach1:26258 --insecure
+
+.PHONY: cockroach-cluster
+cockroach-cluster: prepare-db-volume cockroach-network cockroach-1 cockroach-2 cockroach-3 sleep-60seconds cockroach-init cockroach-migrate
+
 .PHONEY: export-var
 export-var:
 	@for var in $(shell cat ${TARGET}); do export "$${var}"; done;
 
+#Deprecated, use `make cockroach-cluster` instead
 .PHONEY: devnet-tables
 devnet-tables:
 	@for var in $(shell cat setup-guide/volumes/nodes/nd{1,2,3,4,5}/db.var); do export "$${var}" && make node-tables ; done;
 
-.PHONY: demo
-demo:
-	@TARGET=images.var make export-var; echo ${NODE_IMAGE};
-
+#Deprecated
 .PHONY: devnet-cluster
 devnet-cluster:
 	@make docker-network; NODE_IMAGE=${NODE_IMAGE} NODE_PORT=${NODE_PORT} make node-image; DP_PORT=${DP_PORT} DP_IMAGE=${DP_IMAGE}  make dp-image
 	@make devnet-tables
 	@docker compose up --detach
 
-.PHONY: cyp-cluster
-cyp-cluster:
+.PHONY: oracle-cluster
+oracle-cluster:
 	@make docker-network; NODE_IMAGE=${NODE_IMAGE} NODE_PORT=${NODE_PORT} make node-image; DP_PORT=${DP_PORT} DP_IMAGE=${DP_IMAGE}  make dp-image
-	@make devnet-tables
-	@docker compose --file compose-cyp.yml up --detach
+	@make cockroach-cluster
+	@docker compose --file compose.yml up --detach
 
 .PHONY: node-tables
 node-tables:

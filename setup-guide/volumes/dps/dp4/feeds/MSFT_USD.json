@@ -2,7 +2,7 @@
   "active":true,
   "name":"MSFT_USD",
   "adapterId":"0x40287cc8c51ed84f7b5aefa766a35e7ee3b9fe4976e73113184bf53efe4422ca",
-  "oracleAddress":"0x19271a32944546701A034F3b661F4283064CBD97",
+  "oracleAddress":"0xa618871566f9446AefC671792874fA6628A9BA49",
   "feeds":[
     {
       "url":"https://yahoo-finance127.p.rapidapi.com/price/msft",

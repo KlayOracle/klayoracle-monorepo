@@ -2,7 +2,7 @@
   "active":true,
   "name":"AMZN_USD",
   "adapterId":"0xc97d8ed8d26060157b3b63965489646a82dcbbd3b65ed7af43177bcec97ae7a4",
-  "oracleAddress":"0x97BA0761eec90D3C0A76D2ca6533A8595c81d5E2",
+  "oracleAddress":"0xf57761CC1FcF506Da4396E62C5920C1632c30620",
   "feeds":[
     {
       "url":"https://yahoo-finance127.p.rapidapi.com/price/amzn",

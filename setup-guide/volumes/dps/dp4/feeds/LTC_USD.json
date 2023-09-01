@@ -2,7 +2,7 @@
   "active":true,
   "name":"LTC_USD",
   "adapterId":"0x32e939b7511987b5792d990460356159dd8cd1170f6ea197d2dae2f88ce15a58",
-  "oracleAddress":"0x2DD00bb74D1C1eB9bc64BB9eC926A7cC4222c5bE",
+  "oracleAddress":"0x14cc5115AC7c9dE06151C91b6c9465ad381b0688",
   "feeds":[
     {
       "url":"https://yahoo-finance127.p.rapidapi.com/price/ltc-usd",

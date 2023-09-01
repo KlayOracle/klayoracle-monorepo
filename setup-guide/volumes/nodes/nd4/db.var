@@ -1,1 +1,0 @@
-COCKROACH_DNS_URL=postgresql://baobab_user_node_4:RGO0XPaQdUpLB3_3ztrsEQ@bare-zebu-7471.8nj.cockroachlabs.cloud:26257/baobab_db_node_4?sslmode=verify-full
