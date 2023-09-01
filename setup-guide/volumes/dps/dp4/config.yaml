@@ -5,6 +5,8 @@ feed:
   adapters:
     - LTC_USD.json
     - MATIC_USD.json
+    - META_USD.json
+    - MSFT_USD.json
 organization:
   k_org_id: 535797165697
   name: "KlayOracle Inc."
