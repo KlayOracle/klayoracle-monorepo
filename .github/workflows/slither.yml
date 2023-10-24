@@ -6,7 +6,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
       - name: Install Yarn
         run: npm install --global yarn
       - name: Install Dependencies
