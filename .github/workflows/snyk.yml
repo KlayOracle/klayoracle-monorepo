@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - uses: snyk/actions/setup@master
-      - uses: actions/setup-go@v3.5.0
+      - uses: actions/setup-go@v5.0.0
         with:
           go-version: ${{ matrix.go }}
       - name: Snyk monitor
